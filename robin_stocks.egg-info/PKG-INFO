@@ -1,0 +1,13 @@
+Metadata-Version: 1.2
+Name: robin-stocks
+Version: 0.1
+Summary: Made to interact with the Robinhood API
+Home-page: https://github.com/jmfernandes/Robinhood
+Author: Josh Fernandes
+Author-email: joshfernandes@mac.com
+License: MIT
+Description-Content-Type: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires: requests
+Requires-Python: >=3

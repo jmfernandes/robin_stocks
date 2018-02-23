@@ -1,6 +1,6 @@
 import requests
 
-class robinhood:
+class robin_stocks:
 
     def __init__(self):
         '''Initialize with a session'''
