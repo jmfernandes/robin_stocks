@@ -9,10 +9,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='robin_stocks',
-      version='0.1',
+      version='0.2',
       description='Made to interact with the Robinhood API',
       long_description=long_description,
-      url='https://github.com/jmfernandes/Robinhood',
+      url='https://github.com/jmfernandes/robin_stocks',
       author='Josh Fernandes',
       author_email='joshfernandes@mac.com',
       license='MIT',

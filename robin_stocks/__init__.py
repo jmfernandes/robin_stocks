@@ -379,21 +379,15 @@ class robin_stocks:
     def build_user_profile(self):
         user = {}
 
-        res = self.session.get('https://api.robinhood.com/portfolios/')
-        res_data = res.json()
-        user['equity'] = res_data['results'][0]['equity']
-        user['extended_hours_equity'] = res_data['results'][0]['extended_hours_equity']
+        portfolios_data = self.get_portfolios()
+        accounts_data = self.get_accounts()
 
-        res = self.session.get('https://api.robinhood.com/accounts/')
-        res_data = res.json()
-        cash = "{0:.2f}".format(float(res_data['results'][0]['cash'])+float(res_data['results'][0]['uncleared_deposits']))
+        user['equity'] = portfolios_data['equity']
+        user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
+
+        cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
         user['cash'] = cash
 
-        res = self.session.get('https://api.robinhood.com/dividends/')
-        res_data = res.json()
-        dividend_total = 0
-        for item in res_data['results']:
-            dividend_total += float(item['amount'])
-        user['dividend_total'] = "{0:.2f}".format(dividend_total)
+        user['dividend_total'] = self.get_total_dividends()
 
         return(user)
