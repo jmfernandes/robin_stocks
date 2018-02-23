@@ -51,58 +51,37 @@ class robin_stocks:
         '''Takes any number of strings,lists of strings, or tuples of strings and makes a single set'''
         symbols = set()
         if isinstance(inputsymbols,str):
-            symbols.add(inputsymbols.upper())
+            symbols.add(inputsymbols.upper().strip())
         else:
             for item in inputsymbols:
-                symbols.add(item.upper())
+                symbols.add(item.upper().strip())
 
         for item in othersymbols:
             if type(item) is list or type(item) is tuple:
                 for subitem in item:
-                    symbols.add(subitem.upper())
+                    symbols.add(subitem.upper().strip())
             else:
-                symbols.add(item.upper())
+                symbols.add(item.upper().strip())
         return symbols
 
-    def get_quote(self,inputsymbols,*othersymbols, info=None):
-        '''Takes any number of strings,lists of strings, or tuples of strings and gets stock quote data'''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-
+    def get_user_profile(self,*,info=None):
+        '''Get user account information'''
         try:
-            res_url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
-            res = self.session.get(res_url)
+            res = self.session.get('https://api.robinhood.com/user/')
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Quotes could not be loaded')
+            print('Investment profile could not be loaded')
             return None
 
-        if None in res_data['results']:
-            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
-
-        res_data['results'] = [x for x in res_data['results'] if x is not None]
-
         if info:
-            give_data = []
-            assert info in res_data['results'][0], self.error_keyword(info)
-            for value in res_data['results']:
-                give_data.append(value[info])
-            return(give_data)
-        else:
-            return(res_data['results'])
-
-    def get_latest_price(self,inputsymbols,*othersymbols):
-        '''Gets either the after hours price or the last trading price'''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-        myquote = self.get_quote(symbols)
-
-        price_list = []
-        for item in myquote:
-            if item['last_extended_hours_trade_price'] is None:
-                price_list.append(item['last_trade_price'])
+            if info in res_data:
+                return(res_data[info])
             else:
-                price_list.append(item['last_extended_hours_trade_price'])
-        return(price_list)
+                print(self.error_keyword(info))
+                return(None)
+        else:
+            return(res_data)
 
     def get_investment_profile(self,*,info=None):
         '''Gets investment profile information'''
@@ -123,9 +102,125 @@ class robin_stocks:
         else:
             return(res_data)
 
-        return res_data
+    def get_basic_info(self,*,info=None):
+        '''Gets basic profile information'''
+        try:
+            res = self.session.get('https://api.robinhood.com/user/basic_info/')
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print('Basic profile could not be loaded')
+            return None
 
-    def get_instruments(self,inputsymbols,*othersymbols,info=None):
+        if info:
+            if info in res_data:
+                return(res_data[info])
+            else:
+                print(self.error_keyword(info))
+                return(None)
+        else:
+            return(res_data)
+
+    def get_international_info(self,*,info=None):
+        '''Gets international profile information'''
+        try:
+            res = self.session.get('https://api.robinhood.com/user/international_info/')
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print('International profile could not be loaded')
+            return None
+
+        if info:
+            if info in res_data:
+                return(res_data[info])
+            else:
+                print(self.error_keyword(info))
+                return(None)
+        else:
+            return(res_data)
+
+    def get_employment_info(self,*,info=None):
+        '''Gets employment profile information'''
+        try:
+            res = self.session.get('https://api.robinhood.com/user/employment_info/')
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print('Employment profile could not be loaded')
+            return None
+
+        if info:
+            if info in res_data:
+                return(res_data[info])
+            else:
+                print(self.error_keyword(info))
+                return(None)
+        else:
+            return(res_data)
+
+    def get_additional_info(self,*,info=None):
+        '''Gets additional profile information'''
+        try:
+            res = self.session.get('https://api.robinhood.com/user/additional_info/')
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print('Additional profile could not be loaded')
+            return None
+
+        if info:
+            if info in res_data:
+                return(res_data[info])
+            else:
+                print(self.error_keyword(info))
+                return(None)
+        else:
+            return(res_data)
+
+    def get_quotes(self,inputsymbols,*othersymbols, info=None):
+        '''Takes any number of strings,lists of strings, or tuples of strings and gets stock quote data'''
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+
+        try:
+            res_url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
+            res = self.session.get(res_url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print('Quotes could not be loaded')
+            return None
+
+        if None in res_data['results']:
+            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
+
+        res_data = [x for x in res_data['results'] if x is not None]
+
+        if info:
+            give_data = []
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
+                give_data.append(value[info])
+            return(give_data)
+        else:
+            return(res_data)
+
+    def get_latest_price(self,inputsymbols,*othersymbols):
+        '''Gets either the after hours price or the last trading price'''
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        myquote = self.get_quotes(symbols)
+
+        price_list = []
+        for item in myquote:
+            if item['last_extended_hours_trade_price'] is None:
+                price_list.append(item['last_trade_price'])
+            else:
+                price_list.append(item['last_extended_hours_trade_price'])
+        return(price_list)
+
+    def get_instruments_by_symbols(self,inputsymbols,*othersymbols,info=None):
         '''Takes any number of strings,lists of strings, or tuples of strings and gets stock instrument data'''
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
         res_data = []
@@ -137,6 +232,7 @@ class robin_stocks:
             except:
                 print('Instrument data could not be loaded')
                 return None
+
             if len(res_other['results']) == 0:
                 print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
             else:
@@ -144,8 +240,10 @@ class robin_stocks:
 
         if info:
             give_data = []
-            assert info in data[0], self.error_keyword(info)
-            for value in data:
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
                 give_data.append(value[info])
             return(give_data)
         else:
@@ -161,11 +259,11 @@ class robin_stocks:
             return None
 
         if info:
-            give_data = []
-            assert info in data[0], self.error_keyword(info)
-            for value in data:
-                give_data.append(value[info])
-            return(give_data)
+            if info in res_data:
+                return(res_data[info])
+            else:
+                print(self.error_keyword(info))
+                return(None)
         else:
             return(res_data)
 
@@ -186,7 +284,7 @@ class robin_stocks:
             print('Found '+str(len(res_data))+' results')
             return(res_data)
 
-    def get_positions(self):
+    def get_positions(self,*,info=None):
         '''Get all poistions ever held'''
         try:
             res = self.session.get('https://api.robinhood.com/positions/')
@@ -196,9 +294,18 @@ class robin_stocks:
             print('Positions could not be loaded')
             return None
 
-        return(res_data)
+        if info:
+            give_data = []
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
+                give_data.append(value[info])
+            return(give_data)
+        else:
+            return(res_data)
 
-    def get_owned_positions(self):
+    def get_owned_positions(self,*,info=None):
         '''Get all positions currently held'''
         try:
             res = self.session.get('https://api.robinhood.com/positions/?nonzero=true')
@@ -208,7 +315,16 @@ class robin_stocks:
             print('Positions could not be loaded')
             return None
 
-        return(res_data)
+        if info:
+            give_data = []
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
+                give_data.append(value[info])
+            return(give_data)
+        else:
+            return(res_data)
 
     def get_portfolios(self,*,info=None):
         '''Get user portfolio'''
@@ -229,7 +345,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_account(self,*,info=None):
+    def get_accounts(self,*,info=None):
         '''Get user account'''
         try:
             res = self.session.get('https://api.robinhood.com/accounts/')
@@ -264,28 +380,37 @@ class robin_stocks:
         if None in res_data['results']:
             print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
 
-        res_data['results'] = [x for x in res_data['results'] if x is not None]
+        res_data = [x for x in res_data['results'] if x is not None]
 
         if info:
             give_data = []
-            assert info in res_data['results'][0], self.error_keyword(info)
-            for value in res_data['results']:
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
                 give_data.append(value[info])
             return(give_data)
         else:
-            return(res_data['results'])
+            return(res_data)
 
-    def get_dividends(self):
+    def get_dividends(self,*,info=None):
         '''Returns list of dividend transactions'''
         try:
             res = self.session.get('https://api.robinhood.com/dividends/')
             res.raise_for_status()
-            res_data = res.json()
+            res_data = res.json()['results']
         except:
             print('Dividends could not be loaded')
             return None
 
-        return(res_data['results'])
+        if info:
+            give_data = []
+            assert info in res_data[0], self.error_keyword(info)
+            for value in res_data:
+                give_data.append(value[info])
+            return(give_data)
+        else:
+            return(res_data)
 
     def get_total_dividends(self):
         '''Returns 2 percision float of total divident amount'''
@@ -303,6 +428,7 @@ class robin_stocks:
         return("{0:.2f}".format(dividend_total))
 
     def get_name_by_symbol(self,symbol):
+        '''Returns the name of a stock if given the stock symbol'''
         res_url = 'https://api.robinhood.com/instruments/?symbol='+symbol
 
         try:
@@ -321,6 +447,7 @@ class robin_stocks:
         return(name_data)
 
     def get_name_by_url(self,url):
+        '''Returns the name of a stock if given the instrument url'''
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -341,7 +468,7 @@ class robin_stocks:
         holdings = {}
         positions_data = self.get_owned_positions()
         portfolios_data = self.get_portfolios()
-        accounts_data = self.get_account()
+        accounts_data = self.get_accounts()
 
         if portfolios_data['extended_hours_equity'] is not None:
             total_equity = max(float(portfolios_data['equity']),float(portfolios_data['extended_hours_equity']))
