@@ -1,4 +1,5 @@
 import requests
+import os
 
 class robin_stocks:
 
@@ -405,7 +406,9 @@ class robin_stocks:
 
         if info:
             give_data = []
-            assert info in res_data[0], self.error_keyword(info)
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
             for value in res_data:
                 give_data.append(value[info])
             return(give_data)
@@ -463,6 +466,89 @@ class robin_stocks:
 
         return(name_data)
 
+    def get_documents(self,*,info=None):
+        '''Returns list of Document transactions'''
+        try:
+            res = self.session.get('https://api.robinhood.com/documents/')
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print('Documents could not be loaded')
+            return None
+
+        if info:
+            give_data = []
+            if info not in res_data[0]:
+                print(self.error_keyword(info))
+                return([None])
+            for value in res_data:
+                give_data.append(value[info])
+            return(give_data)
+        else:
+            return(res_data)
+
+    def download_document(self,*,url,name=None,dirpath=None):
+        '''Downloads a document and saves as a PDF when given download URL. Must
+           choose a name and may choose a directory to save it in - otherwise
+           it saves in the root directory of code.'''
+        try:
+            res_data = self.session.get(url)
+            res_data.raise_for_status()
+        except:
+            print('Document could not be downloaded')
+            return None
+
+        print('Writing PDF...')
+        if not name:
+            name = url[36:].split('/',1)[0]
+        if dirpath:
+            directory = dirpath
+        else:
+            directory = 'robin_documents/'
+        filename = directory+name+'.pdf'
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        open(filename, 'wb').write(res_data.content)
+        print('Done - Wrote file '+name+'.pdf'+' to '+os.path.abspath(filename))
+
+    def download_all_documents(self,*,doctype=None,dirpath=None):
+        '''Download all documents or all documents of a cetain doctype i.e. account_statement'''
+        documents = self.get_documents()
+
+        downloaded_files = False
+        print('Writing PDF...')
+        if dirpath:
+            directory = dirpath
+        else:
+            directory = 'robin_documents/'
+        counter = 0
+        for item in documents:
+            if doctype == None:
+                res_data = self.session.get(item['download_url'])
+                name = item['created_at'][0:10]+'-'+item['type']+'-'+item['id']
+                filename = directory+name+'.pdf'
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
+                open(filename, 'wb').write(res_data.content)
+                downloaded_files = True
+                counter += 1
+            else:
+                if item['type'] == doctype:
+                    res_data = self.session.get(item['download_url'])
+                    name = item['created_at'][0:10]+'-'+item['type']+'-'+item['id']
+                    filename = directory+name+'.pdf'
+                    os.makedirs(os.path.dirname(filename), exist_ok=True)
+                    open(filename, 'wb').write(res_data.content)
+                    downloaded_files = True
+                    counter += 1
+
+        if downloaded_files == False:
+            print('WARNING: Could not find files of that doctype to download')
+        else:
+            if counter == 1:
+                print('Done - wrote '+str(counter)+' file to '+os.path.abspath(directory))
+            else:
+                print('Done - wrote '+str(counter)+' files to '+os.path.abspath(directory))
+
+        return(None)
 
     def build_holdings(self):
         holdings = {}
