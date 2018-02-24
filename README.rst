@@ -52,5 +52,9 @@ Functions Contained
 - get_name_by_symbol
 - get_name_by_url
 
+- get_documents
+- download_document
+- download_all_documents
+
 - build_holdings
 - build_user_profile
