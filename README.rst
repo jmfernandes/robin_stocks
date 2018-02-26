@@ -10,7 +10,7 @@ Installing
 ========================
 The library is installed by typing into terminal:
 
-> pip install robin_stocks
+>>>pip install robin_stocks
 
 Example Usage
 ========================
