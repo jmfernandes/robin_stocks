@@ -16,11 +16,11 @@ Example Usage
 ========================
 In your python code write:
 
-> from robin_stocks import robin_stocks
-
+| > from robin_stocks import robin_stocks
 | > r = robin_stocks()
 | > login = r.login('joshsmith@email.com','password')
 | > my_stocks = r.build_holdings()
+
 
 This will build a dictionary where the keys are the symbols of all the my_stocks
 you hold, and the items are another dictionary containing important information
