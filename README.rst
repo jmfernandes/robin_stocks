@@ -21,9 +21,9 @@ In your python code write:
 >>> login = r.login('joshsmith@email.com','password')
 >>> my_stocks = r.build_holdings()
 
-This will build a dictionary where the keys are the symbols of all the my_stocks
-you hold, and the items are another dictionary containing important information
-about the stocks.
+This will build a dictionary called "my stocks" containing symbols of all the stocks
+you hold as the keys, and another dictionary containing important information
+about the stocks as the items.
 
 Functions Contained
 ========================
