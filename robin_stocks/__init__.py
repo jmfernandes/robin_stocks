@@ -4,7 +4,7 @@ import os
 class robin_stocks:
 
     def __init__(self):
-        '''Initialize with a session'''
+        '''Initialize class with a session'''
         self.session = requests.Session()
         self.session.headers = {
         "Accept": "*/*",
@@ -18,7 +18,7 @@ class robin_stocks:
 
 
     def login(self,username,password):
-        '''Attemps to log in to Robinhood API'''
+        '''Attemps to log in to Robinhood API and store token in seesion header'''
         data = {
         'username': username,
         'password': password
@@ -38,15 +38,19 @@ class robin_stocks:
             res_logout = self.session.post('https://api.robinhood.com/api-token-logout/')
             res_logout.raise_for_status()
         except requests.exceptions.HTTPError as err_msg:
-            print('Failed to log out ' + repr(err_msg))
-            return None
+            raise
 
         self.session.headers['Authorization'] = None
 
         return res_logout
 
-    def error_keyword(self,keyword):
-        return('ERROR: The keyword "'+keyword+'" is not a parameter in the dataset')
+    def error_argument_not_key_in_dictionary(self,keyword):
+        '''Returns an error message when called'''
+        return('ERROR: The keyword "'+keyword+'" is not a key value in the dictionary.')
+
+    def error_api_endpoint_not_loaded(self,url):
+        '''Returns an error message when called'''
+        return('ERROR: The url "'+url+'" is either missing (404) or could not be loaded.')
 
     def inputs_to_set(self,inputsymbols,*othersymbols):
         '''Takes any number of strings,lists of strings, or tuples of strings and makes a single set'''
@@ -65,146 +69,157 @@ class robin_stocks:
                 symbols.add(item.upper().strip())
         return symbols
 
+    def append_dataset_with_pagination(self,res,res_data):
+
+        counter = 2
+        if res.json()['next']:
+            print('Found Additional pages.')
+        while res.json()['next']:
+            print('Loading page '+str(counter)+' ...')
+            counter += 1
+            res = self.session.get(res.json()['next'])
+            for item in res.json()['results']:
+                res_data.append(item)
+
+        return(res_data)
+
+
     def get_user_profile(self,*,info=None):
         '''Get user account information'''
+        url = 'https://api.robinhood.com/user/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Investment profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_investment_profile(self,*,info=None):
         '''Gets investment profile information'''
+        url = 'https://api.robinhood.com/user/investment_profile/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/investment_profile/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Investment profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_basic_info(self,*,info=None):
         '''Gets basic profile information'''
+        url = 'https://api.robinhood.com/user/basic_info/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/basic_info/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Basic profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_international_info(self,*,info=None):
         '''Gets international profile information'''
+        url = 'https://api.robinhood.com/user/international_info/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/international_info/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('International profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_employment_info(self,*,info=None):
         '''Gets employment profile information'''
+        url = 'https://api.robinhood.com/user/employment_info/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/employment_info/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Employment profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_additional_info(self,*,info=None):
         '''Gets additional profile information'''
+        url = 'https://api.robinhood.com/user/additional_info/'
         try:
-            res = self.session.get('https://api.robinhood.com/user/additional_info/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Additional profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_quotes(self,inputsymbols,*othersymbols, info=None):
         '''Takes any number of strings,lists of strings, or tuples of strings and gets stock quote data'''
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-
+        url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
         try:
-            res_url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
-            res = self.session.get(res_url)
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Quotes could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
         if None in res_data['results']:
             print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
 
-        res_data = [x for x in res_data['results'] if x is not None]
+        res_data = [item for item in res_data['results'] if item is not None]
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
@@ -226,27 +241,27 @@ class robin_stocks:
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
         res_data = []
         for item in symbols:
+            url = 'https://api.robinhood.com/instruments/?symbol='+item
             try:
-                res = self.session.get('https://api.robinhood.com/instruments/?symbol='+item)
+                res = self.session.get(url)
                 res.raise_for_status()
                 res_other = res.json()
             except:
-                print('Instrument data could not be loaded')
-                return None
+                print(self.error_api_endpoint_not_loaded(url))
+                return([None])
+
+            res_data = self.append_dataset_with_pagination(res,res_data)
 
             if len(res_other['results']) == 0:
                 print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
             else:
                 res_data.append(res_other['results'][0])
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
@@ -256,27 +271,29 @@ class robin_stocks:
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Instrument data could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def query_instruments(self,*,query):
         '''Will search all stocks for a certain query keyword'''
+        url = 'https://api.robinhood.com/instruments/?query='+query
         try:
-            res = self.session.get('https://api.robinhood.com/instruments/?query='+query)
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Query could not be completed')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         if len(res_data) == 0:
             print('No results found for that keyword')
@@ -287,143 +304,142 @@ class robin_stocks:
 
     def get_positions(self,*,info=None):
         '''Get all poistions ever held'''
+        url = 'https://api.robinhood.com/positions/'
         try:
-            res = self.session.get('https://api.robinhood.com/positions/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Positions could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
     def get_owned_positions(self,*,info=None):
         '''Get all positions currently held'''
+        url = 'https://api.robinhood.com/positions/?nonzero=true'
         try:
-            res = self.session.get('https://api.robinhood.com/positions/?nonzero=true')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Positions could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
     def get_portfolios(self,*,info=None):
         '''Get user portfolio'''
+        url = 'https://api.robinhood.com/portfolios/'
         try:
-            res = self.session.get('https://api.robinhood.com/portfolios/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results'][0]
         except:
-            print('Portfolio profile could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_accounts(self,*,info=None):
         '''Get user account'''
+        url = 'https://api.robinhood.com/accounts/'
         try:
-            res = self.session.get('https://api.robinhood.com/accounts/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results'][0]
         except:
-            print('Account could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
-        if info:
-            if info in res_data:
-                return(res_data[info])
-            else:
-                print(self.error_keyword(info))
-                return(None)
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
         else:
             return(res_data)
 
     def get_fundamentals(self,inputsymbols,*othersymbols, info=None):
         '''Takes any number of strings,lists of strings, or tuples of strings and gets stock fundamental data'''
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-
+        url = 'https://api.robinhood.com/fundamentals/?symbols='+','.join(symbols)
         try:
-            res_url = 'https://api.robinhood.com/fundamentals/?symbols='+','.join(symbols)
-            res = self.session.get(res_url)
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Fundamentals could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
         if None in res_data['results']:
             print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
 
-        res_data = [x for x in res_data['results'] if x is not None]
+        res_data = [item for item in res_data['results'] if item is not None]
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
     def get_dividends(self,*,info=None):
         '''Returns list of dividend transactions'''
+        url = 'https://api.robinhood.com/dividends/'
         try:
-            res = self.session.get('https://api.robinhood.com/dividends/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Dividends could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
     def get_total_dividends(self):
         '''Returns 2 percision float of total divident amount'''
+        url = 'https://api.robinhood.com/dividends/'
         try:
-            res = self.session.get('https://api.robinhood.com/dividends/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Dividends could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         dividend_total = 0
         for item in res_data:
@@ -432,15 +448,14 @@ class robin_stocks:
 
     def get_name_by_symbol(self,symbol):
         '''Returns the name of a stock if given the stock symbol'''
-        res_url = 'https://api.robinhood.com/instruments/?symbol='+symbol
-
+        url = 'https://api.robinhood.com/instruments/?symbol='+symbol
         try:
-            res = self.session.get(res_url)
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results'][0]
         except:
-            print('Name from Instruments could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
         if not res_data['simple_name']:
             name_data = res_data['name']
@@ -456,8 +471,8 @@ class robin_stocks:
             res.raise_for_status()
             res_data = res.json()
         except:
-            print('Name from Instruments could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
         if not res_data['simple_name']:
             name_data = res_data['name']
@@ -468,22 +483,22 @@ class robin_stocks:
 
     def get_documents(self,*,info=None):
         '''Returns list of Document transactions'''
+        url = 'https://api.robinhood.com/documents/'
         try:
-            res = self.session.get('https://api.robinhood.com/documents/')
+            res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()['results']
         except:
-            print('Documents could not be loaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
-        if info:
-            give_data = []
-            if info not in res_data[0]:
-                print(self.error_keyword(info))
-                return([None])
-            for value in res_data:
-                give_data.append(value[info])
-            return(give_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
         else:
             return(res_data)
 
@@ -495,8 +510,8 @@ class robin_stocks:
             res_data = self.session.get(url)
             res_data.raise_for_status()
         except:
-            print('Document could not be downloaded')
-            return None
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
 
         print('Writing PDF...')
         if not name:
@@ -509,6 +524,8 @@ class robin_stocks:
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         open(filename, 'wb').write(res_data.content)
         print('Done - Wrote file '+name+'.pdf'+' to '+os.path.abspath(filename))
+
+        return(None)
 
     def download_all_documents(self,*,doctype=None,dirpath=None):
         '''Download all documents or all documents of a cetain doctype i.e. account_statement'''
@@ -549,6 +566,92 @@ class robin_stocks:
                 print('Done - wrote '+str(counter)+' files to '+os.path.abspath(directory))
 
         return(None)
+
+    def get_historicals(self,inputsymbols,*othersymbols,span='week',bounds='regular'):
+        span_check = ['day','week','year','5year']
+        bounds_check =['extended','regular','trading']
+        if span not in span_check:
+            print('ERROR: Span must be "day","week","year",or "5year"')
+            return([None])
+        if bounds not in bounds_check:
+            print('ERROR: Bounds must be "extended","regular",or "trading"')
+            return([None])
+        if (bounds == 'extended' or bounds == 'trading') and span != 'day':
+            print('ERROR: extended and trading bounds can only be used with a span of "day"')
+            return([None])
+
+        if span=='day':
+            interval = '5minute'
+        elif span=='week':
+            interval = '10minute'
+        elif span=='year':
+            interval = 'day'
+        else:
+            interval = 'week'
+
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = ','.join(symbols)
+
+        url = 'https://api.robinhood.com/quotes/historicals/'+ \
+               '?symbols='+symbols+'&interval='+interval+'&span='+span+'&bounds='+bounds
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        check = [item for item in res_data if len(item['historicals']) is 0]
+        if (len(check) != 0):
+            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
+
+        res_data = [item['historicals'] for item in res_data if len(item['historicals']) is not 0]
+
+        return(res_data)
+
+    def get_all_watchlists(self,*,info=None):
+        '''Get a list of all watchlists'''
+        url = 'https://api.robinhood.com/watchlists/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_watchlist_by_name(self,*,name='Default',info=None):
+        '''Get the list of all stocks in a single watchlist'''
+        url = 'https://api.robinhood.com/watchlists/'+name+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
 
     def build_holdings(self):
         holdings = {}
