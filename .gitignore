@@ -2,6 +2,7 @@
 build/
 dist/
 tests/
+.DS_Store
 uploadnotes.txt
 *.egg-info/
 *.egg
