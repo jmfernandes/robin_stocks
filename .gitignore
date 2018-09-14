@@ -2,6 +2,7 @@
 build/
 dist/
 tests/
+uploadnotes.txt
 *.egg-info/
 *.egg
 *.py[cod]
