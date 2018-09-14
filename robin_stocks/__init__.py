@@ -3,8 +3,8 @@ import os
 
 class robin_stocks:
 
+    ## Summary: Initializes the class with a session.
     def __init__(self):
-        '''Initialize class with a session'''
         self.session = requests.Session()
         self.session.headers = {
         "Accept": "*/*",
@@ -16,19 +16,26 @@ class robin_stocks:
         "User-Agent": "Robinhood/823 (iphone; iOS 7.1.2, Scale/2.00)"
         }
 
-
+    ## Summary: Attempts to log in to Robinhood API and store token in session headers.
+    ## Parameter 'username' - Username of the account as a string.
+    ## Parameter 'password' - Password of the account as a string.
+    ## Returns - Session information on the log in attempt as a dictionary (contains access_token and refresh_token).
     def login(self,username,password):
-        '''Attemps to log in to Robinhood API and store token in seesion header'''
-        data = {
-        'username': username,
-        'password': password
+        payload = {
+        'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
+        'expires_in': 86400,
+        'grant_type': 'password',
+        'password': password,
+        'scope': 'internal',
+        'username': username
         }
         try:
-            res_login = self.session.post('https://api.robinhood.com/api-token-auth/',data=data)
+            res_login = self.session.post('https://api.robinhood.com/oauth2/token/', data=payload, timeout=15)
             res_login.raise_for_status()
             login_data = res_login.json()
-            self.session.headers['Authorization'] = 'Token ' + login_data['token']
-            return res_login
+            self.oauth_token = login_data['access_token']
+            self.session.headers['Authorization'] = 'Bearer ' + self.oauth_token
+            return login_data
         except requests.exceptions.HTTPError:
             raise
 
@@ -652,6 +659,241 @@ class robin_stocks:
             return([None])
         else:
             return(res_data)
+
+    def post_symbols_to_watchlist(self,inputsymbols,*othersymbols,name='Default'):
+        '''Post multiple symbols to your watchlist'''
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        data = {
+        'symbols': ','.join(symbols)
+        }
+        url = 'https://api.robinhood.com/watchlists/'+name+'/bulk_add/'
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+        except:
+            raise
+
+        return(res)
+
+    def delete_symbols_from_watchlist(self,inputsymbols,*othersymbols,name='Default'):
+        '''Delete multiple symbols from your watchlist'''
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.get_fundamentals(symbols,info='instrument')
+
+        watchlist = self.get_watchlist_by_name(name=name)
+
+        data = []
+
+        for symbol in symbols:
+            for list_ in watchlist:
+                if symbol == list_['instrument']:
+                    data.append(symbol[37:])
+
+        for item in data:
+            url = 'https://api.robinhood.com/watchlists/'+name+item
+            try:
+                res = self.session.delete(url)
+                res.raise_for_status()
+            except:
+                raise
+
+        return(res)
+
+    def get_notifications(self,*,info=None):
+        '''Get notifications'''
+        url = 'https://api.robinhood.com/notifications/devices/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_markets(self,*,info=None):
+        '''Get markets'''
+        url = 'https://api.robinhood.com/markets/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_wire_transfers(self,*,info=None):
+        url = 'https://api.robinhood.com/wire/transfers'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_all_orders(self,*,info=None):
+        '''Returns all orders'''
+        url = 'https://api.robinhood.com/orders/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_all_open_orders(self,*,info=None):
+        '''Returns all orders'''
+        url = 'https://api.robinhood.com/orders/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        res_data = [item for item in res_data if item['cancel'] is not None]
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_order_info(self,*,order_id):
+        url = 'https://api.robinhood.com/orders/'+order_id+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def query_orders(self,**arguments):
+        '''Find all orders that meet keyword parameters. EX. find_orders(symbol='FB',cancel='none',quantity=1)'''
+        url = 'https://api.robinhood.com/orders/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        for item in res_data:
+            item['quantity'] = str(int(float(item['quantity'])))
+
+        if 'symbol' in arguments.keys():
+            arguments['instrument'] = self.get_instruments_by_symbols(arguments['symbol'],info='url')[0]
+            del arguments['symbol']
+
+        if 'quantity' in arguments.keys():
+            arguments['quantity'] = str(arguments['quantity'])
+
+        stop = len(arguments.keys())-1
+        list_of_orders=[]
+        for item in res_data:
+            for i,(key,value) in enumerate(arguments.items()):
+                if key not in item:
+                    print(self.error_argument_not_key_in_dictionary(key))
+                    return([None])
+                if value != item[key]:
+                    break
+                if i == stop:
+                    list_of_orders.append(item)
+
+        return(list_of_orders)
+
+    def cancel_all_open_orders(self):
+        '''Cancels all open orders'''
+        url = 'https://api.robinhood.com/orders/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        res_data = [item['id'] for item in res_data if item['cancel'] is not None]
+
+        for item in res_data:
+            cancel_url = 'https://api.robinhood.com/orders/'+item+'/cancel/'
+            try:
+                res = self.session.post(cancel_url)
+                res.raise_for_status()
+                res_data = res.json()
+            except:
+                print(self.error_api_endpoint_not_posted(cancel_url))
+                return(None)
+
+        print('All Orders Cancelled')
+        return(None)
+
+    def cancel_order(self,*,order_id):
+        url = 'https://api.robinhood.com/orders/'+order_id+'/cancel/'
+        try:
+            res = self.session.post(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_posted(url) + ' \nOrder may not be open, or order_id may be wrong')
+            return(None)
+
+        print('Order '+order_id+' cancelled')
+        return(None)
 
     def build_holdings(self):
         holdings = {}

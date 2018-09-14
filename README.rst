@@ -8,7 +8,7 @@ Robinhood API. This is a pure python interface and it requires Python3.
 
 Installing
 ========================
-The library is installed by typing into terminal:
+There is no need to download these files directly. This project is published on PyPi so it can be installed by typing into terminal:
 
 >>> pip install robin_stocks
 
@@ -55,6 +55,21 @@ Functions Contained
 - get_documents
 - download_document
 - download_all_documents
+
+- get_historicals
+- get_all_watchlists
+- get_watchlist_by_name
+- post_symbols_to_watchlist
+- delete_symbols_from_watchlist
+- get_notifications
+- get_markets
+- get_wire_transfers
+- get_all_orders
+- get_all_open_orders
+- get_order_info
+- query_orders
+- cancel_all_open_orders
+- cancel_order
 
 - build_holdings
 - build_user_profile
