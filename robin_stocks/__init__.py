@@ -83,13 +83,7 @@ class robin_stocks:
             Returns a dictionary with key/value pairs pertaining to the logout.
 
         '''
-        try:
-            res_logout = self.session.post('https://api.robinhood.com/api-token-logout/')
-            res_logout.raise_for_status()
-            self.session.headers['Authorization'] = None
-            return res_logout
-        except requests.exceptions.HTTPError as err_msg:
-            raise
+        self.session.headers['Authorization'] = None
 
     def error_argument_not_key_in_dictionary(self,keyword):
         '''
