@@ -75,12 +75,7 @@ class robin_stocks:
         '''
         Summary
         -------
-        Attempts to log out of the Robinhood API and deletes stored token from session header.
-
-        Returns
-        -------
-        dictionary
-            Returns a dictionary with key/value pairs pertaining to the logout.
+        Deletes stored token from session header.
 
         '''
         self.session.headers['Authorization'] = None
@@ -413,7 +408,7 @@ class robin_stocks:
         '''
         Summary
         -------
-        Gets the information associated with the international profile.
+        [DOES NOT WORK] Gets the information associated with the international profile.
 
         Parameters
         ----------
@@ -452,7 +447,7 @@ class robin_stocks:
         '''
         Summary
         -------
-        Gets the information associated with the employment profile.
+        [DOES NOT WORK]Gets the information associated with the employment profile.
 
         Parameters
         ----------

@@ -32,21 +32,22 @@ Functions Contained
 
 - get_user_profile
 - get_investment_profile
-- get_basic_info
-- get_international_info
-- get_employment_info
-- get_additional_info
+- get_basic_profile
+- get_international_profile [DOES NOT WORK]
+- get_employment_profile [DOES NOT WORK]
+- get_portfolios_profile
+- get_accounts_profile
+- get_security_profile
 
 - get_quotes
 - get_latest_price
+- get_fundamentals
 - get_instruments_by_symbols
 - get_instruments_by_url
 - query_instruments
 
 - get_positions
 - get_owned_positions
-- get_portfolios
-- get_accounts
 - get_dividends
 - get_total_dividends
 - get_name_by_symbol
@@ -61,15 +62,20 @@ Functions Contained
 - get_watchlist_by_name
 - post_symbols_to_watchlist
 - delete_symbols_from_watchlist
+
 - get_notifications
 - get_markets
 - get_wire_transfers
+
 - get_all_orders
 - get_all_open_orders
 - get_order_info
 - query_orders
 - cancel_all_open_orders
 - cancel_order
+
+- order_buy_market
+- order_sell_market
 
 - build_holdings
 - build_user_profile
