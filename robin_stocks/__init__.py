@@ -1,10 +1,28 @@
+########################################
+#
+# robin-stocks
+#
+# Description: API library to interact with robinhood API
+#
+# Author: Josh Fernandes
+#
+# Created: Feb 20, 2018
+#
+# Updated:
+#
+########################################
 import requests
 import os
 
 class robin_stocks:
 
-    ## Summary: Initializes the class with a session.
     def __init__(self):
+        '''
+        Summary
+        -------
+        Initializes the class with session information.
+
+        '''
         self.session = requests.Session()
         self.session.headers = {
         "Accept": "*/*",
@@ -16,11 +34,25 @@ class robin_stocks:
         "User-Agent": "Robinhood/823 (iphone; iOS 7.1.2, Scale/2.00)"
         }
 
-    ## Summary: Attempts to log in to Robinhood API and store token in session headers.
-    ## Parameter 'username' - Username of the account as a string.
-    ## Parameter 'password' - Password of the account as a string.
-    ## Returns - Session information on the log in attempt as a dictionary (contains access_token and refresh_token).
     def login(self,username,password):
+        '''
+        Summary
+        -------
+        Attempts to log in to Robinhood API and store token in session headers.
+
+        Parameters
+        ----------
+        username : string
+            Username for the robinhood account - usually the email address.
+        password : string
+            Password for the robinhood account.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary with key/value pairs pertaining to the login, notably the access token and refresh token
+
+        '''
         payload = {
         'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
         'expires_in': 86400,
@@ -40,59 +72,253 @@ class robin_stocks:
             raise
 
     def logout(self):
-        '''Attempts to log out of Loginhood API'''
+        '''
+        Summary
+        -------
+        Attempts to log out of the Robinhood API and deletes stored token from session header.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary with key/value pairs pertaining to the logout.
+
+        '''
         try:
             res_logout = self.session.post('https://api.robinhood.com/api-token-logout/')
             res_logout.raise_for_status()
+            self.session.headers['Authorization'] = None
+            return res_logout
         except requests.exceptions.HTTPError as err_msg:
             raise
 
-        self.session.headers['Authorization'] = None
-
-        return res_logout
-
     def error_argument_not_key_in_dictionary(self,keyword):
-        '''Returns an error message when called'''
+        '''
+        Summary
+        -------
+        Returns an error message for a given keyword.
+
+        Parameters
+        ----------
+        keyword : string
+            Represents a keyword that the user was trying to search for.
+
+        Returns
+        -------
+        string
+            Returns an string representing an error message.
+
+        '''
         return('ERROR: The keyword "'+keyword+'" is not a key value in the dictionary.')
 
     def error_api_endpoint_not_loaded(self,url):
-        '''Returns an error message when called'''
+        '''
+        Summary
+        -------
+        Returns an error message for a missing url.
+
+        Parameters
+        ----------
+        url : string
+            Represents a url that the user was trying to search for.
+
+        Returns
+        -------
+        string
+            Returns an string representing an error message.
+
+        '''
         return('ERROR: The url "'+url+'" is either missing (404) or could not be loaded.')
 
+    def error_api_endpoint_not_posted(self,url):
+        '''
+        Summary
+        -------
+        Returns an error message for a missing url.
+
+        Parameters
+        ----------
+        url : string
+            Represents a url that the user was trying to search for.
+
+        Returns
+        -------
+        string
+            Returns an string representing an error message.
+
+        '''
+        return('ERROR: The POST request to the url "'+url+'" could not be completed.')
+
+    def error_ticker_does_not_exist(self,ticker):
+        '''
+        Summary
+        -------
+        Returns an error message for a given ticker.
+
+        Parameters
+        ----------
+        ticker : string
+            Represents a keyword that the user was trying to search for.
+
+        Returns
+        -------
+        string
+            Returns an string representing an error message.
+
+        '''
+        return('WARNING: "'+ticker+'" is not a valid stock ticker. It is being ignored')
+
+    def error_not_a_string(self,info):
+        '''
+        Summary
+        -------
+        Returns an error message for an input info.
+
+        Parameters
+        ----------
+        info : string
+            Represents a keyword that the user was passing as a parameter.
+
+        Returns
+        -------
+        String
+            Returns an string representing an error message.
+
+        '''
+        return('Error: The input parameter "'+str(info)+'" must be a string')
+
+    def error_not_a_integer(self,info):
+        '''
+        Summary
+        -------
+        Returns an error message for an input info.
+
+        Parameters
+        ----------
+        info : string
+            Represents a keyword that the user was passing as a parameter.
+
+        Returns
+        -------
+        String
+            Returns an string representing an error message.
+
+        '''
+        return('Error: The input parameter "'+str(info)+'" must be an integer')
+
+    def error_must_be_nonzero(self,info):
+        '''
+        Summary
+        -------
+        Returns an error message for an input info.
+
+        Parameters
+        ----------
+        info : string
+            Represents a keyword that the user was passing as a parameter.
+
+        Returns
+        -------
+        String
+            Returns an string representing an error message.
+
+        '''
+        return('Error: "'+str(info)+'" must be larger than zero and non-negative')
+
     def inputs_to_set(self,inputsymbols,*othersymbols):
-        '''Takes any number of strings,lists of strings, or tuples of strings and makes a single set'''
+        '''
+        Summary
+        -------
+        Takes any number of string items, makes them all uppercase, and removes all duplicates.
+
+        Parameters
+        ----------
+        inputsymbols : string
+            May be a single string, a list of strings, or a tuple of strings.
+        *othersymbols : string
+            May be a single string, a list of strings, or a tuple of strings.
+
+        Returns
+        -------
+        set
+            Returns a set of strings that are all uppercase.
+
+        '''
         symbols = set()
-        if isinstance(inputsymbols,str):
+
+        if type(inputsymbols) is str:
             symbols.add(inputsymbols.upper().strip())
-        else:
+        elif type(inputsymbols) is list or type(inputsymbols) is tuple or type(inputsymbols) is set:
+            inputsymbols = [comp for comp in inputsymbols if type(comp) is str]
             for item in inputsymbols:
                 symbols.add(item.upper().strip())
 
-        for item in othersymbols:
-            if type(item) is list or type(item) is tuple:
-                for subitem in item:
-                    symbols.add(subitem.upper().strip())
-            else:
-                symbols.add(item.upper().strip())
-        return symbols
+        for symbol in othersymbols:
+            if type(symbol) is str:
+                symbols.add(symbol.upper().strip())
+            elif type(symbol) is list or type(symbol) is tuple or type(symbol) is set:
+                symbol = [comp for comp in symbol if type(comp) is str]
+                for item in symbol:
+                    symbols.add(item.upper().strip())
 
-    def append_dataset_with_pagination(self,res,res_data):
+        return list(symbols)
 
+    def append_dataset_with_pagination(self,res,data):
+        '''
+        Summary
+        -------
+        Takes any number of stock tickers and returns information held by the market such as ticker name, bloomberg id, and listing date.
+
+        Parameters
+        ----------
+        res : requests.models.Response
+            What is returned by session.get(url)
+        data : List
+            List to be appeneded with new information.
+
+        Returns
+        -------
+        list
+            Contains a list with the value that corresponds to the 'results' keyword. If the 'next' keyword is not none,
+            then the results from that page are added to the list.
+
+        '''
         counter = 2
-        if res.json()['next']:
+        res_json = res.json()
+
+        if res_json['next']:
             print('Found Additional pages.')
-        while res.json()['next']:
+        while res_json['next']:
             print('Loading page '+str(counter)+' ...')
             counter += 1
-            res = self.session.get(res.json()['next'])
-            for item in res.json()['results']:
-                res_data.append(item)
+            res = self.session.get(res_json['next'])
+            res_json = res.json()
+            for item in res_json['results']:
+                data.append(item)
 
-        return(res_data)
-
+        return(data)
 
     def get_user_profile(self,*,info=None):
-        '''Get user account information'''
+        '''
+        Summary
+        -------
+        Gets the information associated with the user profile, such as username, email, and links to the urls for other profiles.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/'
         try:
             res = self.session.get(url)
@@ -111,7 +337,28 @@ class robin_stocks:
             return(res_data)
 
     def get_investment_profile(self,*,info=None):
-        '''Gets investment profile information'''
+        '''
+        Summary
+        -------
+        Gets the information associated with the investment profile. These are the answers to the questionaire you filled out
+        when you made your profile.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/investment_profile/'
         try:
             res = self.session.get(url)
@@ -129,8 +376,28 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_basic_info(self,*,info=None):
-        '''Gets basic profile information'''
+    def get_basic_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the personal profile, such as phone number, city, marital status, and date of birth.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/basic_info/'
         try:
             res = self.session.get(url)
@@ -148,8 +415,28 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_international_info(self,*,info=None):
-        '''Gets international profile information'''
+    def get_international_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the international profile.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/international_info/'
         try:
             res = self.session.get(url)
@@ -167,8 +454,28 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_employment_info(self,*,info=None):
-        '''Gets employment profile information'''
+    def get_employment_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the employment profile.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/employment_info/'
         try:
             res = self.session.get(url)
@@ -186,8 +493,106 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_additional_info(self,*,info=None):
-        '''Gets additional profile information'''
+    def get_portfolios_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the portfolios profile, such as withdrawable amount, market value of account, and excess margin.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
+        url = 'https://api.robinhood.com/portfolios/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results'][0]
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
+        else:
+            return(res_data)
+
+    def get_accounts_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the accounts profile, including day trading information and cash being held by robinhood
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
+        url = 'https://api.robinhood.com/accounts/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results'][0]
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        if info and info in res_data:
+            return(res_data[info])
+        elif info and info not in res_data:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return(None)
+        else:
+            return(res_data)
+
+    def get_security_profile(self,*,info=None):
+        '''
+        Summary
+        -------
+        Gets the information associated with the security profile.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the function returns a dictionary of key/value pairs.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         url = 'https://api.robinhood.com/user/additional_info/'
         try:
             res = self.session.get(url)
@@ -206,7 +611,31 @@ class robin_stocks:
             return(res_data)
 
     def get_quotes(self,inputsymbols,*othersymbols, info=None):
-        '''Takes any number of strings,lists of strings, or tuples of strings and gets stock quote data'''
+        '''
+        Summary
+        -------
+        Takes any number of stock tickers and returns information pertaining to its price.
+
+        Parameters
+        ----------
+        inputsymbols : string
+            Stock tickers. May be a single ticker or could be a list of tickers.
+        *othersymbols : string
+            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
         url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
         try:
@@ -217,8 +646,9 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        if None in res_data['results']:
-            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
+        for count,item in enumerate(res_data['results']):
+            if item is None:
+                print(self.error_ticker_does_not_exist(symbols[count]))
 
         res_data = [item for item in res_data['results'] if item is not None]
 
@@ -231,7 +661,24 @@ class robin_stocks:
             return(res_data)
 
     def get_latest_price(self,inputsymbols,*othersymbols):
-        '''Gets either the after hours price or the last trading price'''
+        '''
+        Summary
+        -------
+        Takes any number of stock tickers and returns the latest price of each one as a string.
+
+        Parameters
+        ----------
+        inputsymbols : string
+            Stock tickers. May be a single ticker or could be a list of tickers.
+        *othersymbols : string
+            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+
+        Returns
+        -------
+        List
+            Returns a list of strings of the latest price of each ticker.
+
+        '''
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
         myquote = self.get_quotes(symbols)
 
@@ -243,26 +690,48 @@ class robin_stocks:
                 price_list.append(item['last_extended_hours_trade_price'])
         return(price_list)
 
-    def get_instruments_by_symbols(self,inputsymbols,*othersymbols,info=None):
-        '''Takes any number of strings,lists of strings, or tuples of strings and gets stock instrument data'''
+    def get_fundamentals(self,inputsymbols,*othersymbols, info=None):
+        '''
+        Summary
+        -------
+        Takes any number of stock tickers and returns fundamental information about the stock such as what sector it is in,
+        a description of the company, dividend yield, and market cap.
+
+        Parameters
+        ----------
+        inputsymbols : string
+            Stock tickers. May be a single ticker or could be a list of tickers.
+        *othersymbols : string
+            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-        res_data = []
-        for item in symbols:
-            url = 'https://api.robinhood.com/instruments/?symbol='+item
-            try:
-                res = self.session.get(url)
-                res.raise_for_status()
-                res_other = res.json()
-            except:
-                print(self.error_api_endpoint_not_loaded(url))
-                return([None])
+        url = 'https://api.robinhood.com/fundamentals/?symbols='+','.join(symbols)
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
 
-            res_data = self.append_dataset_with_pagination(res,res_data)
+        for count,item in enumerate(res_data['results']):
+            if item is None:
+                print(self.error_ticker_does_not_exist(symbols[count]))
 
-            if len(res_other['results']) == 0:
-                print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
-            else:
-                res_data.append(res_other['results'][0])
+        res_data = [item for item in res_data['results'] if item is not None]
 
         if info and info in res_data[0]:
             return([item[info]for item in res_data])
@@ -272,7 +741,88 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_instruments_by_url(self,url,*,info=None):
+    def get_instruments_by_symbols(self,inputsymbols,*othersymbols,info=None):
+        '''
+        Summary
+        -------
+        Takes any number of stock tickers and returns information held by the market such as ticker name, bloomberg id, and listing date.
+
+        Parameters
+        ----------
+        inputsymbols : string
+            Stock tickers. May be a single ticker or could be a list of tickers.
+        *othersymbols : string
+            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
+        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        res_data = []
+        for item in symbols:
+            url = 'https://api.robinhood.com/instruments/?symbol='+item
+            try:
+                res = self.session.get(url)
+                res.raise_for_status()
+                res_data = res.json()['results']
+            except:
+                print(self.error_api_endpoint_not_loaded(url))
+                return([None])
+
+            if len(res_data) == 0:
+                print(self.error_ticker_does_not_exist(item))
+            else:
+                res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if (len(res_data) == 0):
+            return([None])
+
+        if info and info in res_data[0]:
+            return([item[info]for item in res_data])
+        elif info and info not in res_data[0]:
+            print(self.error_argument_not_key_in_dictionary(info))
+            return([None])
+        else:
+            return(res_data)
+
+    def get_instrument_by_url(self,url,*,info=None):
+        '''
+        Summary
+        -------
+        Takes a single url for the stock. Should be located at https://api.robinhood.com/instruments/<id> where <id> is the
+        id of the stock.
+
+        Parameters
+        ----------
+        url : string
+            Url of the stock.
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        dictionary or string
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for the stock.
+            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
+
+        '''
+        if (type(url) is not str):
+            print(self.error_not_a_string(url))
+            return(None)
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -290,7 +840,26 @@ class robin_stocks:
             return(res_data)
 
     def query_instruments(self,*,query):
-        '''Will search all stocks for a certain query keyword'''
+        '''
+        Summary
+        -------
+        Will search the stocks for that contain the query keyword and return the instrument data.
+
+        Parameters
+        ----------
+        query : string,
+            This is a keyword only parameter. Will filter the results to have a list of the dictionaries that contain the query keyword.
+
+        Returns
+        -------
+        List
+            Will be a list of dictionaries that contain the instrument data for each stock that matches the query.
+
+        '''
+        if (type(query) is not str):
+            print(self.error_not_a_string(query))
+            return([None])
+
         url = 'https://api.robinhood.com/instruments/?query='+query
         try:
             res = self.session.get(url)
@@ -304,13 +873,33 @@ class robin_stocks:
 
         if len(res_data) == 0:
             print('No results found for that keyword')
-            return([])
+            return([None])
         else:
             print('Found '+str(len(res_data))+' results')
             return(res_data)
 
     def get_positions(self,*,info=None):
-        '''Get all poistions ever held'''
+        '''
+        Summary
+        -------
+        Will return a list containing every position ever traded.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/positions/'
         try:
             res = self.session.get(url)
@@ -331,7 +920,27 @@ class robin_stocks:
             return(res_data)
 
     def get_owned_positions(self,*,info=None):
-        '''Get all positions currently held'''
+        '''
+        Summary
+        -------
+        Same as get_positions() but will only return stocks/options that are currently held.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/positions/?nonzero=true'
         try:
             res = self.session.get(url)
@@ -351,71 +960,29 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_portfolios(self,*,info=None):
-        '''Get user portfolio'''
-        url = 'https://api.robinhood.com/portfolios/'
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()['results'][0]
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
-
-    def get_accounts(self,*,info=None):
-        '''Get user account'''
-        url = 'https://api.robinhood.com/accounts/'
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()['results'][0]
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
-
-    def get_fundamentals(self,inputsymbols,*othersymbols, info=None):
-        '''Takes any number of strings,lists of strings, or tuples of strings and gets stock fundamental data'''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
-        url = 'https://api.robinhood.com/fundamentals/?symbols='+','.join(symbols)
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return([None])
-
-        if None in res_data['results']:
-            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
-
-        res_data = [item for item in res_data['results'] if item is not None]
-
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
-
     def get_dividends(self,*,info=None):
-        '''Returns list of dividend transactions'''
+        '''
+        Summary
+        -------
+        Returns a list of dividend trasactions that include information such as the percentage rate, amount, shares of held stock,
+        and date paid.
+
+        Parameters
+        ----------
+        info : string, optional
+            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/dividends/'
         try:
             res = self.session.get(url)
@@ -436,7 +1003,17 @@ class robin_stocks:
             return(res_data)
 
     def get_total_dividends(self):
-        '''Returns 2 percision float of total divident amount'''
+        '''
+        Summary
+        -------
+        Returns a double number representing the total amount of dividends paid to the account.
+
+        Returns
+        -------
+        Float
+            Total dollar amount of dividends paid to the account as a 2 precision float.
+
+        '''
         url = 'https://api.robinhood.com/dividends/'
         try:
             res = self.session.get(url)
@@ -454,7 +1031,26 @@ class robin_stocks:
         return("{0:.2f}".format(dividend_total))
 
     def get_name_by_symbol(self,symbol):
-        '''Returns the name of a stock if given the stock symbol'''
+        '''
+        Summary
+        -------
+        Returns the name of a stock if given the symbol.
+
+        Parameters
+        ----------
+        symbol : string
+            The ticker of the stock as a string.
+
+        Returns
+        -------
+        String
+            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return(None)
+
         url = 'https://api.robinhood.com/instruments/?symbol='+symbol
         try:
             res = self.session.get(url)
@@ -472,7 +1068,26 @@ class robin_stocks:
         return(name_data)
 
     def get_name_by_url(self,url):
-        '''Returns the name of a stock if given the instrument url'''
+        '''
+        Summary
+        -------
+        Returns the name of a stock if given the instrument url.
+
+        Parameters
+        ----------
+        url : string
+            The url of the stock as a string.
+
+        Returns
+        -------
+        String
+            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+        '''
+        if (type(url) is not str):
+            print(self.error_not_a_string(url))
+            return(None)
+
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -490,6 +1105,10 @@ class robin_stocks:
 
     def get_documents(self,*,info=None):
         '''Returns list of Document transactions'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/documents/'
         try:
             res = self.session.get(url)
@@ -620,6 +1239,10 @@ class robin_stocks:
 
     def get_all_watchlists(self,*,info=None):
         '''Get a list of all watchlists'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/watchlists/'
         try:
             res = self.session.get(url)
@@ -641,6 +1264,10 @@ class robin_stocks:
 
     def get_watchlist_by_name(self,*,name='Default',info=None):
         '''Get the list of all stocks in a single watchlist'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/watchlists/'+name+'/'
         try:
             res = self.session.get(url)
@@ -701,6 +1328,10 @@ class robin_stocks:
 
     def get_notifications(self,*,info=None):
         '''Get notifications'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/notifications/devices/'
         try:
             res = self.session.get(url)
@@ -722,6 +1353,10 @@ class robin_stocks:
 
     def get_markets(self,*,info=None):
         '''Get markets'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/markets/'
         try:
             res = self.session.get(url)
@@ -742,6 +1377,11 @@ class robin_stocks:
             return(res_data)
 
     def get_wire_transfers(self,*,info=None):
+        '''Get wire transfers'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/wire/transfers'
         try:
             res = self.session.get(url)
@@ -763,6 +1403,10 @@ class robin_stocks:
 
     def get_all_orders(self,*,info=None):
         '''Returns all orders'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/orders/'
         try:
             res = self.session.get(url)
@@ -784,6 +1428,10 @@ class robin_stocks:
 
     def get_all_open_orders(self,*,info=None):
         '''Returns all orders'''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/orders/'
         try:
             res = self.session.get(url)
@@ -806,6 +1454,11 @@ class robin_stocks:
             return(res_data)
 
     def get_order_info(self,*,order_id):
+        '''Get order information'''
+        if (type(order_id) is not str):
+            print(self.error_not_a_string(order_id))
+            return([None])
+
         url = 'https://api.robinhood.com/orders/'+order_id+'/'
         try:
             res = self.session.get(url)
@@ -883,6 +1536,11 @@ class robin_stocks:
         return(None)
 
     def cancel_order(self,*,order_id):
+        '''Cancel an order'''
+        if (type(order_id) is not str):
+            print(self.error_not_a_string(order_id))
+            return([None])
+
         url = 'https://api.robinhood.com/orders/'+order_id+'/cancel/'
         try:
             res = self.session.post(url)
@@ -895,11 +1553,139 @@ class robin_stocks:
         print('Order '+order_id+' cancelled')
         return(None)
 
+    def order_buy_market(self,*,symbol,quantity,time_in_force='gtc'):
+        '''
+        Summary
+        -------
+        Buys a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to buy of the stock as an integer.
+        time_in_force : string, optional
+            This is a keyword only parameter. Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(order_id))
+            return(None)
+
+        if (type(time_in_force) is not str):
+            print(self.error_not_a_string(order_id))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer(quantity))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        symbol = symbol.upper()
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': float(self.get_latest_price(symbol)[0]),
+        'quantity': quantity,
+        'type': 'market',
+        'stop_price': None,
+        'time_in_force': time_in_force,
+        'trigger': 'immediate',
+        'side': 'buy'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_sell_market(self,*,symbol,quantity,time_in_force='gtc'):
+        '''
+        Summary
+        -------
+        Sells a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to sell of the stock as an integer.
+        time_in_force : string, optional
+            This is a keyword only parameter. Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the selling of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(order_id))
+            return(None)
+
+        if (type(time_in_force) is not str):
+            print(self.error_not_a_string(order_id))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer(quantity))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        symbol = symbol.upper()
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': float(self.get_latest_price(symbol)[0]),
+        'quantity': quantity,
+        'type': 'market',
+        'stop_price': None,
+        'time_in_force': time_in_force,
+        'trigger': 'immediate',
+        'side': 'sell'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
     def build_holdings(self):
         holdings = {}
         positions_data = self.get_owned_positions()
-        portfolios_data = self.get_portfolios()
-        accounts_data = self.get_accounts()
+        portfolios_data = self.get_portfolios_profile()
+        accounts_data = self.get_accounts_profile()
 
         if portfolios_data['extended_hours_equity'] is not None:
             total_equity = max(float(portfolios_data['equity']),float(portfolios_data['extended_hours_equity']))
@@ -909,16 +1695,19 @@ class robin_stocks:
         cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
 
         for item in positions_data:
-            instrument_data = self.get_instruments_by_url(item['instrument'])
+            instrument_data = self.get_instrument_by_url(item['instrument'])
             symbol = instrument_data['symbol']
-            fundamental_data = self.get_fundamentals(symbol, info=None)[0]
+            fundamental_data = self.get_fundamentals(symbol)[0]
             #
             price           = self.get_latest_price(instrument_data['symbol'])[0]
             quantity        = item['quantity']
             equity          = float(item['quantity'])*float(price)
             equity_change   = (float(quantity)*float(price))-(float(quantity)*float(item['average_buy_price']))
             percentage      = float(item['quantity'])*float(price)*100/(float(total_equity)-float(cash))
-            percent_change  = (float(price)-float(item['average_buy_price']))*100/float(item['average_buy_price'])
+            if (float(item['average_buy_price']) == 0.0):
+                percent_change = 0.0
+            else:
+                percent_change  = (float(price)-float(item['average_buy_price']))*100/float(item['average_buy_price'])
             #
             holdings[symbol]=({'price': price })
             holdings[symbol].update({'quantity': quantity})
@@ -937,8 +1726,8 @@ class robin_stocks:
     def build_user_profile(self):
         user = {}
 
-        portfolios_data = self.get_portfolios()
-        accounts_data = self.get_accounts()
+        portfolios_data = self.get_portfolios_profile()
+        accounts_data = self.get_accounts_profile()
 
         user['equity'] = portfolios_data['equity']
         user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
