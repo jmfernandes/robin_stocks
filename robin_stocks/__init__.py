@@ -1470,8 +1470,6 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        res_data = self.append_dataset_with_pagination(res,res_data)
-
         for item in res_data:
             item['quantity'] = str(int(float(item['quantity'])))
 

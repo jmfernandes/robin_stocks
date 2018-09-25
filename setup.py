@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='robin_stocks',
-      version='0.5',
+      version='0.6',
       description='A Python wrapper around the Robinhood API',
       long_description=long_description,
       url='https://github.com/jmfernandes/robin_stocks',
