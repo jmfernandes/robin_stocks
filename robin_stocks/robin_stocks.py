@@ -61,7 +61,6 @@ class robin_stocks:
         'scope': 'internal',
         'username': username
         }
-        print('hi')
         try:
             res_login = self.session.post('https://api.robinhood.com/oauth2/token/', data=payload, timeout=15)
             res_login.raise_for_status()
@@ -214,7 +213,7 @@ class robin_stocks:
         '''
         return('Error: "'+str(info)+'" must be larger than zero and non-negative')
 
-    def inputs_to_set(self,inputsymbols,*othersymbols):
+    def inputs_to_set(self,inputSymbols):
         '''
         Summary
         -------
@@ -222,9 +221,7 @@ class robin_stocks:
 
         Parameters
         ----------
-        inputsymbols : string
-            May be a single string, a list of strings, or a tuple of strings.
-        *othersymbols : string
+        *inputSymbols : string
             May be a single string, a list of strings, or a tuple of strings.
 
         Returns
@@ -235,14 +232,7 @@ class robin_stocks:
         '''
         symbols = set()
 
-        if type(inputsymbols) is str:
-            symbols.add(inputsymbols.upper().strip())
-        elif type(inputsymbols) is list or type(inputsymbols) is tuple or type(inputsymbols) is set:
-            inputsymbols = [comp for comp in inputsymbols if type(comp) is str]
-            for item in inputsymbols:
-                symbols.add(item.upper().strip())
-
-        for symbol in othersymbols:
+        for symbol in inputSymbols:
             if type(symbol) is str:
                 symbols.add(symbol.upper().strip())
             elif type(symbol) is list or type(symbol) is tuple or type(symbol) is set:
@@ -287,7 +277,7 @@ class robin_stocks:
 
         return(data)
 
-    def get_user_profile(self,*,info=None):
+    def get_user_profile(self,info=None):
         '''
         Summary
         -------
@@ -296,7 +286,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -326,7 +316,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_investment_profile(self,*,info=None):
+    def get_investment_profile(self,info=None):
         '''
         Summary
         -------
@@ -336,7 +326,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -366,7 +356,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_basic_profile(self,*,info=None):
+    def get_basic_profile(self,info=None):
         '''
         Summary
         -------
@@ -375,7 +365,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -405,85 +395,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_international_profile(self,*,info=None):
-        '''
-        Summary
-        -------
-        [DOES NOT WORK] Gets the information associated with the international profile.
-
-        Parameters
-        ----------
-        info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
-
-        Returns
-        -------
-        dictionary or string
-            If info parameter is left as None then the function returns a dictionary of key/value pairs.
-            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
-
-        '''
-        if (type(info) is not str and info is not None):
-            print(self.error_not_a_string(info))
-            return(None)
-
-        url = 'https://api.robinhood.com/user/international_info/'
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
-
-    def get_employment_profile(self,*,info=None):
-        '''
-        Summary
-        -------
-        [DOES NOT WORK]Gets the information associated with the employment profile.
-
-        Parameters
-        ----------
-        info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
-
-        Returns
-        -------
-        dictionary or string
-            If info parameter is left as None then the function returns a dictionary of key/value pairs.
-            Otherwise, the function will return a string corresponding to the value of the key that matches the info parameter.
-
-        '''
-        if (type(info) is not str and info is not None):
-            print(self.error_not_a_string(info))
-            return(None)
-
-        url = 'https://api.robinhood.com/user/employment_info/'
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
-
-    def get_portfolios_profile(self,*,info=None):
+    def get_portfolios_profile(self,info=None):
         '''
         Summary
         -------
@@ -492,7 +404,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -522,7 +434,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_accounts_profile(self,*,info=None):
+    def get_accounts_profile(self,info=None):
         '''
         Summary
         -------
@@ -531,7 +443,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -561,7 +473,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_security_profile(self,*,info=None):
+    def get_security_profile(self,info=None):
         '''
         Summary
         -------
@@ -570,7 +482,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to return the value for the key that matches info.
+            Will filter the results to return the value for the key that matches info.
 
         Returns
         -------
@@ -600,7 +512,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_quotes(self,inputsymbols,*othersymbols, info=None):
+    def get_quotes(self,*inputSymbols,info=None):
         '''
         Summary
         -------
@@ -608,10 +520,8 @@ class robin_stocks:
 
         Parameters
         ----------
-        inputsymbols : string
-            Stock tickers. May be a single ticker or could be a list of tickers.
-        *othersymbols : string
-            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        *inputSymbols : string
+            This is a variable length parameter that represents a stock ticker. May be several tickers seperated by commas or a list of tickers.
         info : string, optional
             This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
 
@@ -626,7 +536,7 @@ class robin_stocks:
             print(self.error_not_a_string(info))
             return([None])
 
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         url = 'https://api.robinhood.com/quotes/?symbols='+','.join(symbols)
         try:
             res = self.session.get(url)
@@ -650,7 +560,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_latest_price(self,inputsymbols,*othersymbols):
+    def get_latest_price(self,*inputSymbols):
         '''
         Summary
         -------
@@ -658,10 +568,8 @@ class robin_stocks:
 
         Parameters
         ----------
-        inputsymbols : string
-            Stock tickers. May be a single ticker or could be a list of tickers.
-        *othersymbols : string
-            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        *inputSymbols : string
+            This is a variable length parameter that represents a stock ticker. May be several tickers seperated by commas or a list of tickers.
 
         Returns
         -------
@@ -669,7 +577,7 @@ class robin_stocks:
             Returns a list of strings of the latest price of each ticker.
 
         '''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         myquote = self.get_quotes(symbols)
 
         price_list = []
@@ -680,7 +588,7 @@ class robin_stocks:
                 price_list.append(item['last_extended_hours_trade_price'])
         return(price_list)
 
-    def get_fundamentals(self,inputsymbols,*othersymbols, info=None):
+    def get_fundamentals(self,*inputSymbols,info=None):
         '''
         Summary
         -------
@@ -689,10 +597,8 @@ class robin_stocks:
 
         Parameters
         ----------
-        inputsymbols : string
-            Stock tickers. May be a single ticker or could be a list of tickers.
-        *othersymbols : string
-            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        *inputSymbols : string
+            This is a variable length parameter that represents a stock ticker. May be several tickers seperated by commas or a list of tickers.
         info : string, optional
             This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
 
@@ -707,7 +613,7 @@ class robin_stocks:
             print(self.error_not_a_string(info))
             return([None])
 
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         url = 'https://api.robinhood.com/fundamentals/?symbols='+','.join(symbols)
         try:
             res = self.session.get(url)
@@ -731,7 +637,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_instruments_by_symbols(self,inputsymbols,*othersymbols,info=None):
+    def get_instruments_by_symbols(self,*inputSymbols,info=None):
         '''
         Summary
         -------
@@ -739,10 +645,8 @@ class robin_stocks:
 
         Parameters
         ----------
-        inputsymbols : string
-            Stock tickers. May be a single ticker or could be a list of tickers.
-        *othersymbols : string
-            This is a variable length parameter. May be several tickers seperated by commas or a list of tickers.
+        *inputSymbols : string
+            This is a variable length parameter that represents a stock ticker. May be several tickers seperated by commas or a list of tickers.
         info : string, optional
             This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
 
@@ -757,7 +661,7 @@ class robin_stocks:
             print(self.error_not_a_string(info))
             return([None])
 
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         res_data = []
         for item in symbols:
             url = 'https://api.robinhood.com/instruments/?symbol='+item
@@ -784,7 +688,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_instrument_by_url(self,url,*,info=None):
+    def get_instrument_by_url(self,url,info=None):
         '''
         Summary
         -------
@@ -796,7 +700,7 @@ class robin_stocks:
         url : string
             Url of the stock.
         info : string, optional
-            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+            Will filter the results to have a list of the values that correspond to key that matches info.
 
         Returns
         -------
@@ -828,7 +732,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def query_instruments(self,*,query):
+    def query_instruments(self,query):
         '''
         Summary
         -------
@@ -837,7 +741,7 @@ class robin_stocks:
         Parameters
         ----------
         query : string,
-            This is a keyword only parameter. Will filter the results to have a list of the dictionaries that contain the query keyword.
+            Will filter the results to have a list of the dictionaries that contain the query keyword.
 
         Returns
         -------
@@ -867,7 +771,7 @@ class robin_stocks:
             print('Found '+str(len(res_data))+' results')
             return(res_data)
 
-    def get_positions(self,*,info=None):
+    def get_positions(self,info=None):
         '''
         Summary
         -------
@@ -876,7 +780,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+            Will filter the results to have a list of the values that correspond to key that matches info.
 
         Returns
         -------
@@ -908,7 +812,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_owned_positions(self,*,info=None):
+    def get_owned_positions(self,info=None):
         '''
         Summary
         -------
@@ -917,7 +821,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+            Will filter the results to have a list of the values that correspond to key that matches info.
 
         Returns
         -------
@@ -949,7 +853,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_dividends(self,*,info=None):
+    def get_dividends(self,info=None):
         '''
         Summary
         -------
@@ -959,7 +863,7 @@ class robin_stocks:
         Parameters
         ----------
         info : string, optional
-            This is a keyword only parameter. Will filter the results to have a list of the values that correspond to key that matches info.
+            Will filter the results to have a list of the values that correspond to key that matches info.
 
         Returns
         -------
@@ -1092,7 +996,7 @@ class robin_stocks:
 
         return(name_data)
 
-    def get_documents(self,*,info=None):
+    def get_documents(self,info=None):
         '''Returns list of Document transactions'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1117,7 +1021,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def download_document(self,*,url,name=None,dirpath=None):
+    def download_document(self,url,name=None,dirpath=None):
         '''Downloads a document and saves as a PDF when given download URL. Must
            choose a name and may choose a directory to save it in - otherwise
            it saves in the root directory of code.'''
@@ -1142,7 +1046,7 @@ class robin_stocks:
 
         return(None)
 
-    def download_all_documents(self,*,doctype=None,dirpath=None):
+    def download_all_documents(self,doctype=None,dirpath=None):
         '''Download all documents or all documents of a cetain doctype i.e. account_statement'''
         documents = self.get_documents()
 
@@ -1182,7 +1086,7 @@ class robin_stocks:
 
         return(None)
 
-    def get_historicals(self,inputsymbols,*othersymbols,span='week',bounds='regular'):
+    def get_historicals(self,*inputSymbols,span='week',bounds='regular'):
         span_check = ['day','week','year','5year']
         bounds_check =['extended','regular','trading']
         if span not in span_check:
@@ -1204,7 +1108,7 @@ class robin_stocks:
         else:
             interval = 'week'
 
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         symbols = ','.join(symbols)
 
         url = 'https://api.robinhood.com/quotes/historicals/'+ \
@@ -1226,7 +1130,7 @@ class robin_stocks:
 
         return(res_data)
 
-    def get_all_watchlists(self,*,info=None):
+    def get_all_watchlists(self,info=None):
         '''Get a list of all watchlists'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1251,7 +1155,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_watchlist_by_name(self,*,name='Default',info=None):
+    def get_watchlist_by_name(self,name='Default',info=None):
         '''Get the list of all stocks in a single watchlist'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1276,9 +1180,9 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def post_symbols_to_watchlist(self,inputsymbols,*othersymbols,name='Default'):
+    def post_symbols_to_watchlist(self,*inputSymbols,name='Default'):
         '''Post multiple symbols to your watchlist'''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         data = {
         'symbols': ','.join(symbols)
         }
@@ -1291,9 +1195,9 @@ class robin_stocks:
 
         return(res)
 
-    def delete_symbols_from_watchlist(self,inputsymbols,*othersymbols,name='Default'):
+    def delete_symbols_from_watchlist(self,*inputSymbols,name='Default'):
         '''Delete multiple symbols from your watchlist'''
-        symbols = self.inputs_to_set(inputsymbols,*othersymbols)
+        symbols = self.inputs_to_set(inputSymbols)
         symbols = self.get_fundamentals(symbols,info='instrument')
 
         watchlist = self.get_watchlist_by_name(name=name)
@@ -1315,7 +1219,7 @@ class robin_stocks:
 
         return(res)
 
-    def get_notifications(self,*,info=None):
+    def get_notifications(self,info=None):
         '''Get notifications'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1340,7 +1244,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_markets(self,*,info=None):
+    def get_markets(self,info=None):
         '''Get markets'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1365,7 +1269,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_wire_transfers(self,*,info=None):
+    def get_wire_transfers(self,info=None):
         '''Get wire transfers'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1390,7 +1294,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_all_orders(self,*,info=None):
+    def get_all_orders(self,info=None):
         '''Returns all orders'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1415,7 +1319,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_all_open_orders(self,*,info=None):
+    def get_all_open_orders(self,info=None):
         '''Returns all orders'''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
@@ -1442,7 +1346,7 @@ class robin_stocks:
         else:
             return(res_data)
 
-    def get_order_info(self,*,order_id):
+    def get_order_info(self,order_id):
         '''Get order information'''
         if (type(order_id) is not str):
             print(self.error_not_a_string(order_id))
@@ -1460,7 +1364,8 @@ class robin_stocks:
         return(res_data)
 
     def query_orders(self,**arguments):
-        '''Find all orders that meet keyword parameters. EX. find_orders(symbol='FB',cancel='none',quantity=1)'''
+        '''Find all orders that meet keyword parameters. EX. find_orders(symbol='FB',cancel=None,quantity=1)
+        leave blank to get all orders'''
         url = 'https://api.robinhood.com/orders/'
         try:
             res = self.session.get(url)
@@ -1471,6 +1376,9 @@ class robin_stocks:
             return([None])
 
         res_data = self.append_dataset_with_pagination(res,res_data)
+
+        if (len(arguments) == 0):
+            return(res_data)
 
         for item in res_data:
             item['quantity'] = str(int(float(item['quantity'])))
@@ -1524,7 +1432,7 @@ class robin_stocks:
         print('All Orders Cancelled')
         return(None)
 
-    def cancel_order(self,*,order_id):
+    def cancel_order(self,order_id):
         '''Cancel an order'''
         if (type(order_id) is not str):
             print(self.error_not_a_string(order_id))
@@ -1542,7 +1450,7 @@ class robin_stocks:
         print('Order '+order_id+' cancelled')
         return(None)
 
-    def order_buy_market(self,*,symbol,quantity,time_in_force='gtc'):
+    def order_buy_market(self,symbol,quantity,time_in_force='gtc'):
         '''
         Summary
         -------
@@ -1555,7 +1463,7 @@ class robin_stocks:
         quantity : int
             The amount to buy of the stock as an integer.
         time_in_force : string, optional
-            This is a keyword only parameter. Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
             'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
 
         Returns
@@ -1606,7 +1514,7 @@ class robin_stocks:
 
         return(res_json)
 
-    def order_sell_market(self,*,symbol,quantity,time_in_force='gtc'):
+    def order_sell_market(self,symbol,quantity,time_in_force='gtc'):
         '''
         Summary
         -------
@@ -1619,7 +1527,7 @@ class robin_stocks:
         quantity : int
             The amount to sell of the stock as an integer.
         time_in_force : string, optional
-            This is a keyword only parameter. Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
             'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
 
         Returns
