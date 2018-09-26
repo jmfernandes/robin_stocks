@@ -16,7 +16,7 @@ Example Usage
 ========================
 In your python code write:
 
->>> from robin_stocks import robin_stocks
+>>> from robin_stocks.robin_stocks import robin_stocks
 >>> r = robin_stocks()
 >>> login = r.login('joshsmith@email.com','password')
 >>> my_stocks = r.build_holdings()
