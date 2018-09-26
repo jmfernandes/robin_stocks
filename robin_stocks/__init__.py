@@ -763,15 +763,14 @@ class robin_stocks:
             try:
                 res = self.session.get(url)
                 res.raise_for_status()
-                res_data = res.json()['results']
+                res_other = res.json()['results'][0]
             except:
-                print(self.error_api_endpoint_not_loaded(url))
-                return([None])
+                res_other = []
 
-            if len(res_data) == 0:
+            if len(res_other) == 0:
                 print(self.error_ticker_does_not_exist(item))
             else:
-                res_data = self.append_dataset_with_pagination(res,res_data)
+                res_data.append(res_other)
 
         if (len(res_data) == 0):
             return([None])
