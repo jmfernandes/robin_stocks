@@ -3,6 +3,7 @@ build/
 dist/
 tests/
 uploadnotes.txt
+.DS_Store
 *.egg-info/
 *.egg
 *.py[cod]
