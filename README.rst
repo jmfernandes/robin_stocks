@@ -37,7 +37,7 @@ and you are free to write your own functions that interact with the Robinhood AP
 Functions Contained
 ========================
 (NOTE: parameters that are equal to a value are optional when calling the function.)
-
+##### Logging in and out
 - login(username,password)
 - logout()
 
