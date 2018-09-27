@@ -732,6 +732,123 @@ class robin_stocks:
         else:
             return(res_data)
 
+    def get_name_by_symbol(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the name of a stock if given the symbol.
+
+        Parameters
+        ----------
+        symbol : string
+            The ticker of the stock as a string.
+
+        Returns
+        -------
+        String
+            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return(None)
+
+        url = 'https://api.robinhood.com/instruments/?symbol='+symbol
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results'][0]
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        if not res_data['simple_name']:
+            name_data = res_data['name']
+        else:
+            name_data = res_data['simple_name']
+
+        return(name_data)
+
+    def get_name_by_url(self,url):
+        '''
+        Summary
+        -------
+        Returns the name of a stock if given the instrument url.
+
+        Parameters
+        ----------
+        url : string
+            The url of the stock as a string.
+
+        Returns
+        -------
+        String
+            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+        '''
+        if (type(url) is not str):
+            print(self.error_not_a_string(url))
+            return(None)
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        if not res_data['simple_name']:
+            name_data = res_data['name']
+        else:
+            name_data = res_data['simple_name']
+
+        return(name_data)
+
+    def get_historicals(self,*inputSymbols,span='week',bounds='regular'):
+        span_check = ['day','week','year','5year']
+        bounds_check =['extended','regular','trading']
+        if span not in span_check:
+            print('ERROR: Span must be "day","week","year",or "5year"')
+            return([None])
+        if bounds not in bounds_check:
+            print('ERROR: Bounds must be "extended","regular",or "trading"')
+            return([None])
+        if (bounds == 'extended' or bounds == 'trading') and span != 'day':
+            print('ERROR: extended and trading bounds can only be used with a span of "day"')
+            return([None])
+
+        if span=='day':
+            interval = '5minute'
+        elif span=='week':
+            interval = '10minute'
+        elif span=='year':
+            interval = 'day'
+        else:
+            interval = 'week'
+
+        symbols = self.inputs_to_set(inputSymbols)
+        symbols = ','.join(symbols)
+
+        url = 'https://api.robinhood.com/quotes/historicals/'+ \
+               '?symbols='+symbols+'&interval='+interval+'&span='+span+'&bounds='+bounds
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        check = [item for item in res_data if len(item['historicals']) is 0]
+        if (len(check) != 0):
+            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
+
+        res_data = [item['historicals'] for item in res_data if len(item['historicals']) is not 0]
+
+        return(res_data)
+
     def query_instruments(self,query):
         '''
         Summary
@@ -923,79 +1040,6 @@ class robin_stocks:
             dividend_total += float(item['amount'])
         return("{0:.2f}".format(dividend_total))
 
-    def get_name_by_symbol(self,symbol):
-        '''
-        Summary
-        -------
-        Returns the name of a stock if given the symbol.
-
-        Parameters
-        ----------
-        symbol : string
-            The ticker of the stock as a string.
-
-        Returns
-        -------
-        String
-            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
-
-        '''
-        if (type(symbol) is not str):
-            print(self.error_not_a_string(symbol))
-            return(None)
-
-        url = 'https://api.robinhood.com/instruments/?symbol='+symbol
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()['results'][0]
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if not res_data['simple_name']:
-            name_data = res_data['name']
-        else:
-            name_data = res_data['simple_name']
-
-        return(name_data)
-
-    def get_name_by_url(self,url):
-        '''
-        Summary
-        -------
-        Returns the name of a stock if given the instrument url.
-
-        Parameters
-        ----------
-        url : string
-            The url of the stock as a string.
-
-        Returns
-        -------
-        String
-            Returns the simple name of the stock. If the simple name does not exist then returns the full name.
-
-        '''
-        if (type(url) is not str):
-            print(self.error_not_a_string(url))
-            return(None)
-
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        if not res_data['simple_name']:
-            name_data = res_data['name']
-        else:
-            name_data = res_data['simple_name']
-
-        return(name_data)
-
     def get_documents(self,info=None):
         '''Returns list of Document transactions'''
         if (type(info) is not str and info is not None):
@@ -1085,50 +1129,6 @@ class robin_stocks:
                 print('Done - wrote '+str(counter)+' files to '+os.path.abspath(directory))
 
         return(None)
-
-    def get_historicals(self,*inputSymbols,span='week',bounds='regular'):
-        span_check = ['day','week','year','5year']
-        bounds_check =['extended','regular','trading']
-        if span not in span_check:
-            print('ERROR: Span must be "day","week","year",or "5year"')
-            return([None])
-        if bounds not in bounds_check:
-            print('ERROR: Bounds must be "extended","regular",or "trading"')
-            return([None])
-        if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-            print('ERROR: extended and trading bounds can only be used with a span of "day"')
-            return([None])
-
-        if span=='day':
-            interval = '5minute'
-        elif span=='week':
-            interval = '10minute'
-        elif span=='year':
-            interval = 'day'
-        else:
-            interval = 'week'
-
-        symbols = self.inputs_to_set(inputSymbols)
-        symbols = ','.join(symbols)
-
-        url = 'https://api.robinhood.com/quotes/historicals/'+ \
-               '?symbols='+symbols+'&interval='+interval+'&span='+span+'&bounds='+bounds
-
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()['results']
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return([None])
-
-        check = [item for item in res_data if len(item['historicals']) is 0]
-        if (len(check) != 0):
-            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
-
-        res_data = [item['historicals'] for item in res_data if len(item['historicals']) is not 0]
-
-        return(res_data)
 
     def get_all_watchlists(self,info=None):
         '''Get a list of all watchlists'''
