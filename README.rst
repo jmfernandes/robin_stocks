@@ -38,7 +38,8 @@ Functions Contained
 ========================
 (NOTE: parameters that are equal to a value are optional when calling the function.)
 
-##### Logging in and out
+Subtitle
+-------- 
 
 - login(username,password)
 - logout()
