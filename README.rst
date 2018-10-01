@@ -44,6 +44,13 @@ Logging in and out
 - login(username,password)
 - logout()
 
+Getting ids
+-----------
+- get_id(symbol)
+- get_option_id(symbol)
+- get_tradable_chain_id(symbol)
+- get_specific_option_id(symbol)
+
 Getting profile information
 ---------------------------
 
@@ -66,6 +73,11 @@ Getting stock information
 - get_name_by_url(url)
 - get_historicals(\*inputSymbols,span='week',bounds='regular')
 - query_instruments(query)
+- get_ratings(symbol)
+- get_popularity(symbol)
+- get_events(symbol)
+- get_earnings(symbol)
+- get_news_for_symbol(symbol)
 
 Getting position information
 ----------------------------
@@ -96,6 +108,9 @@ Getting market information
 - get_notifications(info=None)
 - get_markets(info=None)
 - get_wire_transfers(info=None)
+- get_margin_calls(symbol)
+- get_deposits()
+- get_latest_notification()
 
 Manipulating orders
 -------------------
@@ -112,6 +127,21 @@ Placing orders
 
 - order_buy_market(symbol,quantity,time_in_force='gtc')
 - order_sell_market(symbol,quantity,time_in_force='gtc')
+
+Options
+-------
+
+- get_aggregate_positions()
+- get_market_options()
+- get_open_option_positions()
+- get_all_option_positions()
+- get_chains(symbol)
+- find_options_for_stock_by_expiration(symbol,expirationDate,type='both')
+- find_options_for_stock_by_strike(symbol,strike,type='both')
+- find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike,type='both')
+- get_available_option_calls(symbol)
+- get_available_option_puts(symbol)
+- get_specific_option_information(symbol,expirationDate,strike,type,info=None)
 
 Building core user info
 -----------------------

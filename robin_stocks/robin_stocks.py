@@ -80,6 +80,101 @@ class robin_stocks:
         '''
         self.session.headers['Authorization'] = None
 
+    def get_id(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the id of the stock
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        string
+            Returns an string representing the id.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        return(self.get_instruments_by_symbols(symbol,info='id')[0])
+
+    def get_option_id(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the option id of the stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        string
+            Returns an string representing the id.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        return(self.get_chains(symbol)['underlying_instruments'][0]['id'])
+
+    def get_tradable_chain_id(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the tradable chain id of the option.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        string
+            Returns an string representing the id.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        return(self.get_instruments_by_symbols(symbol)[0]['tradable_chain_id'])
+
+    def get_specific_option_id(self,symbol,expirationData,strike,type='both'):
+        '''
+        Summary
+        -------
+        Returns the id of the option order.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        expriationDate : string
+            This represents expiration date in the format MM-DD-YYYY.
+        strike : string
+            This represents a price of the option as a string.
+        type : string
+            Can be either call or put
+
+        Returns
+        -------
+        string
+            Returns an string representing the id.
+
+        '''
+        symbol = symbol.upper()
+        return(self.find_options_for_stock_by_expiration_and_strike(symbol,expirationData,strike,type)[0]['id'])
+
     def error_argument_not_key_in_dictionary(self,keyword):
         '''
         Summary
@@ -211,7 +306,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('Error: "'+str(info)+'" must be larger than zero and non-negative')
+        return('Error: The input parameter "'+str(info)+'" must be an integer larger than zero and non-negative')
 
     def inputs_to_set(self,inputSymbols):
         '''
@@ -268,10 +363,14 @@ class robin_stocks:
         if res_json['next']:
             print('Found Additional pages.')
         while res_json['next']:
+            try:
+                res = self.session.get(res_json['next'])
+                res_json = res.json()
+            except:
+                print('Additional pages exist but could not be loaded.')
+                return(data)
             print('Loading page '+str(counter)+' ...')
             counter += 1
-            res = self.session.get(res_json['next'])
-            res_json = res.json()
             for item in res_json['results']:
                 data.append(item)
 
@@ -888,6 +987,166 @@ class robin_stocks:
             print('Found '+str(len(res_data))+' results')
             return(res_data)
 
+    def get_ratings(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the ratings for a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/midlands/ratings/'+self.get_id(symbol)+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
+    def get_popularity(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the number of times a stock has been traded recently.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/instruments/'+self.get_id(symbol)+'/popularity/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
+    def get_events(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the events related to a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/options/events/?equity_instrument_id='+self.get_id(symbol)
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_earnings(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the earnings for the differenct financial quarters.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/marketdata/earnings/?symbol='+symbol
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_news_for_symbol(self,symbol):
+        '''
+        Summary
+        -------
+        Returns news stories for a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/midlands/news/'+symbol+'/?'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
     def get_positions(self,info=None):
         '''
         Summary
@@ -1041,7 +1300,23 @@ class robin_stocks:
         return("{0:.2f}".format(dividend_total))
 
     def get_documents(self,info=None):
-        '''Returns list of Document transactions'''
+        '''
+        Summary
+        -------
+        Returns a list of document trasactions.
+
+        Parameters
+        ----------
+        info : string, optional
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        List
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1066,9 +1341,26 @@ class robin_stocks:
             return(res_data)
 
     def download_document(self,url,name=None,dirpath=None):
-        '''Downloads a document and saves as a PDF when given download URL. Must
-           choose a name and may choose a directory to save it in - otherwise
-           it saves in the root directory of code.'''
+        '''
+        Summary
+        -------
+        Downloads a document and saves as a PDF when given download URL. Must choose a name and may choose a
+        directory to save it in - otherwise it saves in the root directory of code.
+
+        Parameters
+        ----------
+        url : string
+            URL of the document to download.
+        name : string, optional
+            The name to save the document as. Defaults to url name.
+        dirpath:
+            The directory to save the document in.
+
+        Returns
+        -------
+        None
+
+        '''
         try:
             res_data = self.session.get(url)
             res_data.raise_for_status()
@@ -1091,7 +1383,23 @@ class robin_stocks:
         return(None)
 
     def download_all_documents(self,doctype=None,dirpath=None):
-        '''Download all documents or all documents of a cetain doctype i.e. account_statement'''
+        '''
+        Summary
+        -------
+        Download all documents or all documents of a cetain doctype i.e. account_statement
+
+        Parameters
+        ----------
+        doctype : string, optional
+            The type of files to download.
+        dirpath:
+            The directory to save the document in.
+
+        Returns
+        -------
+        None
+
+        '''
         documents = self.get_documents()
 
         downloaded_files = False
@@ -1131,7 +1439,21 @@ class robin_stocks:
         return(None)
 
     def get_all_watchlists(self,info=None):
-        '''Get a list of all watchlists'''
+        '''
+        Summary
+        -------
+        Gets a list of all watchlists
+
+        Parameters
+        info : string, optional
+            Optional variable to filter the results.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1156,7 +1478,24 @@ class robin_stocks:
             return(res_data)
 
     def get_watchlist_by_name(self,name='Default',info=None):
-        '''Get the list of all stocks in a single watchlist'''
+        '''
+        Summary
+        -------
+        Gets list of stocks in a single watchlist.
+
+        Parameters
+        ----------
+        name : string
+            The name of the watchlist.
+        info : string, optional
+            Will filter the results.
+
+        Returns
+        -------
+        list
+            Returns a list of the items.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1181,7 +1520,24 @@ class robin_stocks:
             return(res_data)
 
     def post_symbols_to_watchlist(self,*inputSymbols,name='Default'):
-        '''Post multiple symbols to your watchlist'''
+        '''
+        Summary
+        -------
+        Posts multiple symbols to a watchlist.
+
+        Parameters
+        ----------
+        *inputSymbols : string
+            Varaible length inputs that represent the stocks.
+        name : string, optional
+            Name of the watchlist to change.
+
+        Returns
+        -------
+        dictionary
+            Returns the information related to the session request.
+
+        '''
         symbols = self.inputs_to_set(inputSymbols)
         data = {
         'symbols': ','.join(symbols)
@@ -1196,7 +1552,24 @@ class robin_stocks:
         return(res)
 
     def delete_symbols_from_watchlist(self,*inputSymbols,name='Default'):
-        '''Delete multiple symbols from your watchlist'''
+        '''
+        Summary
+        -------
+        Deletes multiple symbols from a watchlist.
+
+        Parameters
+        ----------
+        *inputSymbols : string
+            Varaible length inputs that represent the stocks.
+        name : string, optional
+            Name of the watchlist to change.
+
+        Returns
+        -------
+        dictionary
+            Returns the information related to the session request.
+
+        '''
         symbols = self.inputs_to_set(inputSymbols)
         symbols = self.get_fundamentals(symbols,info='instrument')
 
@@ -1220,7 +1593,22 @@ class robin_stocks:
         return(res)
 
     def get_notifications(self,info=None):
-        '''Get notifications'''
+        '''
+        Summary
+        -------
+        Returns all notifications.
+
+        Parameters
+        ----------
+        info : string
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1245,7 +1633,22 @@ class robin_stocks:
             return(res_data)
 
     def get_markets(self,info=None):
-        '''Get markets'''
+        '''
+        Summary
+        -------
+        Returns a list of available markets.
+
+        Parameters
+        ----------
+        info : string
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1270,7 +1673,22 @@ class robin_stocks:
             return(res_data)
 
     def get_wire_transfers(self,info=None):
-        '''Get wire transfers'''
+        '''
+        Summary
+        -------
+        Returns all wire transers.
+
+        Parameters
+        ----------
+        info : string
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1294,8 +1712,102 @@ class robin_stocks:
         else:
             return(res_data)
 
+    def get_margin_calls(self,symbol):
+        '''
+        Summary
+        -------
+        Returns margin calls executed on the account.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/margin/calls/?equity_instrument_id='+self.get_id(symbol)
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_deposits(self):
+        '''
+        Summary
+        -------
+        Gets queued deposits.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        url = 'https://api.robinhood.com/ach/iav/queued_deposit/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
+    def get_latest_notification(self):
+        '''
+        Summary
+        -------
+        Gets the time of the latest notification.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        url = 'https://api.robinhood.com/midlands/notifications/notification_tracker/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
     def get_all_orders(self,info=None):
-        '''Returns all orders'''
+        '''
+        Summary
+        -------
+        Returns all orders that have been processed for account.
+
+        Parameters
+        ----------
+        info : string, optional
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list or string
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1320,7 +1832,23 @@ class robin_stocks:
             return(res_data)
 
     def get_all_open_orders(self,info=None):
-        '''Returns all orders'''
+        '''
+        Summary
+        -------
+        Returns all open orders.
+
+        Parameters
+        ----------
+        info : string, optional
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list or string
+            If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker.
+            Otherwise will be a list of strings where the strings are the values of the key that corresponds to info.
+
+        '''
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return([None])
@@ -1347,7 +1875,22 @@ class robin_stocks:
             return(res_data)
 
     def get_order_info(self,order_id):
-        '''Get order information'''
+        '''
+        Summary
+        -------
+        Gets the order information
+
+        Parameters
+        ----------
+        order_id : string
+            Url that points to a specific order.
+
+        Returns
+        -------
+        Dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
         if (type(order_id) is not str):
             print(self.error_not_a_string(order_id))
             return([None])
@@ -1364,8 +1907,22 @@ class robin_stocks:
         return(res_data)
 
     def query_orders(self,**arguments):
-        '''Find all orders that meet keyword parameters. EX. find_orders(symbol='FB',cancel=None,quantity=1)
-        leave blank to get all orders'''
+        '''
+        Summary
+        -------
+        Returns a list of orders that match the query.
+
+        Parameters
+        ----------
+        **arguments : variable
+            Variable length of keyword arguments. EX. find_orders(symbol='FB',cancel=None,quantity=1)
+
+        Returns
+        -------
+        list
+            Returns a list of orders that match.
+
+        '''
         url = 'https://api.robinhood.com/orders/'
         try:
             res = self.session.get(url)
@@ -1405,7 +1962,16 @@ class robin_stocks:
         return(list_of_orders)
 
     def cancel_all_open_orders(self):
-        '''Cancels all open orders'''
+        '''
+        Summary
+        -------
+        Cancels all open orders.
+
+        Returns
+        -------
+        None
+
+        '''
         url = 'https://api.robinhood.com/orders/'
         try:
             res = self.session.get(url)
@@ -1433,7 +1999,21 @@ class robin_stocks:
         return(None)
 
     def cancel_order(self,order_id):
-        '''Cancel an order'''
+        '''
+        Summary
+        -------
+        Cancels a specific order.
+
+        Parameters
+        ----------
+        order_id : string
+            The url to cancel the id. Can be find by getting order information.
+
+        Returns
+        -------
+        None
+
+        '''
         if (type(order_id) is not str):
             print(self.error_not_a_string(order_id))
             return([None])
@@ -1450,7 +2030,7 @@ class robin_stocks:
         print('Order '+order_id+' cancelled')
         return(None)
 
-    def order_buy_market(self,symbol,quantity,time_in_force='gtc'):
+    def order_buy_market(self,symbol,quantity,timeInForce='gtc'):
         '''
         Summary
         -------
@@ -1462,7 +2042,7 @@ class robin_stocks:
             The symbol of the stock as a string.
         quantity : int
             The amount to buy of the stock as an integer.
-        time_in_force : string, optional
+        timeInForce : string, optional
             Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
             'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
 
@@ -1474,15 +2054,15 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string(order_id))
+            print(self.error_not_a_string('symbol'))
             return(None)
 
-        if (type(time_in_force) is not str):
-            print(self.error_not_a_string(order_id))
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer(quantity))
+            print(self.error_not_a_integer('quantity'))
             return(None)
         elif (quantity < 1):
             print(self.error_must_be_nonzero('quantity'))
@@ -1498,7 +2078,7 @@ class robin_stocks:
         'quantity': quantity,
         'type': 'market',
         'stop_price': None,
-        'time_in_force': time_in_force,
+        'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'buy'
         }
@@ -1514,7 +2094,7 @@ class robin_stocks:
 
         return(res_json)
 
-    def order_sell_market(self,symbol,quantity,time_in_force='gtc'):
+    def order_sell_market(self,symbol,quantity,timeInForce='gtc'):
         '''
         Summary
         -------
@@ -1526,7 +2106,7 @@ class robin_stocks:
             The symbol of the stock as a string.
         quantity : int
             The amount to sell of the stock as an integer.
-        time_in_force : string, optional
+        timeInForce : string, optional
             Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
             'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
 
@@ -1538,15 +2118,15 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string(order_id))
+            print(self.error_not_a_string('symbol'))
             return(None)
 
-        if (type(time_in_force) is not str):
-            print(self.error_not_a_string(order_id))
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer(quantity))
+            print(self.error_not_a_integer('quantity'))
             return(None)
         elif (quantity < 1):
             print(self.error_must_be_nonzero('quantity'))
@@ -1562,7 +2142,7 @@ class robin_stocks:
         'quantity': quantity,
         'type': 'market',
         'stop_price': None,
-        'time_in_force': time_in_force,
+        'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'sell'
         }
@@ -1578,7 +2158,358 @@ class robin_stocks:
 
         return(res_json)
 
+    def get_aggregate_positions(self):
+        '''
+        Summary
+        -------
+        Returns items.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        url = 'https://api.robinhood.com/options/aggregate_positions/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_market_options(self):
+        '''
+        Summary
+        -------
+        Gets a list of all options.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        url = 'https://api.robinhood.com/options/orders/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data['results'])
+
+    def get_open_option_positions(self):
+        '''
+        Summary
+        -------
+        Returns all open option positions for the account.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        url = 'https://api.robinhood.com/options/positions/?nonzero=True'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data['results'])
+
+    def get_all_option_positions(self):
+        '''
+        Summary
+        -------
+        Returns all option positions ever held.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        url = 'https://api.robinhood.com/options/positions/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data['results'])
+
+    def get_chains(self,symbol):
+        '''
+        Summary
+        -------
+        Returns the chain information of an option.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        dictionary
+            Returns option information for the ticker.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/options/chains/'+self.get_tradable_chain_id(symbol)+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
+    def find_options_for_stock_by_expiration(self,symbol,expirationDate,type='both'):
+        '''
+        Summary
+        -------
+        Returns a list of all the option orders that match the seach parameters
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        expriationDate : string
+            This represents expiration date in the format MM-DD-YYYY.
+        type : string, optional
+            Can be either call or put
+
+        Returns
+        -------
+        list
+            Returns a list of all the option orders that match.
+
+        '''
+        if (type == 'call'):
+            calls = self.get_available_option_calls(symbol)
+            listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
+            mergedList = listOfCalls
+        elif (type == 'put'):
+            puts = self.get_available_option_puts(symbol)
+            listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
+            mergedList = listOfPuts
+        else:
+            calls = self.get_available_option_calls(symbol)
+            puts = self.get_available_option_puts(symbol)
+            listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
+            listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
+            mergedList = listOfCalls + listOfPuts
+
+        return(mergedList)
+
+    def find_options_for_stock_by_strike(self,symbol,strike,type='both'):
+        '''
+        Summary
+        -------
+        Returns a list of all the option orders that match the seach parameters
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        strike : string
+            This represents a price of the option as a string.
+        type : string, optional
+            Can be either call or put
+
+        Returns
+        -------
+        list
+            Returns a list of all the option orders that match.
+
+        '''
+        symbol = symbol.upper()
+        if (type == 'call'):
+            calls = self.get_available_option_calls(symbol)
+            listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
+            mergedList = listOfCalls
+        elif (type == 'put'):
+            puts = self.get_available_option_puts(symbol)
+            listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
+            mergedList = listOfPuts
+        else:
+            calls = self.get_available_option_calls(symbol)
+            puts = self.get_available_option_puts(symbol)
+            listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
+            listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
+            mergedList = listOfCalls + listOfPuts
+
+        return(mergedList)
+
+    def find_options_for_stock_by_expiration_and_strike(self,symbol,expirationDate,strike,type='both'):
+        '''
+        Summary
+        -------
+        Returns a list of all the option orders that match the seach parameters
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        expriationDate : string
+            This represents expiration date in the format MM-DD-YYYY.
+        strike : string
+            This represents a price of the option as a string.
+        type : string, optional
+            Can be either call or put
+
+        Returns
+        -------
+        list
+            Returns a list of all the option orders that match.
+
+        '''
+        symbol = symbol.upper()
+        if (type == 'call'):
+            calls = self.get_available_option_calls(symbol)
+            listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
+            mergedList = listOfCalls
+        elif (type == 'put'):
+            puts = self.get_available_option_puts(symbol)
+            listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
+            mergedList = listOfPuts
+        else:
+            calls = self.get_available_option_calls(symbol)
+            puts = self.get_available_option_puts(symbol)
+            listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
+            listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
+            mergedList = listOfCalls + listOfPuts
+
+        return(mergedList)
+
+    def get_available_option_calls(self,symbol):
+        ''''
+        Summary
+        -------
+        Returns a list of all available option calls for a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of all the option orders that match.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/options/instruments/?chain_id='+self.get_tradable_chain_id(symbol)+'&state=active&tradability=tradable&type=call'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_available_option_puts(self,symbol):
+        ''''
+        Summary
+        -------
+        Returns a list of all available option puts for a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list
+            Returns a list of all the option orders that match.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/options/instruments/?chain_id='+self.get_tradable_chain_id(symbol)+'&state=active&tradability=tradable&type=put'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
+
+    def get_specific_option_information(self,symbol,expirationDate,strike,type,info=None):
+        '''
+        Summary
+        -------
+        Returns the option order information.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        expriationDate : string
+            This represents expiration date in the format MM-DD-YYYY.
+        strike : string
+            This represents a price of the option as a string.
+        type : string, optional
+            Can be either call or put
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        url = 'https://api.robinhood.com/options/instruments/'+self.get_specific_option_id(symbol,expirationDate,strike,type)+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
     def build_holdings(self):
+        '''
+        Summary
+        -------
+        Builds a dictionary of important information regarding the stocks and positions owned by the user.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
         holdings = {}
         positions_data = self.get_owned_positions()
         portfolios_data = self.get_portfolios_profile()
@@ -1621,6 +2552,17 @@ class robin_stocks:
         return(holdings)
 
     def build_user_profile(self):
+        '''
+        Summary
+        -------
+        Builds a dictionary of important information regarding the user account.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
         user = {}
 
         portfolios_data = self.get_portfolios_profile()
