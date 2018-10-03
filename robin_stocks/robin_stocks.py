@@ -2677,10 +2677,6 @@ class robin_stocks:
         latestPrice = float(self.get_latest_price(symbol)[0])
         symbol = symbol.upper()
 
-        if (latestPrice > stopPrice):
-            print('Error: stopPrice must be above the current price.')
-            return(None)
-
         data = {
         'account': self.get_accounts_profile(info='url'),
         'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
