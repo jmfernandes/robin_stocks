@@ -376,26 +376,6 @@ class robin_stocks:
 
         return(data)
 
-    def filter(data,info):
-
-        if (type(data) == list):
-            compareDict = data[0]
-            noneType = [None]
-        elif (type(data) == dict):
-            compareDict = data
-            noneType = (None)
-
-        if info is not None:
-            if info in compareDict and type(data) == list:
-                return([x[info] for x in data])
-            elif info in compareDict and type(data) == dict:
-                return(data[info])
-            else:
-                return(noneType)
-        else:
-            return(data)
-
-
     def get_user_profile(self,info=None):
         '''
         Summary
@@ -2719,34 +2699,6 @@ class robin_stocks:
         except:
             raise
 
-        return(res_json)
-
-    def order_call(self):
-
-        symbol = 'PLUG'
-        symbol = symbol.upper()
-
-        data = {
-        'account': self.get_accounts_profile(info='url'),
-        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
-        'symbol': symbol,
-        'expiration_date': '2018-11-16',
-        'strike': 2,
-        'quantity': 1,
-        'time_in_force': 'gtc',
-        'side': 'call'
-        }
-
-        url = "https://api.robinhood.com/options/orders/"
-        res_json = None
-        try:
-            res = self.session.post(url,data=data)
-            res.raise_for_status()
-            res_json = res.json()
-        except:
-            raise
-        print(res)
-        print(res_json)
         return(res_json)
 
     def get_aggregate_positions(self):
