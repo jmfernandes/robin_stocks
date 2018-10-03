@@ -125,8 +125,15 @@ Manipulating orders
 Placing orders
 --------------
 
-- order_buy_market(symbol,quantity,time_in_force='gtc')
-- order_sell_market(symbol,quantity,time_in_force='gtc')
+- order_buy_market(symbol,quantity,timeInForce='gtc')
+- order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc')
+- order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc')
+- order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
+- order_sell_market(symbol,quantity,timeInForce='gtc')
+- order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc')
+- order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc')
+- order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
+- order(symbol,quantity,type,limitPrice,stopPrice,trigger,side,timeInForce)
 
 Options
 -------

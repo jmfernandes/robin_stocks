@@ -160,7 +160,7 @@ class robin_stocks:
         symbol : string
             This represents a stock ticker.
         expriationDate : string
-            This represents expiration date in the format MM-DD-YYYY.
+            This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as a string.
         type : string
@@ -2094,6 +2094,232 @@ class robin_stocks:
 
         return(res_json)
 
+    def order_buy_limit(self,symbol,quantity,limitPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a limit order to buy a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to buy of the stock as an integer.
+        limitPrice: int
+            The amount you are willing to pay for the stock.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(limitPrice) is not int):
+            print(self.error_not_a_integer('limitPrice'))
+            return(None)
+
+        symbol = symbol.upper()
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': limitPrice,
+        'quantity': quantity,
+        'type': 'limit',
+        'stop_price': None,
+        'time_in_force': timeInForce,
+        'trigger': 'immediate',
+        'side': 'buy'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_buy_stop_loss(self,symbol,quantity,stopPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a stop loss order to buy a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to buy of the stock as an integer.
+        stopPrice: int
+            The price above the current price that converts your order to market order.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(stopPrice) is not int):
+            print(self.error_not_a_integer('stopPrice'))
+            return(None)
+
+        latestPrice = float(self.get_latest_price(symbol)[0])
+        symbol = symbol.upper()
+
+        if (latestPrice > stopPrice):
+            print('Error: stopPrice must be above the current price.')
+            return(None)
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': stopPrice,
+        'quantity': quantity,
+        'type': 'market',
+        'stop_price': stopPrice,
+        'time_in_force': timeInForce,
+        'trigger': 'stop',
+        'side': 'buy'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_buy_stop_limit(self,symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a stop limit order to buy a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to buy of the stock as an integer.
+        limitPrice: int
+            The limit price to pay once the stop has triggered.
+        stopPrice: int
+            The price above the current price that converts your order to limit order.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(limitPrice) is not int):
+            print(self.error_not_a_integer('limitPrice'))
+            return(None)
+
+        if (type(stopPrice) is not int):
+            print(self.error_not_a_integer('stopPrice'))
+            return(None)
+
+        latestPrice = float(self.get_latest_price(symbol)[0])
+        symbol = symbol.upper()
+
+        if (latestPrice > stopPrice):
+            print('Error: stopPrice must be above the current price.')
+            return(None)
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': limitPrice,
+        'quantity': quantity,
+        'type': 'limit',
+        'stop_price': stopPrice,
+        'time_in_force': timeInForce,
+        'trigger': 'stop',
+        'side': 'buy'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
     def order_sell_market(self,symbol,quantity,timeInForce='gtc'):
         '''
         Summary
@@ -2145,6 +2371,327 @@ class robin_stocks:
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'sell'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_sell_limit(self,symbol,quantity,limitPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a limit order to sell a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to sell of the stock as an integer.
+        limitPrice: int
+            The amount you are willing to sell the stock for.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the selling of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(limitPrice) is not int):
+            print(self.error_not_a_integer('limitPrice'))
+            return(None)
+
+        symbol = symbol.upper()
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': limitPrice,
+        'quantity': quantity,
+        'type': 'limit',
+        'stop_price': None,
+        'time_in_force': timeInForce,
+        'trigger': 'immediate',
+        'side': 'sell'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_sell_stop_loss(self,symbol,quantity,stopPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a stop loss order to sell a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to sell of the stock as an integer.
+        stopPrice: int
+            The price below the current price that converts your order to market order.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the selling of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(stopPrice) is not int):
+            print(self.error_not_a_integer('stopPrice'))
+            return(None)
+
+        latestPrice = float(self.get_latest_price(symbol)[0])
+        symbol = symbol.upper()
+
+        if (latestPrice < stopPrice):
+            print('Error: stopPrice must be below the current price.')
+            return(None)
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': stopPrice,
+        'quantity': quantity,
+        'type': 'market',
+        'stop_price': stopPrice,
+        'time_in_force': timeInForce,
+        'trigger': 'stop',
+        'side': 'sell'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order_sell_stop_limit(self,symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
+        '''
+        Summary
+        -------
+        Sets a stop limit order to sell a certain quantity of a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to sell of the stock as an integer.
+        limitPrice: int
+            The limit price to sell for once the stop has triggered.
+        stopPrice: int
+            The price below the current price that converts your order to limit order.
+        timeInForce : string, optional
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(limitPrice) is not int):
+            print(self.error_not_a_integer('limitPrice'))
+            return(None)
+
+        if (type(stopPrice) is not int):
+            print(self.error_not_a_integer('stopPrice'))
+            return(None)
+
+        latestPrice = float(self.get_latest_price(symbol)[0])
+        symbol = symbol.upper()
+
+        if (latestPrice < stopPrice):
+            print('Error: stopPrice must be below the current price.')
+            return(None)
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': limitPrice,
+        'quantity': quantity,
+        'type': 'limit',
+        'stop_price': stopPrice,
+        'time_in_force': timeInForce,
+        'trigger': 'stop',
+        'side': 'sell'
+        }
+
+        url = "https://api.robinhood.com/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+
+        return(res_json)
+
+    def order(self,symbol,quantity,type,limitPrice,stopPrice,trigger,side,timeInForce):
+        '''
+        Summary
+        -------
+        A generic order function. All parameters must be supplied.
+
+        Parameters
+        ----------
+        symbol : string
+            The symbol of the stock as a string.
+        quantity : int
+            The amount to buy of the stock as an integer.
+        type: string
+            Either 'market' or 'limit'
+        limitPrice: int
+            The limit price to pay once the stop has triggered.
+        stopPrice: int
+            The price above the current price that converts your order to limit order.
+        trigger: string
+            Either 'immediate' or 'stop'
+        side : string
+            Either 'buy' or 'sell'
+        timeInForce : string
+            Changes how long the order will be in effect forself. 'gtc' = good until cancelled.
+            'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+
+        Returns
+        -------
+        Dictionary
+            Contains information regarding the purchase of stocks, such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.),
+            the price, and the quantity.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return(None)
+
+        if (type(timeInForce) is not str):
+            print(self.error_not_a_string('timeInForce'))
+            return(None)
+
+        if (type(quantity) is not int):
+            print(self.error_not_a_integer('quantity'))
+            return(None)
+        elif (quantity < 1):
+            print(self.error_must_be_nonzero('quantity'))
+            return(None)
+
+        if (type(limitPrice) is not int):
+            print(self.error_not_a_integer('limitPrice'))
+            return(None)
+
+        if (type(stopPrice) is not int):
+            print(self.error_not_a_integer('stopPrice'))
+            return(None)
+
+        if (type(trigger) is not str):
+            print(self.error_not_a_string('trigger'))
+            return(None)
+
+        if (type(side) is not str):
+            print(self.error_not_a_string('side'))
+            return(None)
+
+        latestPrice = float(self.get_latest_price(symbol)[0])
+        symbol = symbol.upper()
+
+        if (latestPrice > stopPrice):
+            print('Error: stopPrice must be above the current price.')
+            return(None)
+
+        data = {
+        'account': self.get_accounts_profile(info='url'),
+        'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        'symbol': symbol,
+        'price': limitPrice,
+        'quantity': quantity,
+        'type': type,
+        'stop_price': stopPrice,
+        'time_in_force': timeInForce,
+        'trigger': trigger,
+        'side': side
         }
 
         url = "https://api.robinhood.com/orders/"
@@ -2293,7 +2840,7 @@ class robin_stocks:
         symbol : string
             This represents a stock ticker.
         expriationDate : string
-            This represents expiration date in the format MM-DD-YYYY.
+            This represents expiration date in the format YYYY-MM-DD.
         type : string, optional
             Can be either call or put
 
@@ -2370,7 +2917,7 @@ class robin_stocks:
         symbol : string
             This represents a stock ticker.
         expriationDate : string
-            This represents expiration date in the format MM-DD-YYYY.
+            This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as a string.
         type : string, optional
@@ -2475,7 +3022,7 @@ class robin_stocks:
         symbol : string
             This represents a stock ticker.
         expriationDate : string
-            This represents expiration date in the format MM-DD-YYYY.
+            This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as a string.
         type : string, optional
