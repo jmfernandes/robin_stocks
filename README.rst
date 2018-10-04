@@ -73,11 +73,11 @@ Getting stock information
 - get_name_by_url(url)
 - get_historicals(\*inputSymbols,span='week',bounds='regular')
 - query_instruments(query)
-- get_ratings(symbol)
-- get_popularity(symbol)
-- get_events(symbol)
-- get_earnings(symbol)
-- get_news_for_symbol(symbol)
+- get_ratings(symbol,info=None)
+- get_popularity(symbol,info=None)
+- get_events(symbol,info=None)
+- get_earnings(symbol,info=None)
+- get_news(symbol,info=None)
 
 Getting position information
 ----------------------------

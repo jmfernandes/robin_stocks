@@ -987,7 +987,7 @@ class robin_stocks:
             print('Found '+str(len(res_data))+' results')
             return(res_data)
 
-    def get_ratings(self,symbol):
+    def get_ratings(self,symbol,info=None):
         '''
         Summary
         -------
@@ -1019,9 +1019,10 @@ class robin_stocks:
 
         oldText = res_data['ratings'][0]['text']
         res_data['ratings'][0]['text'] = oldText.encode('UTF-8')
-        return(res_data)
 
-    def get_popularity(self,symbol):
+        return(self.filter(res_data,info))
+
+    def get_popularity(self,symbol,info=None):
         '''
         Summary
         -------
@@ -1052,9 +1053,9 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
-    def get_events(self,symbol):
+    def get_events(self,symbol,info=None):
         '''
         Summary
         -------
@@ -1085,9 +1086,9 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
-    def get_earnings(self,symbol):
+    def get_earnings(self,symbol,info=None):
         '''
         Summary
         -------
@@ -1118,9 +1119,9 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
-    def get_news(self,symbol):
+    def get_news(self,symbol,info=None):
         '''
         Summary
         -------
@@ -1151,7 +1152,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
     def get_positions(self,info=None):
         '''
@@ -2709,8 +2710,6 @@ class robin_stocks:
 
         return(res_json)
 
-
-
     def get_aggregate_positions(self,info=None):
         '''
         Summary
@@ -2975,8 +2974,6 @@ class robin_stocks:
             mergedList = listOfCalls + listOfPuts
 
         return(mergedList)
-
-
 
     def get_available_option_calls(self,symbol,info=None):
         ''''
