@@ -106,11 +106,12 @@ Getting market information
 --------------------------
 
 - get_notifications(info=None)
+- get_latest_notification()
+- get_top_movers(direction,info=None)
 - get_markets(info=None)
 - get_wire_transfers(info=None)
 - get_margin_calls(symbol)
 - get_deposits()
-- get_latest_notification()
 
 Manipulating orders
 -------------------
@@ -138,17 +139,18 @@ Placing orders
 Options
 -------
 
-- get_aggregate_positions()
-- get_market_options()
-- get_open_option_positions()
-- get_all_option_positions()
-- get_chains(symbol)
+- get_aggregate_positions(info=None)
+- get_market_options(info=None)
+- get_open_option_positions(info=None)
+- get_all_option_positions(info=None)
+- get_chains(symbol,info=None)
 - find_options_for_stock_by_expiration(symbol,expirationDate,type='both')
 - find_options_for_stock_by_strike(symbol,strike,type='both')
 - find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike,type='both')
-- get_available_option_calls(symbol)
-- get_available_option_puts(symbol)
-- get_specific_option_information(symbol,expirationDate,strike,type,info=None)
+- get_available_option_calls(symbol,info=None)
+- get_available_option_puts(symbol,info=None)
+- get_specific_option_market_data(symbol,expirationDate,strike,type,info=None)
+- get_specific_option_instrument_data(symbol,expirationDate,strike,type,info=None)
 
 Building core user info
 -----------------------

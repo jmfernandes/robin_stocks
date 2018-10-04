@@ -192,7 +192,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('ERROR: The keyword "'+keyword+'" is not a key value in the dictionary.')
+        return('Error: The keyword "'+keyword+'" is not a key value in the dictionary.')
 
     def error_api_endpoint_not_loaded(self,url):
         '''
@@ -211,7 +211,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('ERROR: The url "'+url+'" is either missing (404) or could not be loaded.')
+        return('Error: The url "'+url+'" is either missing (404) or could not be loaded.')
 
     def error_api_endpoint_not_posted(self,url):
         '''
@@ -230,7 +230,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('ERROR: The POST request to the url "'+url+'" could not be completed.')
+        return('Error: The POST request to the url "'+url+'" could not be completed.')
 
     def error_ticker_does_not_exist(self,ticker):
         '''
@@ -249,7 +249,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('WARNING: "'+ticker+'" is not a valid stock ticker. It is being ignored')
+        return('Warning: "'+ticker+'" is not a valid stock ticker. It is being ignored')
 
     def error_not_a_string(self,info):
         '''
@@ -341,7 +341,7 @@ class robin_stocks:
         '''
         Summary
         -------
-        Takes any number of stock tickers and returns information held by the market such as ticker name, bloomberg id, and listing date.
+        Some of the data returned from API is seperated in different urls and needs to be loaded page by page.
 
         Parameters
         ----------
@@ -376,6 +376,47 @@ class robin_stocks:
 
         return(data)
 
+    def filter(self,data,info):
+        '''
+        Summary
+        -------
+        Takes the res_data and filters out the results to only include the value that corresponds to the keyword that is the same as info.
+
+        Parameters
+        ----------
+        res : requests.models.Response
+            What is returned by session.get(url)
+        data : List
+            List to be appeneded with new information.
+
+        Returns
+        -------
+        list
+            Contains a list with the value that corresponds to the 'results' keyword. If the 'next' keyword is not none,
+            then the results from that page are added to the list.
+
+        '''
+        if (type(data) == list):
+            if (len(data) == 0):
+                return([None])
+            compareDict = data[0]
+            noneType = [None]
+        elif (type(data) == dict):
+            compareDict = data
+            noneType = (None)
+
+        if info is not None:
+            if info in compareDict and type(data) == list:
+                return([x[info] for x in data])
+            elif info in compareDict and type(data) == dict:
+                return(data[info])
+            else:
+                print(self.error_argument_not_key_in_dictionary(info))
+                return(noneType)
+        else:
+            return(data)
+
+
     def get_user_profile(self,info=None):
         '''
         Summary
@@ -407,13 +448,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_investment_profile(self,info=None):
         '''
@@ -447,13 +482,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_basic_profile(self,info=None):
         '''
@@ -486,13 +515,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_portfolios_profile(self,info=None):
         '''
@@ -525,13 +548,8 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+
+        return(self.filter(res_data,info))
 
     def get_accounts_profile(self,info=None):
         '''
@@ -564,13 +582,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_security_profile(self,info=None):
         '''
@@ -603,13 +615,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_quotes(self,*inputSymbols,info=None):
         '''
@@ -651,13 +657,7 @@ class robin_stocks:
 
         res_data = [item for item in res_data['results'] if item is not None]
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_latest_price(self,*inputSymbols):
         '''
@@ -728,13 +728,7 @@ class robin_stocks:
 
         res_data = [item for item in res_data['results'] if item is not None]
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_instruments_by_symbols(self,*inputSymbols,info=None):
         '''
@@ -776,16 +770,7 @@ class robin_stocks:
             else:
                 res_data.append(res_other)
 
-        if (len(res_data) == 0):
-            return([None])
-
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_instrument_by_url(self,url,info=None):
         '''
@@ -811,6 +796,7 @@ class robin_stocks:
         if (type(url) is not str):
             print(self.error_not_a_string(url))
             return(None)
+
         if (type(info) is not str and info is not None):
             print(self.error_not_a_string(info))
             return(None)
@@ -823,13 +809,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        if info and info in res_data:
-            return(res_data[info])
-        elif info and info not in res_data:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return(None)
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_name_by_symbol(self,symbol):
         '''
@@ -905,6 +885,26 @@ class robin_stocks:
         return(name_data)
 
     def get_historicals(self,*inputSymbols,span='week',bounds='regular'):
+        '''
+        Summary
+        -------
+        Represents the data that is used to make the graphs.
+
+        Parameters
+        ----------
+        *inputSymbols : string
+            This is a variable length parameter that represents a stock ticker. May be several tickers seperated by commas or a list of tickers.
+        span : string, optional
+            Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
+        bounds : string,optional
+            Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
+
+        Returns
+        -------
+        List of Lists
+            Returns a list that contains a list for each symbol. Each list contains a dictionary where each dictionary is for a different time.
+
+        '''
         span_check = ['day','week','year','5year']
         bounds_check =['extended','regular','trading']
         if span not in span_check:
@@ -927,10 +927,10 @@ class robin_stocks:
             interval = 'week'
 
         symbols = self.inputs_to_set(inputSymbols)
-        symbols = ','.join(symbols)
+        symbols_joined = ','.join(symbols)
 
         url = 'https://api.robinhood.com/quotes/historicals/'+ \
-               '?symbols='+symbols+'&interval='+interval+'&span='+span+'&bounds='+bounds
+               '?symbols='+symbols_joined+'&interval='+interval+'&span='+span+'&bounds='+bounds
 
         try:
             res = self.session.get(url)
@@ -940,9 +940,9 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        check = [item for item in res_data if len(item['historicals']) is 0]
-        if (len(check) != 0):
-            print('WARING: SOME TICKERS WERE WRONG. THEY ARE BEING IGNORED')
+        for count,item in enumerate(res_data):
+            if (len(item['historicals']) == 0):
+                print(self.error_ticker_does_not_exist(symbols[count]))
 
         res_data = [item['historicals'] for item in res_data if len(item['historicals']) is not 0]
 
@@ -1007,16 +1007,18 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return(None)
+
         symbol = symbol.upper()
-        url = 'https://api.robinhood.com/midlands/ratings/'+self.get_id(symbol)+'/'
+        url = 'https://api.robinhood.com/midlands/ratings/{}/'.format(self.get_id(symbol))
         try:
             res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
-            print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
+        oldText = res_data['ratings'][0]['text']
+        res_data['ratings'][0]['text'] = oldText.encode('UTF-8')
         return(res_data)
 
     def get_popularity(self,symbol):
@@ -1039,6 +1041,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return(None)
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/instruments/'+self.get_id(symbol)+'/popularity/'
         try:
@@ -1071,6 +1074,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/options/events/?equity_instrument_id='+self.get_id(symbol)
         try:
@@ -1103,6 +1107,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/marketdata/earnings/?symbol='+symbol
         try:
@@ -1115,7 +1120,7 @@ class robin_stocks:
 
         return(res_data)
 
-    def get_news_for_symbol(self,symbol):
+    def get_news(self,symbol):
         '''
         Summary
         -------
@@ -1135,6 +1140,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/midlands/news/'+symbol+'/?'
         try:
@@ -1180,13 +1186,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_owned_positions(self,info=None):
         '''
@@ -1221,13 +1221,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_dividends(self,info=None):
         '''
@@ -1263,13 +1257,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_total_dividends(self):
         '''
@@ -1332,13 +1320,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def download_document(self,url,name=None,dirpath=None):
         '''
@@ -1361,6 +1343,18 @@ class robin_stocks:
         None
 
         '''
+        if (type(ulr) is not str):
+            print(self.error_not_a_string(url))
+            return(None)
+
+        if (type(name) is not str and name is not None):
+            print(self.error_not_a_string(name))
+            return(None)
+
+        if (type(dirpath) is not str and dirpath is not None):
+            print(self.error_not_a_string(dirpath))
+            return(None)
+
         try:
             res_data = self.session.get(url)
             res_data.raise_for_status()
@@ -1400,6 +1394,14 @@ class robin_stocks:
         None
 
         '''
+        if (type(doctype) is not str and doctype is not None):
+            print(self.error_not_a_string(name))
+            return(None)
+
+        if (type(dirpath) is not str and dirpath is not None):
+            print(self.error_not_a_string(dirpath))
+            return(None)
+
         documents = self.get_documents()
 
         downloaded_files = False
@@ -1469,13 +1471,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_watchlist_by_name(self,name='Default',info=None):
         '''
@@ -1511,13 +1507,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def post_symbols_to_watchlist(self,*inputSymbols,name='Default'):
         '''
@@ -1624,13 +1614,73 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
+        return(self.filter(res_data,info))
+
+    def get_latest_notification(self):
+        '''
+        Summary
+        -------
+        Gets the time of the latest notification.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+        url = 'https://api.robinhood.com/midlands/notifications/notification_tracker/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return(None)
+
+        return(res_data)
+
+    def get_top_movers(self,direction,info=None):
+        '''
+        Summary
+        -------
+        Returns all notifications.
+
+        Parameters
+        ----------
+        info : string
+            Will filter the results to have a list of the values that correspond to key that matches info.
+
+        Returns
+        -------
+        list
+            Returns a list of items.
+
+        '''
+        if (type(direction) is not str):
+            print(self.error_not_a_string(direction))
             return([None])
-        else:
-            return(res_data)
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
+        direction = direction.lower()
+        if (direction != 'up' and direction != 'down'):
+            print('Error: direction must be "up" or "down"')
+            return([None])
+
+        url = 'https://api.robinhood.com/midlands/movers/sp500/?direction='+direction
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        return(self.filter(res_data,info))
 
     def get_markets(self,info=None):
         '''
@@ -1664,13 +1714,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_wire_transfers(self,info=None):
         '''
@@ -1704,15 +1748,9 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
-    def get_margin_calls(self,symbol):
+    def get_margin_calls(self,symbol=None):
         '''
         Summary
         -------
@@ -1729,11 +1767,16 @@ class robin_stocks:
             Returns a list of items.
 
         '''
-        if (type(symbol) is not str):
+        if (type(symbol) is not str and symbol is not None):
             print(self.error_not_a_string('symbol'))
             return([None])
-        symbol = symbol.upper()
-        url = 'https://api.robinhood.com/margin/calls/?equity_instrument_id='+self.get_id(symbol)
+
+        if symbol is not None:
+            symbol = symbol.upper()
+            url = 'https://api.robinhood.com/margin/calls/?equity_instrument_id='+self.get_id(symbol)
+        else:
+            url = 'https://api.robinhood.com/margin/calls/'
+
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -1757,29 +1800,6 @@ class robin_stocks:
 
         '''
         url = 'https://api.robinhood.com/ach/iav/queued_deposit/'
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return(None)
-
-        return(res_data)
-
-    def get_latest_notification(self):
-        '''
-        Summary
-        -------
-        Gets the time of the latest notification.
-
-        Returns
-        -------
-        dictionary
-            Returns a dictionary of key/value pairs.
-
-        '''
-        url = 'https://api.robinhood.com/midlands/notifications/notification_tracker/'
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -1823,13 +1843,7 @@ class robin_stocks:
 
         res_data = self.append_dataset_with_pagination(res,res_data)
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_all_open_orders(self,info=None):
         '''
@@ -1866,13 +1880,7 @@ class robin_stocks:
 
         res_data = [item for item in res_data if item['cancel'] is not None]
 
-        if info and info in res_data[0]:
-            return([item[info]for item in res_data])
-        elif info and info not in res_data[0]:
-            print(self.error_argument_not_key_in_dictionary(info))
-            return([None])
-        else:
-            return(res_data)
+        return(self.filter(res_data,info))
 
     def get_order_info(self,order_id):
         '''
@@ -1969,7 +1977,7 @@ class robin_stocks:
 
         Returns
         -------
-        None
+        The request information
 
         '''
         url = 'https://api.robinhood.com/orders/'
@@ -1996,7 +2004,7 @@ class robin_stocks:
                 return(None)
 
         print('All Orders Cancelled')
-        return(None)
+        return(res_data)
 
     def cancel_order(self,order_id):
         '''
@@ -2011,7 +2019,7 @@ class robin_stocks:
 
         Returns
         -------
-        None
+        The request information
 
         '''
         if (type(order_id) is not str):
@@ -2028,7 +2036,7 @@ class robin_stocks:
             return(None)
 
         print('Order '+order_id+' cancelled')
-        return(None)
+        return(res_data)
 
     def order_buy_market(self,symbol,quantity,timeInForce='gtc'):
         '''
@@ -2701,11 +2709,70 @@ class robin_stocks:
 
         return(res_json)
 
-    def get_aggregate_positions(self):
+    def order_call(self,symbol,quantity,side='buy'):
+        '''
+        DOES NOT WORK
+        '''
+
+        symbol = symbol.upper()
+
+        # data = {
+        # 'account': self.get_accounts_profile(info='url'),
+        # 'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        # 'chain_symbol': symbol,
+        # 'chain_id':'bfd42df1-e4e3-46fc-aee0-0f1dad954482',
+        # 'option':'https://api.robinhood.com/options/instruments/1c38e49e-65d8-4322-88a8-013cae0ea4ec/',
+        # 'direction': 'debit',
+        # 'quantity': 1,
+        # 'time_in_force': 'gfd',
+        # 'side': 'buy',
+        # 'type':'limit',
+        # 'trigger':'immediate'
+        # }
+        if (side == 'buy'):
+            direction = 'debit'
+        elif (side == 'sell'):
+            direction = 'credit'
+        else:
+            print('error not valid side')
+            return(None)
+
+        data={
+        'account': self.get_accounts_profile(info='url'),
+        'direction': direction,
+        'legs': [{'side':side,'option':'https://api.robinhood.com/options/instruments/'+self.get_tradable_chain_id(symbol),'position_effect':'open','ratio_quantity':'1'}],
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'price': '0.08',
+        'quantity': quantity,
+        # 'ref_id': '8d3ffeee-896f-4560-9532-f5548230644c',
+        'time_in_force': 'gfd',
+        'trigger':'immediate',
+        'type':'limit'
+        }
+
+        url = "https://api.robinhood.com/options/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+        print(res)
+        print(res_json)
+        return(res_json)
+
+    def get_aggregate_positions(self,info=None):
         '''
         Summary
         -------
-        Returns items.
+        Collapses all like option orders into a single dictionary.
+
+        Parameters
+        ----------
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2722,13 +2789,18 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
-    def get_market_options(self):
+    def get_market_options(self,info=None):
         '''
         Summary
         -------
         Gets a list of all options.
+
+        Parameters
+        ----------
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2740,18 +2812,23 @@ class robin_stocks:
         try:
             res = self.session.get(url)
             res.raise_for_status()
-            res_data = res.json()
+            res_data = res.json()['results']
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data['results'])
+        return(self.filter(res_data,info))
 
-    def get_open_option_positions(self):
+    def get_open_option_positions(self,info=None):
         '''
         Summary
         -------
         Returns all open option positions for the account.
+
+        Parameters
+        ----------
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2763,18 +2840,23 @@ class robin_stocks:
         try:
             res = self.session.get(url)
             res.raise_for_status()
-            res_data = res.json()
+            res_data = res.json()['results']
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data['results'])
+        return(self.filter(res_data,info))
 
-    def get_all_option_positions(self):
+    def get_all_option_positions(self,info=None):
         '''
         Summary
         -------
         Returns all option positions ever held.
+
+        Parameters
+        ----------
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2786,14 +2868,14 @@ class robin_stocks:
         try:
             res = self.session.get(url)
             res.raise_for_status()
-            res_data = res.json()
+            res_data = res.json()['results']
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data['results'])
+        return(self.filter(res_data,info))
 
-    def get_chains(self,symbol):
+    def get_chains(self,symbol,info=None):
         '''
         Summary
         -------
@@ -2803,6 +2885,8 @@ class robin_stocks:
         ----------
         symbol : string
             This represents a stock ticker.
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2813,6 +2897,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return(None)
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/options/chains/'+self.get_tradable_chain_id(symbol)+'/'
         try:
@@ -2823,7 +2908,7 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return(None)
 
-        return(res_data)
+        return(self.filter(res_data,info))
 
     def find_options_for_stock_by_expiration(self,symbol,expirationDate,type='both'):
         '''
@@ -2943,7 +3028,39 @@ class robin_stocks:
 
         return(mergedList)
 
-    def get_available_option_calls(self,symbol):
+    def find_options_for_all_stocks_by_expiration_date(self,expirationDate,side=None):
+        ''''
+        NOT WORKING
+
+        '''
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string('expirationDate'))
+            return([None])
+
+        if (type(side) is not str and side is not None):
+            print(self.error_not_a_string('side'))
+            return([None])
+
+        symbol = symbol.upper()
+        side = side.lower()
+        if (side == 'put' or side == 'call' ):
+            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable&type='+side
+        else:
+            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable'
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        return(res_data)
+
+    def get_available_option_calls(self,symbol,info=None):
         ''''
         Summary
         -------
@@ -2953,6 +3070,8 @@ class robin_stocks:
         ----------
         symbol : string
             This represents a stock ticker.
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -2963,6 +3082,7 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/options/instruments/?chain_id='+self.get_tradable_chain_id(symbol)+'&state=active&tradability=tradable&type=call'
         try:
@@ -2973,9 +3093,11 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
-    def get_available_option_puts(self,symbol):
+        return(self.filter(res_data,info))
+
+    def get_available_option_puts(self,symbol,info=None):
         ''''
         Summary
         -------
@@ -2985,6 +3107,8 @@ class robin_stocks:
         ----------
         symbol : string
             This represents a stock ticker.
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -3005,13 +3129,15 @@ class robin_stocks:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
 
-        return(res_data)
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
-    def get_specific_option_information(self,symbol,expirationDate,strike,type,info=None):
+        return(self.filter(res_data,info))
+
+    def get_specific_option_market_data(self,symbol,expirationDate,strike,type,info=None):
         '''
         Summary
         -------
-        Returns the option order information.
+        Returns the option order information, including the greeks, open interest, change of profit, and adjusted mark price.
 
         Parameters
         ----------
@@ -3020,9 +3146,11 @@ class robin_stocks:
         expriationDate : string
             This represents expiration date in the format YYYY-MM-DD.
         strike : string
-            This represents a price of the option as a string.
-        type : string, optional
+            This represents a price of the option as an integer.
+        type : string
             Can be either call or put
+        info : string,optional
+            Will filter the results.
 
         Returns
         -------
@@ -3030,16 +3158,56 @@ class robin_stocks:
             Returns a dictionary of key/value pairs.
 
         '''
-        url = 'https://api.robinhood.com/options/instruments/'+self.get_specific_option_id(symbol,expirationDate,strike,type)+'/'
+        optionID= self.get_specific_option_id(symbol,expirationDate,strike,type)
+        url = 'https://api.robinhood.com/marketdata/options/'+optionID+'/'
         try:
             res = self.session.get(url)
             res.raise_for_status()
             res_data = res.json()
         except:
             print(self.error_api_endpoint_not_loaded(url))
-            return(None)
+            return([None])
 
-        return(res_data)
+        return(self.filter(res_data,info))
+
+    def get_specific_option_instrument_data(self,symbol,expirationDate,strike,type,info=None):
+        '''
+        Summary
+        -------
+        Returns the option order information, including the greeks, open interest, change of profit, and adjusted mark price.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+        expriationDate : string
+            This represents expiration date in the format YYYY-MM-DD.
+        strike : string
+            This represents a price of the option as an integer.
+        type : string
+            Can be either call or put
+        info : string,optional
+            Will filter the results.
+
+        Returns
+        -------
+        dictionary
+            Returns a dictionary of key/value pairs.
+
+        '''
+
+        optionID= self.get_specific_option_id(symbol,expirationDate,strike,type)
+
+        url = 'https://api.robinhood.com/options/instruments/'+optionID+'/'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(self.filter(res_data,info))
 
     def build_holdings(self):
         '''
