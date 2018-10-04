@@ -2709,59 +2709,7 @@ class robin_stocks:
 
         return(res_json)
 
-    def order_call(self,symbol,quantity,side='buy'):
-        '''
-        DOES NOT WORK
-        '''
 
-        symbol = symbol.upper()
-
-        # data = {
-        # 'account': self.get_accounts_profile(info='url'),
-        # 'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
-        # 'chain_symbol': symbol,
-        # 'chain_id':'bfd42df1-e4e3-46fc-aee0-0f1dad954482',
-        # 'option':'https://api.robinhood.com/options/instruments/1c38e49e-65d8-4322-88a8-013cae0ea4ec/',
-        # 'direction': 'debit',
-        # 'quantity': 1,
-        # 'time_in_force': 'gfd',
-        # 'side': 'buy',
-        # 'type':'limit',
-        # 'trigger':'immediate'
-        # }
-        if (side == 'buy'):
-            direction = 'debit'
-        elif (side == 'sell'):
-            direction = 'credit'
-        else:
-            print('error not valid side')
-            return(None)
-
-        data={
-        'account': self.get_accounts_profile(info='url'),
-        'direction': direction,
-        'legs': [{'side':side,'option':'https://api.robinhood.com/options/instruments/'+self.get_tradable_chain_id(symbol),'position_effect':'open','ratio_quantity':'1'}],
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'price': '0.08',
-        'quantity': quantity,
-        # 'ref_id': '8d3ffeee-896f-4560-9532-f5548230644c',
-        'time_in_force': 'gfd',
-        'trigger':'immediate',
-        'type':'limit'
-        }
-
-        url = "https://api.robinhood.com/options/orders/"
-        res_json = None
-        try:
-            res = self.session.post(url,data=data)
-            res.raise_for_status()
-            res_json = res.json()
-        except:
-            raise
-        print(res)
-        print(res_json)
-        return(res_json)
 
     def get_aggregate_positions(self,info=None):
         '''
@@ -3028,37 +2976,7 @@ class robin_stocks:
 
         return(mergedList)
 
-    def find_options_for_all_stocks_by_expiration_date(self,expirationDate,side=None):
-        ''''
-        NOT WORKING
 
-        '''
-        if (type(expirationDate) is not str):
-            print(self.error_not_a_string('expirationDate'))
-            return([None])
-
-        if (type(side) is not str and side is not None):
-            print(self.error_not_a_string('side'))
-            return([None])
-
-        symbol = symbol.upper()
-        side = side.lower()
-        if (side == 'put' or side == 'call' ):
-            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable&type='+side
-        else:
-            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable'
-
-        try:
-            res = self.session.get(url)
-            res.raise_for_status()
-            res_data = res.json()['results']
-        except:
-            print(self.error_api_endpoint_not_loaded(url))
-            return([None])
-
-        res_data = self.append_dataset_with_pagination(res,res_data)
-
-        return(res_data)
 
     def get_available_option_calls(self,symbol,info=None):
         ''''
