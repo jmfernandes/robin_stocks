@@ -1,16 +1,14 @@
-########################################
-#
-# robin-stocks
-#
-# Description: API library to interact with robinhood API
-#
-# Author: Josh Fernandes
-#
-# Created: Feb 20, 2018
-#
-# Updated:
-#
-########################################
+############################################################
+#                                                          #
+# robin-stocks                                             #
+#                                                          #
+# Description: API library to interact with robinhood API. #
+#                                                          #
+# Author: Josh Fernandes                                   #
+#                                                          #
+# Created: Feb 20, 2018                                    #
+#                                                          #
+############################################################
 import requests
 import os
 
@@ -34,7 +32,7 @@ class robin_stocks:
         "User-Agent": "Robinhood/823 (iphone; iOS 7.1.2, Scale/2.00)"
         }
 
-    def login(self,username,password):
+    def login(self,username,password,expiresIn=86400,scope='internal'):
         '''
         Summary
         -------
@@ -46,6 +44,10 @@ class robin_stocks:
             Username for the robinhood account - usually the email address.
         password : string
             Password for the robinhood account.
+        expiresIn : integer
+            Time in seconds until the login expires.
+        scope : string
+            Defines the scope of the login.
 
         Returns
         -------
@@ -55,10 +57,10 @@ class robin_stocks:
         '''
         payload = {
         'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
-        'expires_in': 86400,
+        'expires_in': expiresIn,
         'grant_type': 'password',
         'password': password,
-        'scope': 'internal',
+        'scope': scope,
         'username': username
         }
         try:
@@ -149,7 +151,7 @@ class robin_stocks:
         symbol = symbol.upper()
         return(self.get_instruments_by_symbols(symbol)[0]['tradable_chain_id'])
 
-    def get_specific_option_id(self,symbol,expirationData,strike,type='both'):
+    def get_specific_option_id(self,symbol,expirationData,strike,optionType='both'):
         '''
         Summary
         -------
@@ -163,7 +165,7 @@ class robin_stocks:
             This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as a string.
-        type : string
+        optionType : string
             Can be either call or put
 
         Returns
@@ -173,7 +175,11 @@ class robin_stocks:
 
         '''
         symbol = symbol.upper()
-        return(self.find_options_for_stock_by_expiration_and_strike(symbol,expirationData,strike,type)[0]['id'])
+        return(self.find_options_for_stock_by_expiration_and_strike(symbol,expirationData,strike,optionType)[0]['id'])
+
+    def get_specific_option_id_alternative(self,symbol,expirationDate,strike,optionType):
+
+        return(self.get_specific_option_instrument_data(symbol,expirationDate,strike,optionType)['id'])
 
     def error_argument_not_key_in_dictionary(self,keyword):
         '''
@@ -1008,6 +1014,10 @@ class robin_stocks:
             print(self.error_not_a_string('symbol'))
             return(None)
 
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/midlands/ratings/{}/'.format(self.get_id(symbol))
         try:
@@ -1043,6 +1053,10 @@ class robin_stocks:
             print(self.error_not_a_string('symbol'))
             return(None)
 
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/instruments/'+self.get_id(symbol)+'/popularity/'
         try:
@@ -1074,6 +1088,10 @@ class robin_stocks:
         '''
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
+            return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
             return([None])
 
         symbol = symbol.upper()
@@ -1109,6 +1127,10 @@ class robin_stocks:
             print(self.error_not_a_string('symbol'))
             return([None])
 
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/marketdata/earnings/?symbol='+symbol
         try:
@@ -1142,8 +1164,49 @@ class robin_stocks:
             print(self.error_not_a_string('symbol'))
             return([None])
 
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/midlands/news/'+symbol+'/?'
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(self.filter(res_data,info))
+
+    def get_splits(self,symbol,info=None):
+        '''
+        Summary
+        -------
+        Returns splits that have happened for a stock.
+
+        Parameters
+        ----------
+        symbol : string
+            This represents a stock ticker.
+
+        Returns
+        -------
+        list of dictionaries
+            Returns a list of dictionaries.
+
+        '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string('symbol'))
+            return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
+        symbol = symbol.upper()
+        url = 'https://api.robinhood.com/instruments/'+self.get_id(symbol)+'/splits/'
         try:
             res = self.session.get(url)
             res.raise_for_status()
@@ -2619,7 +2682,7 @@ class robin_stocks:
 
         return(res_json)
 
-    def order(self,symbol,quantity,type,limitPrice,stopPrice,trigger,side,timeInForce):
+    def order(self,symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForce):
         '''
         Summary
         -------
@@ -2631,7 +2694,7 @@ class robin_stocks:
             The symbol of the stock as a string.
         quantity : int
             The amount to buy of the stock as an integer.
-        type: string
+        orderType: string
             Either 'market' or 'limit'
         limitPrice: int
             The limit price to pay once the stop has triggered.
@@ -2692,7 +2755,7 @@ class robin_stocks:
         'symbol': symbol,
         'price': limitPrice,
         'quantity': quantity,
-        'type': type,
+        'type': orderType,
         'stop_price': stopPrice,
         'time_in_force': timeInForce,
         'trigger': trigger,
@@ -2727,6 +2790,10 @@ class robin_stocks:
             Returns a list of items.
 
         '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/options/aggregate_positions/'
         try:
             res = self.session.get(url)
@@ -2735,6 +2802,8 @@ class robin_stocks:
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         return(self.filter(res_data,info))
 
@@ -2755,6 +2824,10 @@ class robin_stocks:
             Returns a list of items.
 
         '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/options/orders/'
         try:
             res = self.session.get(url)
@@ -2763,6 +2836,8 @@ class robin_stocks:
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         return(self.filter(res_data,info))
 
@@ -2783,6 +2858,10 @@ class robin_stocks:
             Returns a list of items.
 
         '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/options/positions/?nonzero=True'
         try:
             res = self.session.get(url)
@@ -2791,6 +2870,8 @@ class robin_stocks:
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         return(self.filter(res_data,info))
 
@@ -2811,6 +2892,10 @@ class robin_stocks:
             Returns a list of items.
 
         '''
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         url = 'https://api.robinhood.com/options/positions/'
         try:
             res = self.session.get(url)
@@ -2819,6 +2904,8 @@ class robin_stocks:
         except:
             print(self.error_api_endpoint_not_loaded(url))
             return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
 
         return(self.filter(res_data,info))
 
@@ -2845,6 +2932,10 @@ class robin_stocks:
             print(self.error_not_a_string('symbol'))
             return(None)
 
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return(None)
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/options/chains/'+self.get_tradable_chain_id(symbol)+'/'
         try:
@@ -2857,7 +2948,7 @@ class robin_stocks:
 
         return(self.filter(res_data,info))
 
-    def find_options_for_stock_by_expiration(self,symbol,expirationDate,type='both'):
+    def find_options_for_stock_by_expiration(self,symbol,expirationDate,optionType='both'):
         '''
         Summary
         -------
@@ -2869,7 +2960,7 @@ class robin_stocks:
             This represents a stock ticker.
         expriationDate : string
             This represents expiration date in the format YYYY-MM-DD.
-        type : string, optional
+        optionType : string, optional
             Can be either call or put
 
         Returns
@@ -2878,11 +2969,11 @@ class robin_stocks:
             Returns a list of all the option orders that match.
 
         '''
-        if (type == 'call'):
+        if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
             mergedList = listOfCalls
-        elif (type == 'put'):
+        elif (optionType == 'put'):
             puts = self.get_available_option_puts(symbol)
             listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
             mergedList = listOfPuts
@@ -2895,7 +2986,7 @@ class robin_stocks:
 
         return(mergedList)
 
-    def find_options_for_stock_by_strike(self,symbol,strike,type='both'):
+    def find_options_for_stock_by_strike(self,symbol,strike,optionType='both'):
         '''
         Summary
         -------
@@ -2907,7 +2998,7 @@ class robin_stocks:
             This represents a stock ticker.
         strike : string
             This represents a price of the option as a string.
-        type : string, optional
+        optionType : string, optional
             Can be either call or put
 
         Returns
@@ -2917,11 +3008,11 @@ class robin_stocks:
 
         '''
         symbol = symbol.upper()
-        if (type == 'call'):
+        if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
             mergedList = listOfCalls
-        elif (type == 'put'):
+        elif (optionType == 'put'):
             puts = self.get_available_option_puts(symbol)
             listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
             mergedList = listOfPuts
@@ -2934,7 +3025,7 @@ class robin_stocks:
 
         return(mergedList)
 
-    def find_options_for_stock_by_expiration_and_strike(self,symbol,expirationDate,strike,type='both'):
+    def find_options_for_stock_by_expiration_and_strike(self,symbol,expirationDate,strike,optionType='both'):
         '''
         Summary
         -------
@@ -2948,7 +3039,7 @@ class robin_stocks:
             This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as a string.
-        type : string, optional
+        optionType : string, optional
             Can be either call or put
 
         Returns
@@ -2958,11 +3049,11 @@ class robin_stocks:
 
         '''
         symbol = symbol.upper()
-        if (type == 'call'):
+        if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
             mergedList = listOfCalls
-        elif (type == 'put'):
+        elif (optionType == 'put'):
             puts = self.get_available_option_puts(symbol)
             listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
             mergedList = listOfPuts
@@ -2996,6 +3087,10 @@ class robin_stocks:
         '''
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
+            return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
             return([None])
 
         symbol = symbol.upper()
@@ -3034,6 +3129,11 @@ class robin_stocks:
         if (type(symbol) is not str):
             print(self.error_not_a_string('symbol'))
             return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
         symbol = symbol.upper()
         url = 'https://api.robinhood.com/options/instruments/?chain_id='+self.get_tradable_chain_id(symbol)+'&state=active&tradability=tradable&type=put'
         try:
@@ -3048,7 +3148,7 @@ class robin_stocks:
 
         return(self.filter(res_data,info))
 
-    def get_specific_option_market_data(self,symbol,expirationDate,strike,type,info=None):
+    def get_specific_option_market_data(self,symbol,expirationDate,strike,optionType,info=None):
         '''
         Summary
         -------
@@ -3062,7 +3162,7 @@ class robin_stocks:
             This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as an integer.
-        type : string
+        optionType : string
             Can be either call or put
         info : string,optional
             Will filter the results.
@@ -3073,7 +3173,7 @@ class robin_stocks:
             Returns a dictionary of key/value pairs.
 
         '''
-        optionID= self.get_specific_option_id(symbol,expirationDate,strike,type)
+        optionID= self.get_specific_option_id(symbol,expirationDate,strike,optionType)
         url = 'https://api.robinhood.com/marketdata/options/'+optionID+'/'
         try:
             res = self.session.get(url)
@@ -3085,7 +3185,7 @@ class robin_stocks:
 
         return(self.filter(res_data,info))
 
-    def get_specific_option_instrument_data(self,symbol,expirationDate,strike,type,info=None):
+    def get_specific_option_instrument_data(self,symbol,expirationDate,strike,optionType,info=None):
         '''
         Summary
         -------
@@ -3099,7 +3199,7 @@ class robin_stocks:
             This represents expiration date in the format YYYY-MM-DD.
         strike : string
             This represents a price of the option as an integer.
-        type : string
+        optionType : string
             Can be either call or put
         info : string,optional
             Will filter the results.
@@ -3111,8 +3211,7 @@ class robin_stocks:
 
         '''
 
-        optionID= self.get_specific_option_id(symbol,expirationDate,strike,type)
-
+        optionID= self.get_specific_option_id(symbol,expirationDate,strike,optionType)
         url = 'https://api.robinhood.com/options/instruments/'+optionID+'/'
         try:
             res = self.session.get(url)
@@ -3123,6 +3222,56 @@ class robin_stocks:
             return([None])
 
         return(self.filter(res_data,info))
+
+    def get_option_historicals(self,symbol,expirationDate,strike,optionType,span='week'):
+        '''
+        Summary
+        -------
+        Represents the data that is used to make the graphs.
+
+        Parameters
+        ----------
+        symbol : string
+            The option of the stock for the option.
+        span : string, optional
+            Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
+        bounds : string,optional
+            Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
+
+        Returns
+        -------
+        List of Lists
+            Returns a list that contains a list for each symbol. Each list contains a dictionary where each dictionary is for a different time.
+
+        '''
+        symbol = symbol.upper()
+        span_check = ['day','week','year','5year']
+        if span not in span_check:
+            print('ERROR: Span must be "day","week","year",or "5year"')
+            return([None])
+
+        if span=='day':
+            interval = '5minute'
+        elif span=='week':
+            interval = '10minute'
+        elif span=='year':
+            interval = 'day'
+        else:
+            interval = 'week'
+
+        optionID = self.get_specific_option_id_alternative(symbol,expirationDate,strike,optionType)
+
+        url = 'https://api.robinhood.com/marketdata/options/historicals/'+optionID+'/?span='+span+'&interval='+interval
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        return(res_data)
 
     def build_holdings(self):
         '''

@@ -78,6 +78,7 @@ Getting stock information
 - get_events(symbol,info=None)
 - get_earnings(symbol,info=None)
 - get_news(symbol,info=None)
+- get_splits(symbol,info=None)
 
 Getting position information
 ----------------------------
