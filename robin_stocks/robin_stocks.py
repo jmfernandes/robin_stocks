@@ -99,9 +99,6 @@ class robin_stocks:
             Returns an string representing the id.
 
         '''
-        if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
-            return(None)
         symbol = symbol.upper()
         return(self.get_instruments_by_symbols(symbol,info='id')[0])
 
@@ -122,9 +119,6 @@ class robin_stocks:
             Returns an string representing the id.
 
         '''
-        if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
-            return(None)
         symbol = symbol.upper()
         return(self.get_chains(symbol)['underlying_instruments'][0]['id'])
 
@@ -145,9 +139,6 @@ class robin_stocks:
             Returns an string representing the id.
 
         '''
-        if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
-            return(None)
         symbol = symbol.upper()
         return(self.get_instruments_by_symbols(symbol)[0]['tradable_chain_id'])
 
@@ -198,7 +189,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('Error: The keyword "'+keyword+'" is not a key value in the dictionary.')
+        return('Error: The keyword "'+str(keyword)+'" is not a key value in the dictionary.')
 
     def error_api_endpoint_not_loaded(self,url):
         '''
@@ -217,7 +208,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('Error: The url "'+url+'" is either missing (404) or could not be loaded.')
+        return('Error: The url "'+str(url)+'" is either missing (404) or could not be loaded.')
 
     def error_api_endpoint_not_posted(self,url):
         '''
@@ -236,7 +227,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('Error: The POST request to the url "'+url+'" could not be completed.')
+        return('Error: The POST request to the url "'+str(url)+'" could not be completed.')
 
     def error_ticker_does_not_exist(self,ticker):
         '''
@@ -255,7 +246,7 @@ class robin_stocks:
             Returns an string representing an error message.
 
         '''
-        return('Warning: "'+ticker+'" is not a valid stock ticker. It is being ignored')
+        return('Warning: "'+str(ticker)+'" is not a valid stock ticker. It is being ignored')
 
     def error_not_a_string(self,info):
         '''
@@ -294,6 +285,25 @@ class robin_stocks:
 
         '''
         return('Error: The input parameter "'+str(info)+'" must be an integer')
+
+    def error_not_a_integer_or_float(self,info):
+        '''
+        Summary
+        -------
+        Returns an error message for an input info.
+
+        Parameters
+        ----------
+        info : string
+            Represents a keyword that the user was passing as a parameter.
+
+        Returns
+        -------
+        String
+            Returns an string representing an error message.
+
+        '''
+        return('Error: The input parameter "'+str(info)+'" must be an integer or a float.')
 
     def error_must_be_nonzero(self,info):
         '''
@@ -1011,7 +1021,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(info) is not str and info is not None):
@@ -1050,7 +1060,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(info) is not str and info is not None):
@@ -1087,7 +1097,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if (type(info) is not str and info is not None):
@@ -1124,7 +1134,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if (type(info) is not str and info is not None):
@@ -1161,7 +1171,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if (type(info) is not str and info is not None):
@@ -1832,7 +1842,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str and symbol is not None):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if symbol is not None:
@@ -2126,18 +2136,18 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
         symbol = symbol.upper()
@@ -2192,22 +2202,22 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(limitPrice) is not int):
-            print(self.error_not_a_integer('limitPrice'))
+        if (type(limitPrice) is not int and type(limitPrice) is not float):
+            print(self.error_not_a_integer_or_float(limitPrice))
             return(None)
 
         symbol = symbol.upper()
@@ -2262,22 +2272,22 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(stopPrice) is not int):
-            print(self.error_not_a_integer('stopPrice'))
+        if (type(stopPrice) is not int and type(stopPrice) is not float):
+            print(self.error_not_a_integer_or_float(stopPrice))
             return(None)
 
         latestPrice = float(self.get_latest_price(symbol)[0])
@@ -2339,26 +2349,26 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(limitPrice) is not int):
-            print(self.error_not_a_integer('limitPrice'))
+        if (type(limitPrice) is not int and type(limitPrice) is not float):
+            print(self.error_not_a_integer_or_float(limitPrice))
             return(None)
 
-        if (type(stopPrice) is not int):
-            print(self.error_not_a_integer('stopPrice'))
+        if (type(stopPrice) is not int and type(stopPrice) is not float):
+            print(self.error_not_a_integer_or_float(stopPrice))
             return(None)
 
         latestPrice = float(self.get_latest_price(symbol)[0])
@@ -2416,18 +2426,18 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
         symbol = symbol.upper()
@@ -2482,22 +2492,22 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(limitPrice) is not int):
-            print(self.error_not_a_integer('limitPrice'))
+        if (type(limitPrice) is not int and type(limitPrice) is not float):
+            print(self.error_not_a_integer_or_float(limitPrice))
             return(None)
 
         symbol = symbol.upper()
@@ -2552,22 +2562,22 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(stopPrice) is not int):
-            print(self.error_not_a_integer('stopPrice'))
+        if (type(stopPrice) is not int and type(stopPrice) is not float):
+            print(self.error_not_a_integer_or_float(stopPrice))
             return(None)
 
         latestPrice = float(self.get_latest_price(symbol)[0])
@@ -2629,26 +2639,26 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(limitPrice) is not int):
-            print(self.error_not_a_integer('limitPrice'))
+        if (type(limitPrice) is not int and type(limitPrice) is not float):
+            print(self.error_not_a_integer_or_float(limitPrice))
             return(None)
 
-        if (type(stopPrice) is not int):
-            print(self.error_not_a_integer('stopPrice'))
+        if (type(stopPrice) is not int and type(stopPrice) is not float):
+            print(self.error_not_a_integer_or_float(stopPrice))
             return(None)
 
         latestPrice = float(self.get_latest_price(symbol)[0])
@@ -2716,34 +2726,34 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(timeInForce) is not str):
-            print(self.error_not_a_string('timeInForce'))
+            print(self.error_not_a_string(timeInForce))
             return(None)
 
         if (type(quantity) is not int):
-            print(self.error_not_a_integer('quantity'))
+            print(self.error_not_a_integer(quantity))
             return(None)
         elif (quantity < 1):
-            print(self.error_must_be_nonzero('quantity'))
+            print(self.error_must_be_nonzero(quantity))
             return(None)
 
-        if (type(limitPrice) is not int):
-            print(self.error_not_a_integer('limitPrice'))
+        if (type(limitPrice) is not int and type(limitPrice) is not float):
+            print(self.error_not_a_integer_or_float(limitPrice))
             return(None)
 
-        if (type(stopPrice) is not int):
-            print(self.error_not_a_integer('stopPrice'))
+        if (type(stopPrice) is not int and type(stopPrice) is not float):
+            print(self.error_not_a_integer_or_float(stopPrice))
             return(None)
 
         if (type(trigger) is not str):
-            print(self.error_not_a_string('trigger'))
+            print(self.error_not_a_string(trigger))
             return(None)
 
         if (type(side) is not str):
-            print(self.error_not_a_string('side'))
+            print(self.error_not_a_string(side))
             return(None)
 
         latestPrice = float(self.get_latest_price(symbol)[0])
@@ -2771,6 +2781,60 @@ class robin_stocks:
         except:
             raise
 
+        return(res_json)
+
+    def order_call(self,symbol,quantity,side='buy'):
+        '''
+        DOES NOT WORK
+        '''
+
+        symbol = symbol.upper()
+
+        # data = {
+        # 'account': self.get_accounts_profile(info='url'),
+        # 'instrument': self.get_instruments_by_symbols(symbol,info='url')[0],
+        # 'chain_symbol': symbol,
+        # 'chain_id':'bfd42df1-e4e3-46fc-aee0-0f1dad954482',
+        # 'option':'https://api.robinhood.com/options/instruments/1c38e49e-65d8-4322-88a8-013cae0ea4ec/',
+        # 'direction': 'debit',
+        # 'quantity': 1,
+        # 'time_in_force': 'gfd',
+        # 'side': 'buy',
+        # 'type':'limit',
+        # 'trigger':'immediate'
+        # }
+        if (side == 'buy'):
+            direction = 'debit'
+        elif (side == 'sell'):
+            direction = 'credit'
+        else:
+            print('error not valid side')
+            return(None)
+
+        data={
+        'account': self.get_accounts_profile(info='url'),
+        'direction': direction,
+        'legs': [{'side':side,'option':'https://api.robinhood.com/options/instruments/'+self.get_tradable_chain_id(symbol),'position_effect':'open','ratio_quantity':'1'}],
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'price': '0.08',
+        'quantity': quantity,
+        # 'ref_id': '8d3ffeee-896f-4560-9532-f5548230644c',
+        'time_in_force': 'gfd',
+        'trigger':'immediate',
+        'type':'limit'
+        }
+
+        url = "https://api.robinhood.com/options/orders/"
+        res_json = None
+        try:
+            res = self.session.post(url,data=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except:
+            raise
+        print(res)
+        print(res_json)
         return(res_json)
 
     def get_aggregate_positions(self,info=None):
@@ -2929,7 +2993,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return(None)
 
         if (type(info) is not str and info is not None):
@@ -2969,6 +3033,20 @@ class robin_stocks:
             Returns a list of all the option orders that match.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
+
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
+        symbol = symbol.upper()
+        optionType = optionType.lower()
         if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
@@ -3007,7 +3085,20 @@ class robin_stocks:
             Returns a list of all the option orders that match.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
+
+        if (type(strike) is not int):
+            print(self.error_not_a_string(strike))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
         symbol = symbol.upper()
+        optionType = optionType.lower()
         if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
@@ -3048,7 +3139,24 @@ class robin_stocks:
             Returns a list of all the option orders that match.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
+
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(strike) is not int):
+            print(self.error_not_a_string(strike))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
         symbol = symbol.upper()
+        optionType = optionType.lower()
         if (optionType == 'call'):
             calls = self.get_available_option_calls(symbol)
             listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
@@ -3065,6 +3173,38 @@ class robin_stocks:
             mergedList = listOfCalls + listOfPuts
 
         return(mergedList)
+
+    def find_options_for_all_stocks_by_expiration_date(self,expirationDate,side=None):
+        ''''
+        NOT WORKING
+
+        '''
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(side) is not str and side is not None):
+            print(self.error_not_a_string(side))
+            return([None])
+
+        symbol = symbol.upper()
+        side = side.lower()
+        if (side == 'put' or side == 'call' ):
+            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable&type='+side
+        else:
+            url = 'https://api.robinhood.com/options/instruments/expiration_date='+expirationDate+'&state=active&tradability=tradable'
+
+        try:
+            res = self.session.get(url)
+            res.raise_for_status()
+            res_data = res.json()['results']
+        except:
+            print(self.error_api_endpoint_not_loaded(url))
+            return([None])
+
+        res_data = self.append_dataset_with_pagination(res,res_data)
+
+        return(res_data)
 
     def get_available_option_calls(self,symbol,info=None):
         ''''
@@ -3086,7 +3226,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if (type(info) is not str and info is not None):
@@ -3127,7 +3267,7 @@ class robin_stocks:
 
         '''
         if (type(symbol) is not str):
-            print(self.error_not_a_string('symbol'))
+            print(self.error_not_a_string(symbol))
             return([None])
 
         if (type(info) is not str and info is not None):
@@ -3173,6 +3313,28 @@ class robin_stocks:
             Returns a dictionary of key/value pairs.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
+
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(strike) is not int):
+            print(self.error_not_a_string(strike))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
+        symbol = symbol.upper()
+        optionType = optionType.lower()
         optionID= self.get_specific_option_id(symbol,expirationDate,strike,optionType)
         url = 'https://api.robinhood.com/marketdata/options/'+optionID+'/'
         try:
@@ -3210,7 +3372,28 @@ class robin_stocks:
             Returns a dictionary of key/value pairs.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
 
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(strike) is not int):
+            print(self.error_not_a_string(strike))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
+        if (type(info) is not str and info is not None):
+            print(self.error_not_a_string(info))
+            return([None])
+
+        symbol = symbol.upper()
+        optionType = optionType.lower()
         optionID= self.get_specific_option_id(symbol,expirationDate,strike,optionType)
         url = 'https://api.robinhood.com/options/instruments/'+optionID+'/'
         try:
@@ -3244,17 +3427,38 @@ class robin_stocks:
             Returns a list that contains a list for each symbol. Each list contains a dictionary where each dictionary is for a different time.
 
         '''
+        if (type(symbol) is not str):
+            print(self.error_not_a_string(symbol))
+            return([None])
+
+        if (type(expirationDate) is not str):
+            print(self.error_not_a_string(expirationDate))
+            return([None])
+
+        if (type(strike) is not int):
+            print(self.error_not_a_string(strike))
+            return([None])
+
+        if (type(optionType) is not str):
+            print(self.error_not_a_string(optionType))
+            return([None])
+
+        if (type(span) is not str):
+            print(self.error_not_a_string(span))
+            return([None])
+
         symbol = symbol.upper()
+        optionType = optionType.lower()
         span_check = ['day','week','year','5year']
         if span not in span_check:
             print('ERROR: Span must be "day","week","year",or "5year"')
             return([None])
 
-        if span=='day':
+        if span == 'day':
             interval = '5minute'
-        elif span=='week':
+        elif span == 'week':
             interval = '10minute'
-        elif span=='year':
+        elif span == 'year':
             interval = 'day'
         else:
             interval = 'week'
