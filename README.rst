@@ -152,6 +152,7 @@ Options
 - get_available_option_puts(symbol,info=None)
 - get_specific_option_market_data(symbol,expirationDate,strike,type,info=None)
 - get_specific_option_instrument_data(symbol,expirationDate,strike,type,info=None)
+- get_option_historicals(symbol,expirationDate,strike,optionType,span='week')
 
 Building core user info
 -----------------------
