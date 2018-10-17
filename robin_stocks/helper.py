@@ -225,6 +225,7 @@ def request_post(url,payload=None,timeout=16):
         res.raise_for_status()
         data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
+        data = None
         print(message)
 
     return data

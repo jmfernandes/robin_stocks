@@ -1,4 +1,4 @@
-from robin_stocks.robin_stocks import robin_stocks
+import robin_stocks as r
 import matplotlib.pyplot as plt
 import datetime as dt
 
@@ -18,7 +18,6 @@ username = ''
 password = ''
 #!!!
 
-r = robin_stocks()
 login = r.login(username,password)
 
 #!!! fill out the specific option information
