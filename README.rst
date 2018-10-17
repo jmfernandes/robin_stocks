@@ -37,7 +37,7 @@ all the stocks you hold, and the values of those keys are another dictionary con
 important information about the stocks. If you then wanted to print this dictionary, you could type
 
 >>> for key,value in my_stocks.items():
->>>   print(key,value)
+>>>     print(key,value)
 
 There is also the ability to buy and sell stocks. For example, if you wanted to buy 10 shares
 of Apple, you would type
