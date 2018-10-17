@@ -326,7 +326,8 @@ def get_list_market_data(*inputSymbols,info=None):
     return(helper.filter(data,info))
 
 def get_option_market_data_by_id(id,info=None):
-    """Returns the option market data for a stock.
+    """Returns the option market data for a stock, including the greeks,
+    open interest, change of profit, and adjusted mark price.
 
     :param id: The id of the stock.
     :type id: str
@@ -337,12 +338,13 @@ def get_option_market_data_by_id(id,info=None):
 
     """
     url = urls.marketdata(id)
-    data = request_get(url)
+    data = helper.request_get(url)
 
     return(helper.filter(data,info))
 
 def get_option_market_data(symbol,expirationDate,strike,optionType,info=None):
-    """Returns the option market data for the stock option.
+    """Returns the option market data for the stock option, including the greeks,
+    open interest, change of profit, and adjusted mark price.
 
     :param symbol: The ticker of the stock.
     :type symbol: str
@@ -372,8 +374,7 @@ def get_option_market_data(symbol,expirationDate,strike,optionType,info=None):
     return(helper.filter(data,info))
 
 def get_option_instrument_data_by_id(id,info=None):
-    """Returns the option instrument information, including the greeks,
-    open interest, change of profit, and adjusted mark price.
+    """Returns the option instrument information.
 
     :param id: The id of the stock.
     :type id: str
@@ -388,8 +389,7 @@ def get_option_instrument_data_by_id(id,info=None):
     return(helper.filter(data,info))
 
 def get_option_instrument_data(symbol,expirationDate,strike,optionType,info=None):
-    """Returns the option instrument data for the stock option, including the greeks,
-    open interest, change of profit, and adjusted mark price.
+    """Returns the option instrument data for the stock option.
 
     :param symbol: The ticker of the stock.
     :type symbol: str
