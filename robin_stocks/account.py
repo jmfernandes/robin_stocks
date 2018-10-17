@@ -80,7 +80,7 @@ def get_notifications(info=None):
 def get_latest_notification():
     """Returns the time of the latest notification.
 
-    :returns: Returns a dictionary of key/value pairs.
+    :returns: Returns a dictionary of key/value pairs. But there is only one key, 'last_viewed_at'
 
     """
     url = urls.notifications(True)
@@ -150,7 +150,7 @@ def download_document(url,name=None,dirpath=None):
     """Downloads a document and saves as it as a PDF. If no name is given, document is saved as
     the name that Robinhood has for the document. If no directory is given, document is saved in the root directory of code.
 
-    :param url: The url of the document. Can be found by using get_documents(info=None).
+    :param url: The url of the document. Can be found by using get_documents(info='download_url').
     :type url: str
     :param name: The name to save the document as.
     :type name: Optional[str]
@@ -159,7 +159,7 @@ def download_document(url,name=None,dirpath=None):
     :returns: Returns the data from the get request.
 
     """
-    data = helper.request_get(url)
+    data = helper.request_document(url)
 
     print('Writing PDF...')
     if not name:
@@ -172,6 +172,7 @@ def download_document(url,name=None,dirpath=None):
 
     filename = directory+name+'.pdf'
     os.makedirs(os.path.dirname(filename), exist_ok=True)
+
     open(filename, 'wb').write(data.content)
     print('Done - Wrote file {}.pdf to {}'.format(name,os.path.abspath(filename)))
 
@@ -192,7 +193,6 @@ def download_all_documents(doctype=None,dirpath=None):
     documents = get_documents()
 
     downloaded_files = False
-    print('Writing PDF...')
     if dirpath:
         directory = dirpath
     else:
@@ -201,22 +201,26 @@ def download_all_documents(doctype=None,dirpath=None):
     counter = 0
     for item in documents:
         if doctype == None:
-            data = helper.request_get(item['download_url'])
-            name = item['created_at'][0:10]+'-'+item['type']+'-'+item['id']
-            filename = directory+name+'.pdf'
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            open(filename, 'wb').write(data.content)
-            downloaded_files = True
-            counter += 1
-        else:
-            if item['type'] == doctype:
-                data = helper.request_get(item['download_url'])
+            data = helper.request_document(item['download_url'])
+            if data:
                 name = item['created_at'][0:10]+'-'+item['type']+'-'+item['id']
                 filename = directory+name+'.pdf'
                 os.makedirs(os.path.dirname(filename), exist_ok=True)
                 open(filename, 'wb').write(data.content)
                 downloaded_files = True
                 counter += 1
+                print('Writing PDF {}...'.format(counter))
+        else:
+            if item['type'] == doctype:
+                data = helper.request_document(item['download_url'])
+                if data:
+                    name = item['created_at'][0:10]+'-'+item['type']+'-'+item['id']
+                    filename = directory+name+'.pdf'
+                    os.makedirs(os.path.dirname(filename), exist_ok=True)
+                    open(filename, 'wb').write(data.content)
+                    downloaded_files = True
+                    counter += 1
+                    print('Writing PDF {}...'.format(counter))
 
     if downloaded_files == False:
         print('WARNING: Could not find files of that doctype to download')

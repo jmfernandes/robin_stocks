@@ -143,6 +143,15 @@ def inputs_to_set(inputSymbols):
 
     return list(symbols)
 
+def request_document(url):
+    try:
+        res = session.get(url)
+        res.raise_for_status()
+    except:
+        return None
+
+    return res
+
 def request_get(url,dataType='regular',payload=None):
     """For a given url and payload, makes a get request and returnes the data.
 
