@@ -257,8 +257,8 @@ def request_delete(url):
     try:
         res = session.delete(url)
         res.raise_for_status()
-        data = res.json()
     except:
+        data = None
         print("Cound not process delete request.")
 
     return data

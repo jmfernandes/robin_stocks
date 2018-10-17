@@ -237,7 +237,7 @@ def get_all_watchlists(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of the watchlists.
+    :returns: Returns a list of the watchlists. Keywords are 'url', 'user', and 'name'.
 
     """
     url = urls.watchlists()
@@ -245,13 +245,13 @@ def get_all_watchlists(info=None):
     return(helper.filter(data,info))
 
 def get_watchlist_by_name(name='Default',info=None):
-    """Returns a list of stock tickers for a single watchlist.
+    """Returns a list of information related to the stocks in a single watchlist.
 
     :param name: The name of the watchlist to get data from.
     :type name: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of the stock tickers from the watchlist
+    :returns: Returns a list of dictionaries that contain the instrument urls and a url that references itself.
 
     """
     url = urls.watchlists(name)
@@ -295,6 +295,7 @@ def delete_symbols_from_watchlist(*inputSymbols,name='Default'):
     watchlist = get_watchlist_by_name(name=name)
 
     items = []
+    data = None
 
     for symbol in symbols:
         for list_ in watchlist:
