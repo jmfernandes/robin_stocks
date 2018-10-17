@@ -86,7 +86,7 @@ def get_instruments_by_symbols(*inputSymbols,info=None):
     return(helper.filter(data,info))
 
 def get_instrument_by_url(url,info=None):
-    """Takes a single url for the stock. Should be located at https://api.robinhood.com/instruments/<id> where <id> is the
+    """Takes a single url for the stock. Should be located at ``https://api.robinhood.com/instruments/<id>`` where <id> is the
     id of the stock.
 
     :param url: The url of the stock. Can be found in several locations including \
@@ -146,7 +146,7 @@ def get_name_by_symbol(symbol):
         return data['simple_name']
 
 def get_name_by_url(url):
-    """Returns the name of a stock from the instrument url. Should be located at https://api.robinhood.com/instruments/<id>
+    """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
 
     :param symbol: The url of the stock as a string.
