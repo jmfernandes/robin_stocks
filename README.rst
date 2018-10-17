@@ -47,7 +47,7 @@ of Apple, you would type
 and if you wanted to sell half your Tesla stock if it fell to 200.00 you would type
 
 >>> positions_data = r.get_current_positions()
->>> TSLAData = [item for item in positions_data if 
+>>> TSLAData = [item for item in positions_data if
 >>>            r.get_name_by_url(item['instrument']) == r.get_name_by_symbol('TSLA')][0]
 >>> sellQuantity = float(TSLAData['quantity'])//2.0
 >>> r.order_sell_limit('TSLA',sellQuantity,200.00)
@@ -60,7 +60,7 @@ exposed the get and post methods so any call to the Robinhood API could be made.
 >>> payload = { 'key1', 'value1'}
 >>> r.request_get(url,'regular',payload)
 
-The above code would results in a get request to 'https://api.robinhood.com/?key1=value1' (which is a
+The above code would results in a get request to ``https://api.robinhood.com/?key1=value1`` (which is a
 meaningless request).
 
 Functions Contained
