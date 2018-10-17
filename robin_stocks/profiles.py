@@ -10,7 +10,6 @@ def load_account_profile(info=None):
     :returns: The function returns a dictionary of key/value pairs. \
     If a string is passed in to the info parameter, then the function will return \
     a string corresponding to the value of the key whose name matches the info parameter.
-    :raises: HTTPError, AttributeError
 
     """
     url = urls.account_profile()

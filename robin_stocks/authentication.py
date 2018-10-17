@@ -10,7 +10,6 @@ def login(username,password,expiresIn=86400,scope='internal'):
     :param password: The password.
     :type state: str
     :returns:  A dictionary with log in information.
-    :raises: HTTPError, AttributeError
 
     """
     url = urls.login_url()
