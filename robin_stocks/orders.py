@@ -91,7 +91,7 @@ def cancel_all_open_orders():
     url = urls.orders()
     items = helper.request_get(url,'pagination')
 
-    items = [item['id'] for item in data if item['cancel'] is not None]
+    items = [item['id'] for item in items if item['cancel'] is not None]
 
     for item in items:
         cancel_url = urls.cancel(item)
