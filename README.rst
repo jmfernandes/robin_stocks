@@ -47,7 +47,8 @@ of Apple, you would type
 and if you wanted to sell half your Tesla stock if it fell to 200.00 you would type
 
 >>> positions_data = r.get_current_positions()
->>> [item for item in positions_data if r.get_name_by_url(item['instrument']) == r.get_name_by_symbol('TSLA')][0]
+>>> TSLAData = [item for item in positions_data if 
+>>>            r.get_name_by_url(item['instrument']) == r.get_name_by_symbol('TSLA')][0]
 >>> sellQuantity = float(TSLAData['quantity'])//2.0
 >>> r.order_sell_limit('TSLA',sellQuantity,200.00)
 
