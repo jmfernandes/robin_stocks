@@ -33,7 +33,7 @@ def get_markets(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each market. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -41,13 +41,16 @@ def get_markets(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
-def get_currency_pairs():
+def get_currency_pairs(info=None):
     """Returns currency pairs
 
-    :returns: Returns a dictionary of currency pairs.
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each currency pair. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
 
     """
 
     url = urls.currency()
-    data = helper.request_get(url)
-    return(data)
+    data = helper.request_get(url,'results')
+    return(helper.filter(data,info))
