@@ -55,11 +55,11 @@ and if you wanted to sell half your Tesla stock if it fell to 200.00 you would t
 If you want to view all the call options for a list of stocks you could type
 
 >>> optionData = r.find_options_for_list_of_stocks_by_expiration_date(['fb','aapl','tsla','nflx'],
->>>             expirationDate='2018-11-16',optionType='call')
+>>>              expirationDate='2018-11-16',optionType='call')
 >>> for item in optionData:
->>>    marketData = r.get_option_market_data_by_id(item['id'])
->>>    print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
->>>          item['chain_symbol'],' delta - ',marketData['delta'],' theta - ',marketData['theta'])
+>>>     marketData = r.get_option_market_data_by_id(item['id'])
+>>>     print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
+>>>           item['chain_symbol'],' delta - ',marketData['delta'],' theta - ',marketData['theta'])
 
 
 Keep in mind that the functions contained in the library are just wrappers around a functional API,
