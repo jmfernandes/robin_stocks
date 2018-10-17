@@ -15,6 +15,13 @@ Robinhood API. This is a pure python interface and it requires Python3. The purp
 of this library is to allow people to make their own robo-investors or to view
 stock information in real time.
 
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
 Sending Requests to API
 -----------------------
 
@@ -62,10 +69,3 @@ Placing and Cancelling Orders
 
 .. automodule:: robin_stocks.orders
    :members:
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
