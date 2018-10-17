@@ -144,6 +144,13 @@ def inputs_to_set(inputSymbols):
     return list(symbols)
 
 def request_document(url):
+    """For a given url, makes a get request and returnes the session data.
+
+    :param url: The url to send a get request to.
+    :type url: str
+    :returns: Returns the session.get() data as opppose to session.get().json() data.
+
+    """
     try:
         res = session.get(url)
         res.raise_for_status()

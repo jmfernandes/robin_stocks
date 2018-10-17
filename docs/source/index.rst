@@ -26,7 +26,7 @@ Sending Requests to API
 -----------------------
 
 .. automodule:: robin_stocks.helper
-   :members: request_get,request_post,request_delete
+   :members: request_get,request_post,request_delete,request_document
 
 Logging In and Out
 ------------------
