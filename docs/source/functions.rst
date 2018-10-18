@@ -12,11 +12,15 @@ List of All Functions
 Sending Requests to API
 -----------------------
 
+----
+
 .. automodule:: robin_stocks.helper
    :members: request_get,request_post,request_delete,request_document
 
 Logging In and Out
 ------------------
+
+----
 
 .. automodule:: robin_stocks.authentication
    :members:
@@ -24,11 +28,15 @@ Logging In and Out
 Loading Profiles
 ------------------
 
+----
+
 .. automodule:: robin_stocks.profiles
    :members:
 
 Getting Stock Information
 -------------------------
+
+----
 
 .. automodule:: robin_stocks.stocks
    :members:
@@ -36,11 +44,15 @@ Getting Stock Information
 Getting Option Information
 --------------------------
 
+----
+
 .. automodule:: robin_stocks.options
    :members:
 
 Getting Market Information
 --------------------------
+
+----
 
 .. automodule:: robin_stocks.markets
    :members:
@@ -48,11 +60,15 @@ Getting Market Information
 Getting Positions and Account Information
 -----------------------------------------
 
+----
+
 .. automodule:: robin_stocks.account
    :members:
 
 Placing and Cancelling Orders
 -----------------------------
+
+----
 
 .. automodule:: robin_stocks.orders
    :members:

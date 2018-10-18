@@ -29,7 +29,7 @@ unnecessary.
 * Three strikes and you refactor
 
 If you find yourself copying and pasting the same code 3 or more times, then it means you should put that code in
-its own function. Thus, I created the ``request_get`` and ``filter`` functions, and then provided input parameters to
+its own function. Thus, I created the :func:`robin_stocks.helper.request_get` function, and then provided input parameters to
 handle different use cases.
 
 * Type is in the name

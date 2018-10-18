@@ -104,7 +104,7 @@ html_theme_options = {'page_width' : '1080px'}
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'sourcelink.html', 'searchbox.html']}
+html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'sourcelink.html', 'searchbox.html','links.html']}
 
 html_logo = '_static/pics/title.PNG'
 
