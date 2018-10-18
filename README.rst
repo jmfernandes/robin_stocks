@@ -13,7 +13,7 @@ Installing
 There is no need to download these files directly. This project is published on PyPi,
 so it can be installed by typing into terminal:
 
->>> pip install robin-stocks
+>>> pip install robin_stocks
 
 Example Usage
 ========================

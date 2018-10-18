@@ -12,7 +12,7 @@ Using Pip
 This is the simplest method. To install Robin Stocks globally or inside a virtual environment,
 open terminal and run the command::
 
-$ pip install robin-stocks
+$ pip install robin_stocks
 
 Get The Source Code
 -------------------
