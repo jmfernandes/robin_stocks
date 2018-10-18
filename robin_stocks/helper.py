@@ -1,4 +1,4 @@
-from robin_stocks.constants import session
+from robin_stocks.constants import Session
 import requests
 
 def id_for_stock(symbol):
@@ -143,7 +143,7 @@ def inputs_to_set(inputSymbols):
 
     return list(symbols)
 
-def request_document(url):
+def request_document(url,payload=None):
     """For a given url, makes a get request and returnes the session data.
 
     :param url: The url to send a get request to.
@@ -152,9 +152,10 @@ def request_document(url):
 
     """
     try:
-        res = session.get(url)
+        res = Session.get(url,params=payload)
         res.raise_for_status()
-    except:
+    except requests.exceptions.HTTPError as message:
+        print(message)
         return None
 
     return res
@@ -174,7 +175,7 @@ def request_get(url,dataType='regular',payload=None):
 
     """
     try:
-        res = session.get(url,params=payload)
+        res = Session.get(url,params=payload)
         res.raise_for_status()
         data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
@@ -203,7 +204,7 @@ def request_get(url,dataType='regular',payload=None):
             print('Found Additional pages.')
         while nextData['next']:
             try:
-                res = session.get(nextData['next'])
+                res = Session.get(nextData['next'])
                 res.raise_for_status()
                 nextData = res.json()
             except:
@@ -237,7 +238,7 @@ def request_post(url,payload=None,timeout=16):
 
     """
     try:
-        res = session.post(url, data=payload, timeout=timeout)
+        res = Session.post(url, data=payload, timeout=timeout)
         res.raise_for_status()
         data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
@@ -255,7 +256,7 @@ def request_delete(url):
 
     """
     try:
-        res = session.delete(url)
+        res = Session.delete(url)
         res.raise_for_status()
     except:
         data = None
@@ -273,7 +274,7 @@ def update_session(key,value):
     :returns: None. Updates the session header with a value.
 
     """
-    session.headers[key] = value
+    Session.headers[key] = value
 
 def error_argument_not_key_in_dictionary(keyword):
     return('Error: The keyword "{}" is not a key in the dictionary.'.format(keyword))

@@ -21,6 +21,9 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
+def setup(app):
+    app.add_stylesheet('style.css')
+
 
 # -- General configuration ------------------------------------------------
 
@@ -80,6 +83,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+html_show_sourcelink = False
+
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -92,12 +97,18 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {'page_width' : '1080px'}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'sourcelink.html', 'searchbox.html']}
+
+html_logo = '_static/pics/title.PNG'
+
+html_favicon = '_static/favicon.ico'
 
 
 # -- Options for HTMLHelp output ------------------------------------------

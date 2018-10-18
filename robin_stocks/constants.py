@@ -1,7 +1,7 @@
 import requests
 
-session = requests.Session()
-session.headers = {
+Session = requests.Session()
+Session.headers = {
 "Accept": "*/*",
 "Accept-Encoding": "gzip,defalte,br",
 "Accept-Language": "en-US,en;q=1",
