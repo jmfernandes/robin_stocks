@@ -34,14 +34,22 @@ from .markets import get_currency_pairs,        \
                      get_top_movers
 
 from .account import get_all_positions,             \
+                     get_bank_account_info,         \
+                     get_bank_transfers,            \
+                     unlink_bank_account,           \
                      get_current_positions,         \
                      get_dividends,                 \
                      get_total_dividends,           \
                      get_notifications,             \
                      get_latest_notification,       \
+                     get_linked_bank_accounts,      \
+                     get_stock_loan_payments,       \
+                     get_subscription_fees,         \
+                     get_referrals,                 \
+                     get_day_trades,                \
                      get_wire_transfers,            \
                      get_margin_calls,              \
-                     get_deposits,                  \
+                     get_margin_interest,           \
                      get_documents,                 \
                      download_document,             \
                      download_all_documents,        \

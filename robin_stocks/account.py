@@ -122,15 +122,122 @@ def get_margin_calls(symbol=None):
 
     return(data)
 
-def get_deposits():
-    """Returns all deposits made into the account.
+def get_linked_bank_accounts(info=None):
+    """Returns all linked bank accounts.
 
-    :returns: Returns a list of dictionaries of key/value pairs for each deposit.
+    :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each bank.
 
     """
-    url = urls.deposits()
-    data = helper.request_get(url)
+    urls = urls.linked()
+    data = helper.request_get(urls,'results')
+    return(helper.filter(data,info))
+
+def get_bank_account_info(id,info=None):
+    """Returns a single dictionary of bank information
+
+    :param id: The bank id.
+    :type id: str
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a dictinoary of key/value pairs for the bank. If info parameter is provided, \
+    the value of the key that matches info is extracted.
+
+    """
+    urls = urls.linked(id)
+    data = helper.request_get(urls)
+    return(helper.filter(data,info))
+
+def unlink_bank_account(id):
+    """Unlinks a bank account.
+
+    :param id: The bank id.
+    :type id: str
+    :returns: Information returned from post request.
+
+    """
+    url = urls.linked(id,True)
+    data = helper.request_post(url)
     return(data)
+
+def get_bank_transfers(info=None):
+    """Returns all bank transfers made for the account.
+
+    :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each transaction.
+
+    """
+    url = urls.transfers()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
+def get_stock_loan_payments(info=None):
+    """Returns a list of loan payments.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.stockloan()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
+def get_margin_interest(info=None):
+    """Returns a list of margin interest.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.margininterest()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
+def get_subscription_fees(info=None):
+    """Returns a list of subscription fees.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.subscription()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
+def get_referrals(info=None):
+    """Returns a list of referrals.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.referral()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
+def get_day_trades(info=None):
+    """Returns recent day trades.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    account = profiles.load_account_profile('account_number')
+    url = urls.referral(account)
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
 
 def get_documents(info=None):
     """Returns a list of documents that have been released by Robinhood to the account.

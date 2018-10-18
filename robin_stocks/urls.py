@@ -62,8 +62,11 @@ def splits(symbol):
 def positions():
     return('https://api.robinhood.com/positions/')
 
-def deposits():
-    return('https://api.robinhood.com/ach/iav/queued_deposit/')
+def transfers():
+    return('https://api.robinhood.com/ach/transfers/')
+
+def daytrades(account):
+    return('https://api.robinhood.com/accounts/{}/recent_day_trades/'.format(account))
 
 def dividends():
     return('https://api.robinhood.com/dividends/')
@@ -71,14 +74,35 @@ def dividends():
 def documents():
     return('https://api.robinhood.com/documents/')
 
+def linked(id=None,unlink=False):
+    if unlink:
+        return('https://api.robinhood.com/ach/relationships/{}/unlink/'.format(id))
+    if id:
+        return('https://api.robinhood.com/ach/relationships/{}/'.format(id))
+    else:
+        return('https://api.robinhood.com/ach/relationships/')
+
 def margin():
     return('https://api.robinhood.com/margin/calls/')
+
+def margininterest():
+    return('https://api.robinhood.com/cash_journal/margin_interest_charges/')
 
 def notifications(tracker=False):
     if tracker:
         return('https://api.robinhood.com/midlands/notifications/notification_tracker/')
     else:
         return('https://api.robinhood.com/notifications/devices/')
+
+def referral():
+    return('https://api.robinhood.com/midlands/referral/')
+
+def stockloan():
+    return('https://api.robinhood.com/stock_loan/payments/')
+
+def subscription():
+    return('https://api.robinhood.com/subscription/subscription_fees/')
+
 
 def transfers():
     return('https://api.robinhood.com/wire/transfers')
