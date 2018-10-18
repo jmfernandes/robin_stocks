@@ -167,6 +167,10 @@ def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both'
         listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
         mergedList = listOfCalls + listOfPuts
 
+    for item in mergedList:
+        marketData = get_option_market_data_by_id(item['id'])
+        item.update(marketData)
+
     return(helper.filter(mergedList,info))
 
 def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
@@ -205,6 +209,10 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
         listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
         listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
         mergedList = listOfCalls + listOfPuts
+
+    for item in mergedList:
+        marketData = get_option_market_data_by_id(item['id'])
+        item.update(marketData)
 
     return(helper.filter(mergedList,info))
 
@@ -246,6 +254,10 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
         listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
         listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
         mergedList = listOfCalls + listOfPuts
+
+    for item in mergedList:
+        marketData = get_option_market_data_by_id(item['id'])
+        item.update(marketData)
 
     return(helper.filter(mergedList,info))
 
