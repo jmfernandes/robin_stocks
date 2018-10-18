@@ -62,7 +62,7 @@ def splits(symbol):
 def positions():
     return('https://api.robinhood.com/positions/')
 
-def transfers():
+def banktransfers():
     return('https://api.robinhood.com/ach/transfers/')
 
 def daytrades(account):
@@ -104,7 +104,7 @@ def subscription():
     return('https://api.robinhood.com/subscription/subscription_fees/')
 
 
-def transfers():
+def wiretransfers():
     return('https://api.robinhood.com/wire/transfers')
 
 def watchlists(name=None,add=False):

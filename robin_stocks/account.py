@@ -96,7 +96,7 @@ def get_wire_transfers(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.transfers()
+    url = urls.wiretransfers()
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
@@ -125,7 +125,7 @@ def get_margin_calls(symbol=None):
 def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
 
-    :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
+    :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each bank.
 
@@ -166,10 +166,11 @@ def get_bank_transfers(info=None):
 
     :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each transaction.
+    :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.transfers()
+    url = urls.banktransfers()
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
@@ -178,7 +179,7 @@ def get_stock_loan_payments(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each payment. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -191,7 +192,7 @@ def get_margin_interest(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each interest. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -204,7 +205,7 @@ def get_subscription_fees(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each fee. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -217,7 +218,7 @@ def get_referrals(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each referral. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -230,12 +231,12 @@ def get_day_trades(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, \
+    :returns: Returns a list of dictionaries of key/value pairs for each day trade. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
     account = profiles.load_account_profile('account_number')
-    url = urls.referral(account)
+    url = urls.daytrades(account)
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 

@@ -74,4 +74,4 @@ meaningless request).
 Functions Contained
 ========================
 
-For a complete list of functions and how to use them, go to https://robin-stocks.readthedocs.io/en/latest/
+For a complete list of functions and how to use them, go to http://www.robin-stocks.com/
