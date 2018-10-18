@@ -292,7 +292,7 @@ def find_options_for_list_of_stocks_by_expiration_date(*inputSymbols,expirationD
                 data.append(item)
 
     for item in data:
-        marketData = r.get_option_market_data_by_id(item['id'])
+        marketData = get_option_market_data_by_id(item['id'])
         item.update(marketData)
 
     return(helper.filter(data,info))
