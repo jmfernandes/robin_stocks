@@ -130,8 +130,8 @@ def get_linked_bank_accounts(info=None):
     :returns: Returns a list of dictionaries of key/value pairs for each bank.
 
     """
-    urls = urls.linked()
-    data = helper.request_get(urls,'results')
+    url = urls.linked()
+    data = helper.request_get(url,'results')
     return(helper.filter(data,info))
 
 def get_bank_account_info(id,info=None):
@@ -145,8 +145,8 @@ def get_bank_account_info(id,info=None):
     the value of the key that matches info is extracted.
 
     """
-    urls = urls.linked(id)
-    data = helper.request_get(urls)
+    url = urls.linked(id)
+    data = helper.request_get(url)
     return(helper.filter(data,info))
 
 def unlink_bank_account(id):
