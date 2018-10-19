@@ -60,7 +60,7 @@ def get_total_dividends():
     dividend_total = 0
     for item in data:
         dividend_total += float(item['amount'])
-    return("{0:.2f}".format(dividend_total))
+    return(dividend_total)
 
 def get_notifications(info=None):
     """Returns a list of notifications.
