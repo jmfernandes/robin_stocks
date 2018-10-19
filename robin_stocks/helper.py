@@ -161,7 +161,7 @@ def request_document(url,payload=None):
     return res
 
 def request_get(url,dataType='regular',payload=None):
-    """For a given url and payload, makes a get request and returnes the data.
+    """For a given url and payload, makes a get request and returns the data.
 
     :param url: The url to send a get request to.
     :type url: str

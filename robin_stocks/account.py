@@ -1,4 +1,3 @@
-# for positions, documents, watchlists, build and some market functions.
 import os
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls

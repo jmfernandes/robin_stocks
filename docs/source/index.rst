@@ -35,6 +35,7 @@ to scroll through the list of all the callable functions.
    quickstart
    advanced
    functions
+   example
 
 Indices and tables
 ==================

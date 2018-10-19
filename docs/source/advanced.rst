@@ -23,16 +23,17 @@ Robinhood returns most data in the form::
 { 'previous' : None, 'results' : [], 'next' : None}
 
 where 'results' is either a dictionary or a list of dictionaries. However, sometimes
-Robinhood returns the results dictionary directly. To compensate for this, I added
-the **dataType** parameter which defaults to 'regular'. There are four possible values and there uses are:
+Robinhood returns the data in a different format. To compensate for this, I added
+the **dataType** parameter which defaults to return the entire dictionary listed above.
+There are four possible values for **dataType** and their uses are:
 
->>> robin_stocks.request_get(url,'regular')    # For when the results are
->>>                                            # returned directly or you
->>>                                            # want to view 'next' or
+>>> robin_stocks.request_get(url,'regular')    # For when you want
+>>>                                            # the whole dictionary
+>>>                                            # to view 'next' or
 >>>                                            # 'previous' values.
 >>>
 >>> robin_stocks.request_get(url,'results')    # For when results contains a
->>>                                            # list or dictionary.
+>>>                                            # list or single dictionary.
 >>>
 >>> robin_stocks.request_get(url,'pagination') # For when results contains a
 >>>                                            # list, but you also want to
@@ -40,7 +41,7 @@ the **dataType** parameter which defaults to 'regular'. There are four possible 
 >>>                                            # 'next' to the list.
 >>>
 >>> robin_stocks.request_get(url,'indexzero')  # For when results is a list
->>>                                            # of only one dictionary.
+>>>                                            # of only one entry.
 
 Also keep in mind that the results from the Robinhood API have been decoded using ``.json()``.
 There are instances where the user does not want to decode the results (such as retrieving documents), so

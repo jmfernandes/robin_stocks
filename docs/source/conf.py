@@ -97,19 +97,27 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {'page_width' : '1080px'}
+html_theme_options = {'page_width' : '1080px',
+                      'fixed_sidebar' : True,
+                      'touch_icon' : '_static.favicon.ico'
+                        }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'sourcelink.html', 'searchbox.html','links.html']}
+html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'searchbox.html']}
 
 html_logo = '_static/pics/title.PNG'
 
 html_favicon = '_static/favicon.ico'
 
+# github_repo = 'robin_stocks'
+#
+# github_user = 'jmfernandes'
+#
+# github_button = True
 
 # -- Options for HTMLHelp output ------------------------------------------
 
