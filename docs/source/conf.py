@@ -97,7 +97,9 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {'fixed_sidebar' : True
+html_theme_options = {'page_width' : '1080px',
+                      'fixed_sidebar' : True,
+                      'touch_icon' : '_static.favicon.ico'
                         }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -105,11 +107,11 @@ html_theme_options = {'fixed_sidebar' : True
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'searchbox.html']}
-
-html_logo = '_static/pics/title.PNG'
-
-html_favicon = '_static/favicon.ico'
+# html_sidebars = {'**': ['blurb.html','button.html','globaltoc.html', 'searchbox.html']}
+#
+# html_logo = '_static/pics/title.PNG'
+#
+# html_favicon = '_static/favicon.ico'
 
 # github_repo = 'robin_stocks'
 #
