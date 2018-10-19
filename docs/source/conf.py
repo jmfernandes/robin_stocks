@@ -98,7 +98,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {'page_width' : '1080px',
-                      'fixed_sidebar' : True,
+                      'fixed_sidebar' : False,
                       'touch_icon' : '_static.favicon.ico'
                         }
 
