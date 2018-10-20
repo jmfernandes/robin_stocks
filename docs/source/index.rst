@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Robin Stocks: Python Wrapper for Robinhood
-==========================================
+Robin Stocks: Python Trading on Wall St.
+=========================================
 
 -----
 
