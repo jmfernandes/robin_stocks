@@ -42,7 +42,7 @@ def get_order_info(orderID):
     """
     url = urls.orders(orderID)
     data = helper.request_get(url)
-    return(res_data)
+    return(data)
 
 def find_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
