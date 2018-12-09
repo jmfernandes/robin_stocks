@@ -123,25 +123,34 @@ def filter(data,info):
         return(data)
 
 def inputs_to_set(inputSymbols):
-    """Takes in the parameters passed to *args and puts them in a set. The set
-    will make sure there are no duplicates, and then the set is returned as a list.
+    """Takes in the parameters passed to *args and puts them in a set and a list.
+    The set will make sure there are no duplicates, and then the list will keep
+    the original order of the input.
 
     :param inputSymbols: A list, dict, or tuple of stock tickers.
     :type inputSymbols: list or dict or tuple or str
     :returns:  A list of strings that have been capitalized and stripped of white space.
 
     """
-    symbols = set()
+
+    symbols_list = []
+    symbols_set = set()
+
+    def add_symbol(symbol):
+        symbol = symbol.upper().strip()
+        if symbol not in symbols_set:
+            symbols_set.add(symbol)
+            symbols_list.append(symbol)
 
     for symbol in inputSymbols:
         if type(symbol) is str:
-            symbols.add(symbol.upper().strip())
+            add_symbol(symbol)
         elif type(symbol) is list or type(symbol) is tuple or type(symbol) is set:
             symbol = [comp for comp in symbol if type(comp) is str]
             for item in symbol:
-                symbols.add(item.upper().strip())
+                add_symbol(item)
 
-    return list(symbols)
+    return symbols_list
 
 def request_document(url,payload=None):
     """For a given url, makes a get request and returnes the session data.
