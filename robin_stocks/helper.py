@@ -153,7 +153,7 @@ def inputs_to_set(inputSymbols):
     return symbols_list
 
 def request_document(url,payload=None):
-    """For a given url, makes a get request and returnes the session data.
+    """Using a document url, makes a get request and returnes the session data.
 
     :param url: The url to send a get request to.
     :type url: str
@@ -257,7 +257,7 @@ def request_post(url,payload=None,timeout=16):
     return data
 
 def request_delete(url):
-    """For a given url and payload, makes a post request and returns the response.
+    """For a given url and payload, makes a delete request and returns the response.
 
     :param url: The url to send a delete request to.
     :type url: str
@@ -274,7 +274,7 @@ def request_delete(url):
     return data
 
 def update_session(key,value):
-    """For a given url and payload, makes a post request and returns the response.
+    """Updates the session header used by the requests library.
 
     :param key: The key value to update or add to session header.
     :type key: str

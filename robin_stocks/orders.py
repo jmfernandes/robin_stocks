@@ -115,7 +115,7 @@ def cancel_order(orderID):
         print('Order '+order_id+' cancelled')
     return(data)
 
-def order_buy_market(symbol,quantity,timeInForce='gtc'):
+def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -125,6 +125,8 @@ def order_buy_market(symbol,quantity,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: str
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -146,7 +148,8 @@ def order_buy_market(symbol,quantity,timeInForce='gtc'):
     'stop_price': None,
     'time_in_force': timeInForce,
     'trigger': 'immediate',
-    'side': 'buy'
+    'side': 'buy',
+    "extended_hours":extendedHours
     }
 
     url = urls.orders()
@@ -293,7 +296,7 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
 
     return(data)
 
-def order_sell_market(symbol,quantity,timeInForce='gtc'):
+def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -303,6 +306,8 @@ def order_sell_market(symbol,quantity,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: str
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -324,7 +329,8 @@ def order_sell_market(symbol,quantity,timeInForce='gtc'):
     'stop_price': None,
     'time_in_force': timeInForce,
     'trigger': 'immediate',
-    'side': 'sell'
+    'side': 'sell',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -471,7 +477,7 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
 
     return(data)
 
-def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForce):
+def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForce,extendedHours):
     """A generic order function. All parameters must be supplied.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -491,6 +497,8 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: str
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: str
     :returns: Dictionary that contains information regarding the purchase or selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -514,7 +522,8 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
     'trigger': trigger,
-    'side': side
+    'side': side,
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
