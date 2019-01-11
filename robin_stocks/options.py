@@ -261,11 +261,10 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
 
     return(helper.filter(mergedList,info))
 
-def find_options_for_list_of_stocks_by_expiration_date(*inputSymbols,expirationDate,optionType='both',info=None):
+def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDate,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param expirationDate: Represents the expiration date in the format YYYY-MM-DD.
     :type expirationDate: str
@@ -309,11 +308,10 @@ def find_options_for_list_of_stocks_by_expiration_date(*inputSymbols,expirationD
 
     return(helper.filter(data,info))
 
-def get_list_market_data(*inputSymbols,info=None):
+def get_list_market_data(inputSymbols,info=None):
     """Returns a list of option market data for several stock tickers.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]

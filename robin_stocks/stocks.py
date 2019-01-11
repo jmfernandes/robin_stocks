@@ -1,11 +1,10 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
-def get_quotes(*inputSymbols,info=None):
+def get_quotes(inputSymbols,info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
@@ -29,12 +28,11 @@ def get_quotes(*inputSymbols,info=None):
 
     return(helper.filter(data,info))
 
-def get_fundamentals(*inputSymbols,info=None):
+def get_fundamentals(inputSymbols,info=None):
     """Takes any number of stock tickers and returns fundamental information
     about the stock such as what sector it is in, a description of the company, dividend yield, and market cap.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
@@ -58,12 +56,11 @@ def get_fundamentals(*inputSymbols,info=None):
 
     return(helper.filter(data,info))
 
-def get_instruments_by_symbols(*inputSymbols,info=None):
+def get_instruments_by_symbols(inputSymbols,info=None):
     """Takes any number of stock tickers and returns information held by the market
     such as ticker name, bloomberg id, and listing date.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
@@ -90,7 +87,7 @@ def get_instrument_by_url(url,info=None):
     id of the stock.
 
     :param url: The url of the stock. Can be found in several locations including \
-    in the dictionary returned from get_instruments_by_symbols(\*inputSymbols,info=None)
+    in the dictionary returned from get_instruments_by_symbols(inputSymbols,info=None)
     :type url: str
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
@@ -102,11 +99,10 @@ def get_instrument_by_url(url,info=None):
 
     return(helper.filter(data,info))
 
-def get_latest_price(*inputSymbols):
+def get_latest_price(inputSymbols):
     """Takes any number of stock tickers and returns the latest price of each one as a string.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :returns: A list of prices as strings.
 
@@ -326,11 +322,10 @@ def find_instrument_data(query):
         print('Found '+str(len(data))+' results')
         return(data)
 
-def get_historicals(*inputSymbols,span='week',bounds='regular'):
+def get_historicals(inputSymbols,span='week',bounds='regular'):
     """Represents the data that is used to make the graphs.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param span: Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]

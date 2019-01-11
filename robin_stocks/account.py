@@ -365,11 +365,10 @@ def get_watchlist_by_name(name='Default',info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
-def post_symbols_to_watchlist(*inputSymbols,name='Default'):
+def post_symbols_to_watchlist(inputSymbols,name='Default'):
     """Posts multiple stock tickers to a watchlist.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param name: The name of the watchlist to post data to.
     :type name: Optional[str]
@@ -385,11 +384,10 @@ def post_symbols_to_watchlist(*inputSymbols,name='Default'):
 
     return(data)
 
-def delete_symbols_from_watchlist(*inputSymbols,name='Default'):
+def delete_symbols_from_watchlist(inputSymbols,name='Default'):
     """Deletes multiple stock tickers from a watchlist.
 
-    :param inputSymbols: This is a variable length parameter that represents a stock ticker. \
-    May be several tickers seperated by commas or a list of tickers.
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param name: The name of the watchlist to delete data from.
     :type name: Optional[str]
