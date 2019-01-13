@@ -142,11 +142,11 @@ def inputs_to_set(inputSymbols):
             symbols_set.add(symbol)
             symbols_list.append(symbol)
 
-    if type(symbol) is str:
-        add_symbol(symbol)
-    elif type(symbol) is list or type(symbol) is tuple or type(symbol) is set:
-        symbol = [comp for comp in symbol if type(comp) is str]
-        for item in symbol:
+    if type(inputSymbols) is str:
+        add_symbol(inputSymbols)
+    elif type(inputSymbols) is list or type(inputSymbols) is tuple or type(inputSymbols) is set:
+        inputSymbols = [comp for comp in inputSymbols if type(comp) is str]
+        for item in inputSymbols:
             add_symbol(item)
 
     return symbols_list
