@@ -88,6 +88,7 @@ from .options import get_aggregate_positions,                           \
                      find_options_for_stock_by_expiration_and_strike,   \
                      find_options_for_list_of_stocks_by_expiration_date,\
                      get_list_market_data,                              \
+                     get_list_options_of_specific_profitability,        \
                      get_option_market_data_by_id,                      \
                      get_option_market_data,                            \
                      get_option_instrument_data_by_id,                  \

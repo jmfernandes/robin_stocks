@@ -308,11 +308,13 @@ def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDa
 
     return(helper.filter(data,info))
 
-def get_list_market_data(inputSymbols,info=None):
+def get_list_market_data(inputSymbols,expirationDate,info=None):
     """Returns a list of option market data for several stock tickers.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
+    :param expirationDate: Represents the expiration date in the format YYYY-MM-DD.
+    :type expirationDate: str
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for all stock option market data. \
@@ -338,6 +340,55 @@ def get_list_market_data(inputSymbols,info=None):
         data.append(otherData)
 
     return(helper.filter(data,info))
+
+def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeProfit="chance_of_profit_short",profitFloor=0.5, profitCeiling=0.7,info=None):
+    """Returns a list of option market data for several stock tickers that match a range of profitability.
+
+    :param inputSymbols: May be a single stock ticker or a list of stock tickers.
+    :type inputSymbols: str or list
+    :param expirationDate: Represents the expiration date in the format YYYY-MM-DD.
+    :type expirationDate: str
+    :param typeProfit: Will either be "chance_of_profit_short" or "chance_of_profit_long".
+    :type typeProfit: str
+    :param profitFloor: The lower percentage on scale 0 to 1.
+    :type profitFloor: int
+    :param profitCeiling: The higher percentage on scale 0 to 1.
+    :type profitCeiling: int
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data. \
+    If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    symbols = helper.inputs_to_set(inputSymbols)
+    ids = []
+    data = []
+    returnData = []
+    url = urls.option_instruments()
+
+    for symbol in symbols:
+        payload = { 'chain_id' : helper.id_for_chain(symbol),
+                    'expiration_date' : expirationDate,
+                    'state' : 'active',
+                    'tradability' : 'tradable'}
+        otherData = helper.request_get(url,'pagination',payload)
+        for item in otherData:
+            ids.append(item['id'])
+
+    for id in ids:
+        url = urls.marketdata(id)
+        otherData = helper.request_get(url)
+        data.append(otherData)
+
+    for item in data:
+        try:
+            floatValue = float(item[typeProfit])
+            if (floatValue > profitFloor and floatValue < profitCeiling):
+                returnData.append(item)
+        except:
+            pass
+
+    return(helper.filter(returnData,info))
 
 def get_option_market_data_by_id(id,info=None):
     """Returns the option market data for a stock, including the greeks,
