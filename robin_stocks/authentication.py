@@ -5,10 +5,14 @@ def login(username,password,expiresIn=86400,scope='internal'):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header.
 
-    :param name: The username.
-    :type name: str
-    :param password: The password.
-    :type state: str
+    :param username: The username for your robinhood account. Usually your email.
+    :type username: str
+    :param password: The password for your robinhood account.
+    :type password: str
+    :param expiresIn: The time until your login session expires. This is in seconds.
+    :type expiresIn: Optional[int]
+    :param scope: Specifies the scope of the authentication.
+    :type scope: Optional[str]
     :returns:  A dictionary with log in information.
 
     """

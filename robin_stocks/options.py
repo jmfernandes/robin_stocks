@@ -341,7 +341,7 @@ def get_list_market_data(inputSymbols,expirationDate,info=None):
 
     return(helper.filter(data,info))
 
-def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeProfit="chance_of_profit_short",profitFloor=0.5, profitCeiling=0.7,info=None):
+def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeProfit="chance_of_profit_short",profitFloor=0.0, profitCeiling=1.0,info=None):
     """Returns a list of option market data for several stock tickers that match a range of profitability.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -365,6 +365,10 @@ def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeP
     data = []
     returnData = []
     url = urls.option_instruments()
+
+    if (typeProfit != "chance_of_profit_short" and typeProfit != "chance_of_profit_long"):
+        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.")
+        typeProfit = "chance_of_profit_short"
 
     for symbol in symbols:
         payload = { 'chain_id' : helper.id_for_chain(symbol),
