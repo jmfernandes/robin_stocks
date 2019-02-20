@@ -82,8 +82,7 @@ from .options import get_aggregate_positions,                           \
                      get_all_option_positions,                          \
                      get_open_option_positions,                         \
                      get_chains,                                        \
-                     get_available_option_calls,                        \
-                     get_available_option_puts,                         \
+                     find_tradable_options_for_stock,                   \
                      find_options_for_stock_by_expiration,              \
                      find_options_for_stock_by_strike,                  \
                      find_options_for_stock_by_expiration_and_strike,   \

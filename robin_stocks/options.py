@@ -169,7 +169,7 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
         return [None]
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)ß]
+    filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)]
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -202,7 +202,7 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
         return [None]
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)]
+    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)]
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
