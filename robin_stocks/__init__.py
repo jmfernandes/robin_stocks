@@ -1,10 +1,11 @@
 from .authentication import login, \
                             logout
 
-from .helper import request_get,    \
-                    request_post,   \
-                    request_delete, \
-                    request_document
+from .helper import request_get,      \
+                    request_post,     \
+                    request_delete,   \
+                    request_document, \
+                    update_session
 
 from .profiles import load_account_profile,     \
                       load_basic_profile,       \

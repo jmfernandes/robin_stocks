@@ -78,11 +78,13 @@ def get_chains(symbol,info=None):
 
     return(helper.filter(data,info))
 
-def get_available_option_calls(symbol,info=None):
-    """Returns a list of all available option calls for a stock.
+def find_tradable_options_for_stock(symbol,optionType='both',info=None):
+    """Returns a list of all available options for a stock.
 
     :param symbol: The ticker of the stock.
     :type symbol: str
+    :param optionType: Can be either 'call' or 'put' or left blank to get both.
+    :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for all calls of the stock. If info parameter is provided, \
@@ -91,43 +93,26 @@ def get_available_option_calls(symbol,info=None):
     """
     try:
         symbol = symbol.upper().strip()
+        optionType = optionType.lower().strip()
     except AttributeError as message:
         print(message)
         return [None]
 
     url = urls.option_instruments()
-    payload = { 'chain_id' : helper.id_for_chain(symbol),
-                'state' : 'active',
-                'tradability' : 'tradable',
-                'type' : 'call'}
+    if (optionType == 'call' or optionType == 'put'):
+        payload = { 'chain_id' : helper.id_for_chain(symbol),
+                    'state' : 'active',
+                    'tradability' : 'tradable',
+                    'rhs_tradability' : 'tradable',
+                    'type' : optionType}
+    else:
+        payload = { 'chain_id' : helper.id_for_chain(symbol),
+                    'state' : 'active',
+                    'tradability' : 'tradable',
+                    'rhs_tradability' : 'tradable'}
+
     data = helper.request_get(url,'pagination',payload)
-
-    return(helper.filter(data,info))
-
-def get_available_option_puts(symbol,info=None):
-    """Returns a list of all available option puts for a stock.
-
-    :param symbol: The ticker of the stock.
-    :type symbol: str
-    :param info: Will filter the results to get a specific value.
-    :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all puts of the stock. If info parameter is provided, \
-    a list of strings is returned where the strings are the value of the key that matches info.
-
-    """
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message)
-        return [None]
-
-    url = urls.option_instruments()
-    payload = { 'chain_id' : helper.id_for_chain(symbol),
-                'state' : 'active',
-                'tradability' : 'tradable',
-                'type' : 'put'}
-    data = helper.request_get(url,'pagination',payload)
-
+    data = [item for item in data if item['rhs_tradability'] == 'tradable']
     return(helper.filter(data,info))
 
 def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both',info=None):
@@ -137,7 +122,7 @@ def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both'
     :type symbol: str
     :param expirationDate: Represents the expiration date in the format YYYY-MM-DD.
     :type expirationDate: str
-    :param optionType: Can be either 'call' or 'put'.
+    :param optionType: Can be either 'call' or 'put' or leave blank to get both.
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -152,26 +137,14 @@ def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both'
         print(message)
         return [None]
 
-    if (optionType == 'call'):
-        calls = get_available_option_calls(symbol)
-        listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
-        mergedList = listOfCalls
-    elif (optionType == 'put'):
-        puts = get_available_option_puts(symbol)
-        listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
-        mergedList = listOfPuts
-    else:
-        calls = get_available_option_calls(symbol)
-        puts = get_available_option_puts(symbol)
-        listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate]
-        listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate]
-        mergedList = listOfCalls + listOfPuts
+    allOptions = find_tradable_options_for_stock(symbol,optionType)
+    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate]
 
-    for item in mergedList:
+    for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
         item.update(marketData)
 
-    return(helper.filter(mergedList,info))
+    return(helper.filter(filteredOptions,info))
 
 def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
@@ -180,7 +153,7 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
     :type symbol: str
     :param strike: Represents the price of the option.
     :type strike: str
-    :param optionType: Can be either 'call' or 'put'.
+    :param optionType: Can be either 'call' or 'put' or leave blank to get both.
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -195,26 +168,14 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
         print(message)
         return [None]
 
-    if (optionType == 'call'):
-        calls = get_available_option_calls(symbol)
-        listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
-        mergedList = listOfCalls
-    elif (optionType == 'put'):
-        puts = get_available_option_puts(symbol)
-        listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
-        mergedList = listOfPuts
-    else:
-        calls = get_available_option_calls(symbol)
-        puts = get_available_option_puts(symbol)
-        listOfCalls = [item for item in calls if float(item["strike_price"])== float(strike)]
-        listOfPuts = [item for item in puts if float(item["strike_price"])== float(strike)]
-        mergedList = listOfCalls + listOfPuts
+    allOptions = find_tradable_options_for_stock(symbol,optionType)
+    filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)ß]
 
-    for item in mergedList:
+    for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
         item.update(marketData)
 
-    return(helper.filter(mergedList,info))
+    return(helper.filter(filteredOptions,info))
 
 def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
@@ -225,7 +186,7 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
     :type expirationDate: str
     :param strike: Represents the price of the option.
     :type strike: str
-    :param optionType: Can be either 'call' or 'put'.
+    :param optionType: Can be either 'call' or 'put' or leave blank to get both.
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -240,26 +201,14 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
         print(message)
         return [None]
 
-    if (optionType == 'call'):
-        calls = get_available_option_calls(symbol)
-        listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
-        mergedList = listOfCalls
-    elif (optionType == 'put'):
-        puts = get_available_option_puts(symbol)
-        listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
-        mergedList = listOfPuts
-    else:
-        calls = get_available_option_calls(symbol)
-        puts = get_available_option_puts(symbol)
-        listOfCalls = [item for item in calls if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
-        listOfPuts = [item for item in puts if item["expiration_date"] == expirationDate and float(item["strike_price"])== float(strike)]
-        mergedList = listOfCalls + listOfPuts
+    allOptions = find_tradable_options_for_stock(symbol,optionType)
+    filteredOptions = [item for item in allOptions item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)]
 
-    for item in mergedList:
+    for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
         item.update(marketData)
 
-    return(helper.filter(mergedList,info))
+    return(helper.filter(filteredOptions,info))
 
 def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDate,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
@@ -268,7 +217,7 @@ def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDa
     :type inputSymbols: str or list
     :param expirationDate: Represents the expiration date in the format YYYY-MM-DD.
     :type expirationDate: str
-    :param optionType: Can be either 'call' or 'put'.
+    :param optionType: Can be either 'call' or 'put' or leave blank to get both.
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -291,15 +240,17 @@ def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDa
                         'expiration_date' : expirationDate,
                         'state' : 'active',
                         'tradability' : 'tradable',
+                        'rhs_tradability' : 'tradable',
                         'type' : optionType}
         else:
             payload = { 'chain_id' : helper.id_for_chain(symbol),
                         'expiration_date' : expirationDate,
                         'state' : 'active',
-                        'tradability' : 'tradable'}
+                        'tradability' : 'tradable',
+                        'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            if item['expiration_date'] == expirationDate:
+            if (item['expiration_date'] == expirationDate and item['rhs_tradability'] == 'tradable'):
                 data.append(item)
 
     for item in data:
@@ -329,10 +280,12 @@ def get_list_market_data(inputSymbols,expirationDate,info=None):
         payload = { 'chain_id' : helper.id_for_chain(symbol),
                     'expiration_date' : expirationDate,
                     'state' : 'active',
-                    'tradability' : 'tradable'}
+                    'tradability' : 'tradable',
+                    'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            ids.append(item['id'])
+            if (item['expiration_date'] == expirationDate and item['rhs_tradability'] == 'tradable'):
+                ids.append(item['id'])
 
     for id in ids:
         url = urls.marketdata(id)
@@ -374,10 +327,12 @@ def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeP
         payload = { 'chain_id' : helper.id_for_chain(symbol),
                     'expiration_date' : expirationDate,
                     'state' : 'active',
-                    'tradability' : 'tradable'}
+                    'tradability' : 'tradable',
+                    'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            ids.append(item['id'])
+            if (item['rhs_tradability'] == 'tradable'):
+                ids.append(item['id'])
 
     for id in ids:
         url = urls.marketdata(id)
