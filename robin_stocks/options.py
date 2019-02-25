@@ -103,16 +103,13 @@ def find_tradable_options_for_stock(symbol,optionType='both',info=None):
         payload = { 'chain_id' : helper.id_for_chain(symbol),
                     'state' : 'active',
                     'tradability' : 'tradable',
-                    'rhs_tradability' : 'tradable',
                     'type' : optionType}
     else:
         payload = { 'chain_id' : helper.id_for_chain(symbol),
                     'state' : 'active',
-                    'tradability' : 'tradable',
-                    'rhs_tradability' : 'tradable'}
+                    'tradability' : 'tradable'}
 
     data = helper.request_get(url,'pagination',payload)
-    data = [item for item in data if item['rhs_tradability'] == 'tradable']
     return(helper.filter(data,info))
 
 def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both',info=None):
@@ -138,7 +135,8 @@ def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both'
         return [None]
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate]
+    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate
+                        and item['rhs_tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -169,7 +167,8 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
         return [None]
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)]
+    filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)
+                        and item['rhs_tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -202,7 +201,8 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
         return [None]
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)]
+    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)
+                        and item['rhs_tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
