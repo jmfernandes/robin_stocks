@@ -8,6 +8,8 @@ Robinhood API. This is a pure python interface and it requires Python3. The purp
 of this library is to allow people to make their own robo-investors or to view
 stock information in real time.
 
+To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/enQtNTY0MTgzNDg4MTAzLWFhYjM4MGVkYmFiZTk3NjM3YjgwYzZkZDBkMzI3MDdjOGRiZjg0NDhiN2I5MzEwY2VkZGRkMmJiZTk2ZGEyZDQ
+
 Installing
 ========================
 There is no need to download these files directly. This project is published on PyPi,
@@ -43,6 +45,7 @@ There is also the ability to buy and sell stocks. For example, if you wanted to 
 of Apple, you would type
 
 >>> r.order_buy_market('AAPL',10)
+
 
 and if you wanted to sell half your Tesla stock if it fell to 200.00 you would type
 
