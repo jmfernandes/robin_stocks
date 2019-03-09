@@ -23,7 +23,7 @@ Pip tools are automatically installed when you install python.
 Functions Contained
 ========================
 
-For a complete list of functions and how to use them, go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/>`_.
+For a complete list of functions and how to use them, go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/functions.html>`_.
 
 Example Usage
 ========================
