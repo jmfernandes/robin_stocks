@@ -17,8 +17,8 @@ so it can be installed by typing into terminal (on Mac) or into command prompt (
 
 >>> pip install robin_stocks
 
-Also be sure that Python3 is installed. If you need to install python you can download it `here <https://www.python.org/downloads/>`_.
-Pip tools are automatically installed when you install python.
+Also be sure that Python 3 is installed. If you need to install python you can download it `here <https://www.python.org/downloads/>`_.
+Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go `here <https://pypi.org/project/pip/>`_.
 
 Functions Contained
 ========================
