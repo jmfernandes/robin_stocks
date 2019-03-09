@@ -13,9 +13,17 @@ To join our Slack channel where you can discuss trading and coding, click the li
 Installing
 ========================
 There is no need to download these files directly. This project is published on PyPi,
-so it can be installed by typing into terminal:
+so it can be installed by typing into terminal (on Mac) or into command prompt (on PC):
 
 >>> pip install robin_stocks
+
+Also be sure that Python3 is installed. If you need to install python you can download it [here](https://www.python.org/downloads/ "Python Download").
+Pip tools are automatically installed when you install python.
+
+Functions Contained
+========================
+
+For a complete list of functions and how to use them, go to [robin-stocks.com](http://www.robin-stocks.com/en/latest/ "Robin Stocks").
 
 Example Usage
 ========================
@@ -68,13 +76,13 @@ and you are free to write your own functions that interact with the Robinhood AP
 exposed the get and post methods so any call to the Robinhood API could be made. The syntax is
 
 >>> url = 'https://api.robinhood.com/'
->>> payload = { 'key1', 'value1'}
+>>> payload = { 'key1' : 'value1', 'key2' : 'value2'}
 >>> r.request_get(url,'regular',payload)
 
-The above code would results in a get request to ``https://api.robinhood.com/?key1=value1`` (which is a
-meaningless request).
-
-Functions Contained
-========================
-
-For a complete list of functions and how to use them, go to http://www.robin-stocks.com/
+The above code would results in a get request to ``https://api.robinhood.com/?key1=value1&key2=value2`` (which is a
+meaningless request). RobinHood returns most data as { 'previous' : None, 'results' : [], 'next' : None},
+where ‘results’ is either a dictionary or a list of dictionaries. If a particular query returns more entries than can be stored
+in 'results', then those will be stored in 'next', which is simply a url link to the next set of data.
+Keep in mind that RobinHood will sometimes return the data in a different format.
+To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
+In most cases, you want to use 'pagination' to get all the results.
