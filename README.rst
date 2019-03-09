@@ -86,3 +86,10 @@ in 'results', then those will be stored in 'next', which is simply a url link to
 Keep in mind that RobinHood will sometimes return the data in a different format.
 To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
 In most cases, you want to use 'pagination' to get all the results.
+
+
+New Features In The Works
+========================
+
+- Options Trading
+- Trading using TD Ameritrade
