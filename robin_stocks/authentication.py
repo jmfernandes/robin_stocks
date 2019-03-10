@@ -25,7 +25,7 @@ def login(username,password,expiresIn=86400,scope='internal'):
     'scope': scope,
     'username': username
     }
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url,payload) 
     token = 'Bearer {}'.format(data['access_token'])
     helper.update_session('Authorization',token)
     return(data)
