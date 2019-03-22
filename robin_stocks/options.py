@@ -1,6 +1,7 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
+@helper.login_required
 def get_aggregate_positions(info=None):
     """Collapses all option orders for a stock into a single dictionary.
 
@@ -14,6 +15,7 @@ def get_aggregate_positions(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_market_options(info=None):
     """Returns a list of all options.
 
@@ -28,6 +30,7 @@ def get_market_options(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_all_option_positions(info=None):
     """Returns all option positions ever held for the account.
 
@@ -41,6 +44,7 @@ def get_all_option_positions(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_open_option_positions(info=None):
     """Returns all open option positions for the account.
 

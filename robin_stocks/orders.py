@@ -3,6 +3,7 @@ import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
 
+@helper.login_required
 def get_all_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
 
@@ -16,6 +17,7 @@ def get_all_orders(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_all_open_orders(info=None):
     """Returns a list of all the orders that are currently open.
 
@@ -32,6 +34,7 @@ def get_all_open_orders(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_order_info(orderID):
     """Returns the information for a single order.
 
@@ -44,6 +47,7 @@ def get_order_info(orderID):
     data = helper.request_get(url)
     return(data)
 
+@helper.login_required
 def find_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
 
@@ -82,6 +86,7 @@ def find_orders(**arguments):
 
     return(list_of_orders)
 
+@helper.login_required
 def cancel_all_open_orders():
     """Cancels all open orders.
 
@@ -100,6 +105,7 @@ def cancel_all_open_orders():
     print('All Orders Cancelled')
     return(items)
 
+@helper.login_required
 def cancel_order(orderID):
     """Cancels a specific order.
 
@@ -115,6 +121,7 @@ def cancel_order(orderID):
         print('Order '+order_id+' cancelled')
     return(data)
 
+@helper.login_required
 def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     """Submits a market order to be executed immediately.
 
@@ -157,6 +164,7 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
 
     return(data)
 
+@helper.login_required
 def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     """Submits a limit order to be executed once a certain price is reached.
 
@@ -199,6 +207,7 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
 
     return(data)
 
+@helper.login_required
 def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
@@ -246,6 +255,7 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
 
     return(data)
 
+@helper.login_required
 def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
@@ -296,6 +306,7 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
 
     return(data)
 
+@helper.login_required
 def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     """Submits a market order to be executed immediately.
 
@@ -338,6 +349,7 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
 
     return(data)
 
+@helper.login_required
 def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     """Submits a limit order to be executed once a certain price is reached.
 
@@ -380,6 +392,7 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
 
     return(data)
 
+@helper.login_required
 def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
@@ -427,6 +440,7 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
 
     return(data)
 
+@helper.login_required
 def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
@@ -477,6 +491,7 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
 
     return(data)
 
+@helper.login_required
 def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForce,extendedHours):
     """A generic order function. All parameters must be supplied.
 
