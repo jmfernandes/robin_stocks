@@ -4,6 +4,7 @@ import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
 
+@helper.login_required
 def get_all_positions(info=None):
     """Returns a list containing every position ever traded.
 
@@ -18,6 +19,7 @@ def get_all_positions(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_current_positions(info=None):
     """Returns a list of stocks/options that are currently held.
 
@@ -33,6 +35,7 @@ def get_current_positions(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_dividends(info=None):
     """Returns a list of dividend trasactions that include information such as the percentage rate,
     amount, shares of held stock, and date paid.
@@ -48,6 +51,7 @@ def get_dividends(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_total_dividends():
     """Returns a float number representing the total amount of dividends paid to the account.
 
@@ -62,6 +66,7 @@ def get_total_dividends():
         dividend_total += float(item['amount'])
     return(dividend_total)
 
+@helper.login_required
 def get_notifications(info=None):
     """Returns a list of notifications.
 
@@ -76,6 +81,7 @@ def get_notifications(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_latest_notification():
     """Returns the time of the latest notification.
 
@@ -86,6 +92,7 @@ def get_latest_notification():
     data = helper.request_get(url)
     return(data)
 
+@helper.login_required
 def get_wire_transfers(info=None):
     """Returns a list of wire transfers.
 
@@ -99,6 +106,7 @@ def get_wire_transfers(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_margin_calls(symbol=None):
     """Returns either all margin calls or margin calls for a specific stock.
 
@@ -121,6 +129,7 @@ def get_margin_calls(symbol=None):
 
     return(data)
 
+@helper.login_required
 def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
 
@@ -133,6 +142,7 @@ def get_linked_bank_accounts(info=None):
     data = helper.request_get(url,'results')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_bank_account_info(id,info=None):
     """Returns a single dictionary of bank information
 
@@ -148,6 +158,7 @@ def get_bank_account_info(id,info=None):
     data = helper.request_get(url)
     return(helper.filter(data,info))
 
+@helper.login_required
 def unlink_bank_account(id):
     """Unlinks a bank account.
 
@@ -160,6 +171,7 @@ def unlink_bank_account(id):
     data = helper.request_post(url)
     return(data)
 
+@helper.login_required
 def get_bank_transfers(info=None):
     """Returns all bank transfers made for the account.
 
@@ -173,6 +185,7 @@ def get_bank_transfers(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_stock_loan_payments(info=None):
     """Returns a list of loan payments.
 
@@ -186,6 +199,7 @@ def get_stock_loan_payments(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_margin_interest(info=None):
     """Returns a list of margin interest.
 
@@ -199,6 +213,7 @@ def get_margin_interest(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_subscription_fees(info=None):
     """Returns a list of subscription fees.
 
@@ -212,6 +227,7 @@ def get_subscription_fees(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_referrals(info=None):
     """Returns a list of referrals.
 
@@ -225,6 +241,7 @@ def get_referrals(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_day_trades(info=None):
     """Returns recent day trades.
 
@@ -239,6 +256,7 @@ def get_day_trades(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_documents(info=None):
     """Returns a list of documents that have been released by Robinhood to the account.
 
@@ -253,6 +271,7 @@ def get_documents(info=None):
 
     return(helper.filter(data,info))
 
+@helper.login_required
 def download_document(url,name=None,dirpath=None):
     """Downloads a document and saves as it as a PDF. If no name is given, document is saved as
     the name that Robinhood has for the document. If no directory is given, document is saved in the root directory of code.
@@ -285,6 +304,7 @@ def download_document(url,name=None,dirpath=None):
 
     return(data)
 
+@helper.login_required
 def download_all_documents(doctype=None,dirpath=None):
     """Downloads all the documents associated with an account and saves them as a PDF.
     If no name is given, document is saved as a combination of the data of creation, type, and id.
@@ -339,6 +359,7 @@ def download_all_documents(doctype=None,dirpath=None):
 
     return(documents)
 
+@helper.login_required
 def get_all_watchlists(info=None):
     """Returns a list of all watchlists that have been created. Everone has a 'default' watchlist.
 
@@ -351,6 +372,7 @@ def get_all_watchlists(info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_watchlist_by_name(name='Default',info=None):
     """Returns a list of information related to the stocks in a single watchlist.
 
@@ -365,6 +387,7 @@ def get_watchlist_by_name(name='Default',info=None):
     data = helper.request_get(url,'pagination')
     return(helper.filter(data,info))
 
+@helper.login_required
 def post_symbols_to_watchlist(inputSymbols,name='Default'):
     """Posts multiple stock tickers to a watchlist.
 
@@ -384,6 +407,7 @@ def post_symbols_to_watchlist(inputSymbols,name='Default'):
 
     return(data)
 
+@helper.login_required
 def delete_symbols_from_watchlist(inputSymbols,name='Default'):
     """Deletes multiple stock tickers from a watchlist.
 
@@ -413,6 +437,7 @@ def delete_symbols_from_watchlist(inputSymbols,name='Default'):
 
     return(data)
 
+@helper.login_required
 def build_holdings():
     """Builds a dictionary of important information regarding the stocks and positions owned by the user.
 
@@ -421,10 +446,12 @@ def build_holdings():
     percentage of portfolio, and average buy price.
 
     """
-    holdings = {}
     positions_data = get_current_positions()
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
+
+    if not positions_data or not portfolios_data or not accounts_data:
+        return({})
 
     if portfolios_data['extended_hours_equity'] is not None:
         total_equity = max(float(portfolios_data['equity']),float(portfolios_data['extended_hours_equity']))
@@ -433,7 +460,12 @@ def build_holdings():
 
     cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
 
+    holdings = {}
     for item in positions_data:
+        # It is possible for positions_data to be [None]
+        if not item:
+            continue
+
         instrument_data = stocks.get_instrument_by_url(item['instrument'])
         symbol = instrument_data['symbol']
         fundamental_data = stocks.get_fundamentals(symbol)[0]
@@ -462,6 +494,7 @@ def build_holdings():
 
     return(holdings)
 
+@helper.login_required
 def build_user_profile():
     """Builds a dictionary of important information regarding the user account.
 
@@ -473,11 +506,13 @@ def build_user_profile():
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
 
-    user['equity'] = portfolios_data['equity']
-    user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
+    if portfolios_data:
+      user['equity'] = portfolios_data['equity']
+      user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
 
-    cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
-    user['cash'] = cash
+    if accounts_data:
+      cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
+      user['cash'] = cash
 
     user['dividend_total'] = get_total_dividends()
 
