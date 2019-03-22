@@ -446,10 +446,12 @@ def build_holdings():
     percentage of portfolio, and average buy price.
 
     """
-    holdings = {}
     positions_data = get_current_positions()
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
+
+    if not positions_data or not portfolios_data or not accounts_data:
+        return({})
 
     if portfolios_data['extended_hours_equity'] is not None:
         total_equity = max(float(portfolios_data['equity']),float(portfolios_data['extended_hours_equity']))
@@ -458,7 +460,12 @@ def build_holdings():
 
     cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
 
+    holdings = {}
     for item in positions_data:
+        # It is possible for positions_data to be [None]
+        if not item:
+            continue
+
         instrument_data = stocks.get_instrument_by_url(item['instrument'])
         symbol = instrument_data['symbol']
         fundamental_data = stocks.get_fundamentals(symbol)[0]
@@ -499,11 +506,13 @@ def build_user_profile():
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
 
-    user['equity'] = portfolios_data['equity']
-    user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
+    if portfolios_data:
+      user['equity'] = portfolios_data['equity']
+      user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
 
-    cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
-    user['cash'] = cash
+    if accounts_data:
+      cash = "{0:.2f}".format(float(accounts_data['cash'])+float(accounts_data['uncleared_deposits']))
+      user['cash'] = cash
 
     user['dividend_total'] = get_total_dividends()
 

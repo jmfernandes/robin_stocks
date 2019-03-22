@@ -3,15 +3,19 @@ import requests
 
 __is_logged_in__ = False
 
+def set_login_state(logged_in):
+    global __is_logged_in__
+    __is_logged_in__ = logged_in
+
 def login_required(func):
     """A decorator for indicating which methods require the user to be logged
        in."""
-    def login_wrapper():
+    def login_wrapper(*args, **kwargs):
       global __is_logged_in__
       if not __is_logged_in__:
           raise Exception('{} can only be called when logged in'.format(
               func.__name__))
-      func(*args, **kwargs)
+      return func(*args, **kwargs)
     return login_wrapper
 
 def id_for_stock(symbol):
@@ -114,7 +118,7 @@ def filter(data,info):
 
     """
     if (data == None or data == [None]):
-        return None
+        return data
     elif (type(data) == list):
         if (len(data) == 0):
             return([None])

@@ -32,8 +32,7 @@ def login(username,password,expiresIn=86400,scope='internal'):
     data = helper.request_post(url,payload) 
     token = 'Bearer {}'.format(data['access_token'])
     helper.update_session('Authorization',token)
-    global __is_logged_in__
-    __is_logged_in__ = True
+    helper.set_login_state(True)
     return(data)
 
 @helper.login_required
@@ -43,6 +42,5 @@ def logout():
     :returns: None
 
     """
-    global __is_logged_in__
-    __is_logged_in__ = False
+    helper.set_login_state(False)
     helper.update_session('Authorization',None)
