@@ -1,6 +1,17 @@
 from robin_stocks.constants import Session
 import requests
 
+__is_logged_in__ = False
+
+def login_required(func):
+    def login_wrapper():
+      global __is_logged_in__
+      if not __is_logged_in__:
+          raise Exception('{} can only be called when logged in'.format(
+              func.__name__))
+      func(*args, **kwargs)
+    return login_wrapper
+
 def id_for_stock(symbol):
     """Takes a stock ticker and returns the instrument id associated with the stock.
 
@@ -101,7 +112,7 @@ def filter(data,info):
 
     """
     if (data == None or data == [None]):
-        return data
+        return None
     elif (type(data) == list):
         if (len(data) == 0):
             return([None])

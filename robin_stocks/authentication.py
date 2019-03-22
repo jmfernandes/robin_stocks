@@ -16,6 +16,10 @@ def login(username,password,expiresIn=86400,scope='internal'):
     :returns:  A dictionary with log in information.
 
     """
+    if not username or not password: 
+        raise Exception('login must be called with a non-empty username and '
+            'password')
+
     url = urls.login_url()
     payload = {
     'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
@@ -28,12 +32,17 @@ def login(username,password,expiresIn=86400,scope='internal'):
     data = helper.request_post(url,payload) 
     token = 'Bearer {}'.format(data['access_token'])
     helper.update_session('Authorization',token)
+    global __is_logged_in__
+    __is_logged_in__ = True
     return(data)
 
+@helper.login_required
 def logout():
     """Removes authorization from the session header.
 
     :returns: None
 
     """
+    global __is_logged_in__
+    __is_logged_in__ = False
     helper.update_session('Authorization',None)
