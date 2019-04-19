@@ -8,7 +8,7 @@ Robinhood API. This is a pure python interface and it requires Python3. The purp
 of this library is to allow people to make their own robo-investors or to view
 stock information in real time.
 
-To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/enQtNTY0MTgzNDg4MTAzLWFhYjM4MGVkYmFiZTk3NjM3YjgwYzZkZDBkMzI3MDdjOGRiZjg0NDhiN2I5MzEwY2VkZGRkMmJiZTk2ZGEyZDQ
+To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/enQtNjE1MzY4NDY0MzkwLTI0YmVmZDVhZTQzYTdjMGZlYjM2YzQ2ODIwNDk3ZjA5ZDQ0ZWYzNjQyMzY0MmQ5ZWE2YjljODk3YjgwZTQyYmQ
 
 Installing
 ========================
