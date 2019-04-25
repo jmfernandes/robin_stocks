@@ -418,8 +418,8 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
         print(message)
         return None
 
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
+    if (latestPrice < stopPrice):
+        print('Error: stopPrice must be below the current price.')
         return(None)
 
     payload = {
@@ -469,8 +469,8 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
         print(message)
         return None
 
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
+    if (latestPrice < stopPrice):
+        print('Error: stopPrice must be below the current price.')
         return(None)
 
     payload = {
