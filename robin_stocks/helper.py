@@ -1,4 +1,5 @@
 from robin_stocks.constants import Session
+from functools import wraps
 import requests
 
 __is_logged_in__ = False
@@ -10,6 +11,7 @@ def set_login_state(logged_in):
 def login_required(func):
     """A decorator for indicating which methods require the user to be logged
        in."""
+    @wraps(func)
     def login_wrapper(*args, **kwargs):
       global __is_logged_in__
       if not __is_logged_in__:
