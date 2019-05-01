@@ -3,6 +3,11 @@ import robin_stocks.helper as helper
 import random
 
 def GenerateDeviceToken():
+    """This function will generate a token used when loggin on.
+
+    :returns: A string representing the token.
+    
+    """
     rands = []
     for i in range(0,16):
         r = random.random()
