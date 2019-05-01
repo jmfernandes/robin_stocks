@@ -1,5 +1,6 @@
 import robin_stocks.urls as urls
 import robin_stocks.helper as helper
+import random
 
 def GenerateDeviceToken():
     rands = []
