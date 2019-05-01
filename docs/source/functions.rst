@@ -23,7 +23,7 @@ Logging In and Out
 ----
 
 .. automodule:: robin_stocks.authentication
-   :members:
+   :members: login, logout
 
 Loading Profiles
 ------------------
