@@ -5,6 +5,9 @@ import robin_stocks.helper as helper
 def login_url():
     return('https://api.robinhood.com/oauth2/token/')
 
+def challenge_url(challenge_id):
+    return('https://api.robinhood.com/challenge/{}/respond/'.format(challenge_id))
+
 ### Profiles
 
 def account_profile():

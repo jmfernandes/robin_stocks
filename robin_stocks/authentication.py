@@ -2,7 +2,9 @@ import robin_stocks.urls as urls
 import robin_stocks.helper as helper
 import random
 
-def GenerateDeviceToken():
+TEMP_DEVICE_TOKEN = None
+
+def generate_device_token():
     """This function will generate a token used when loggin on.
 
     :returns: A string representing the token.
@@ -27,19 +29,11 @@ def GenerateDeviceToken():
 
     return(id)
 
-def login(username,password,expiresIn=86400,scope='internal'):
-    """This function will effectivly log the user into robinhood by getting an
-    authentication token and saving it to the session header.
+def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
+    """This function will try to log the user in and will return the response data.
+    It may contain a challenge (sms) or the access token.
 
-    :param username: The username for your robinhood account. Usually your email.
-    :type username: str
-    :param password: The password for your robinhood account.
-    :type password: str
-    :param expiresIn: The time until your login session expires. This is in seconds.
-    :type expiresIn: Optional[int]
-    :param scope: Specifies the scope of the authentication.
-    :type scope: Optional[str]
-    :returns:  A dictionary with log in information.
+    :returns:  A dictionary with response information.
 
     """
     if not username or not password:
@@ -55,12 +49,70 @@ def login(username,password,expiresIn=86400,scope='internal'):
     'scope': scope,
     'username': username,
     'challenge_type': 'sms',
-    'device_token': GenerateDeviceToken()
+    'device_token': device_token
     }
     data = helper.request_post(url,payload)
-    token = 'Bearer {}'.format(data['access_token'])
-    helper.update_session('Authorization',token)
-    helper.set_login_state(True)
+    return(data)
+
+def respond_to_challenge(challenge_id, sms_code):
+    url = urls.challenge_url(challenge_id)
+    payload = {
+        'response': sms_code
+    }
+    return(helper.request_post(url,payload=payload))
+
+def get_new_device_token(username, password):
+    """This function will create and activate a new device token for the user, which should be stored
+    and used for future login attempts.
+
+    :param username: The username for your robinhood account. Usually your email.
+    :type username: str
+    :param password: The password for your robinhood account.
+    :type password: str
+    :returns:  A string which is the device token or None if the token could not be validated with an sms code.
+
+    """
+    device_token = generate_device_token()
+    initial_login = base_login(username, password, device_token)
+    challenge_id = initial_login['challenge']['id']
+    sms_code = input('Enter sms code for validating device_token: ')
+    res = respond_to_challenge(challenge_id, sms_code)
+    while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
+        sms_code = input('Incorred code, try again: ')
+        res = respond_to_challenge(challenge_id, sms_code)
+    if 'status' in res and res['status'] == 'validated':
+        helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
+        return(device_token)
+    else:
+        raise Exception(res['detail'])
+
+def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope='internal'):
+    """This function will effectivly log the user into robinhood by getting an
+    authentication token and saving it to the session header.
+
+    :param username: The username for your robinhood account. Usually your email.
+    :type username: str
+    :param password: The password for your robinhood account.
+    :type password: str
+    :param device_token: The device_token you should re-use (can be saved with "robin_stocks.get_new_device_token()").
+    :type device_token: str
+    :param expiresIn: The time until your login session expires. This is in seconds.
+    :type expiresIn: Optional[int]
+    :param scope: Specifies the scope of the authentication.
+    :type scope: Optional[str]
+    :returns:  A dictionary with log in information.
+
+    """
+    if not device_token:
+        TEMP_DEVICE_TOKEN = get_new_device_token(username, password)
+        device_token = TEMP_DEVICE_TOKEN
+    data = base_login(username, password, device_token)
+    if 'access_token' in data:
+        token = 'Bearer {}'.format(data['access_token'])
+        helper.update_session('Authorization',token)
+        helper.set_login_state(True)
+    else:
+        print(data)
     return(data)
 
 @helper.login_required
