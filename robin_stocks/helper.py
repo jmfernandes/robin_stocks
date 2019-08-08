@@ -278,6 +278,7 @@ def request_post(url,payload=None,timeout=16):
                 mfa_token = input("That MFA code was not correct. Please Type In Another MFA Code: ")
                 payload['mfa_code'] = mfa_token
                 res = Session.post(url, data=payload, timeout=timeout)
+            data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
         data = None
         print(message)

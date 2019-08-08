@@ -3,12 +3,13 @@ import robin_stocks.helper as helper
 import random
 
 TEMP_DEVICE_TOKEN = None
+LOGIN_DATA = None
 
 def generate_device_token():
     """This function will generate a token used when loggin on.
 
     :returns: A string representing the token.
-    
+
     """
     rands = []
     for i in range(0,16):
@@ -74,6 +75,10 @@ def get_new_device_token(username, password):
     """
     device_token = generate_device_token()
     initial_login = base_login(username, password, device_token)
+    if 'challenge' not in initial_login:
+        global LOGIN_DATA
+        LOGIN_DATA = initial_login
+        return(device_token)
     challenge_id = initial_login['challenge']['id']
     sms_code = input('Enter sms code for validating device_token: ')
     res = respond_to_challenge(challenge_id, sms_code)
@@ -106,8 +111,14 @@ def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope
     if not device_token:
         TEMP_DEVICE_TOKEN = get_new_device_token(username, password)
         device_token = TEMP_DEVICE_TOKEN
-    data = base_login(username, password, device_token)
-    if 'access_token' in data:
+    if not LOGIN_DATA:
+        data = base_login(username, password, device_token)
+    if LOGIN_DATA:
+        token = 'Bearer {}'.format(LOGIN_DATA['access_token'])
+        helper.update_session('Authorization',token)
+        helper.set_login_state(True)
+        data = LOGIN_DATA
+    elif 'access_token' in data:
         token = 'Bearer {}'.format(data['access_token'])
         helper.update_session('Authorization',token)
         helper.set_login_state(True)
