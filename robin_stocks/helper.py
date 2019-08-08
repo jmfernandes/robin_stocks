@@ -266,8 +266,11 @@ def request_post(url,payload=None,timeout=16):
     """
     try:
         res = Session.post(url, data=payload, timeout=timeout)
+        data = res.json()
+        if 'challenge' in data:
+            return data
         res.raise_for_status()
-        if 'mfa_required' in res.json():
+        if 'mfa_required' in data:
             mfa_token = input("Please Type In The MFA Code: ")
             payload['mfa_code'] = mfa_token
             res = Session.post(url, data=payload, timeout=timeout)
@@ -275,7 +278,6 @@ def request_post(url,payload=None,timeout=16):
                 mfa_token = input("That MFA code was not correct. Please Type In Another MFA Code: ")
                 payload['mfa_code'] = mfa_token
                 res = Session.post(url, data=payload, timeout=timeout)
-        data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
         data = None
         print(message)

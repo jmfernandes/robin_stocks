@@ -1,5 +1,6 @@
 from .authentication import login, \
-                            logout
+                            logout,\
+                            get_new_device_token
 
 from .helper import request_get,      \
                     request_post,     \
