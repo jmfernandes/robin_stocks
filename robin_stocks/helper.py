@@ -5,6 +5,7 @@ import requests
 __is_logged_in__ = False
 
 def set_login_state(logged_in):
+    """Sets the login state"""
     global __is_logged_in__
     __is_logged_in__ = logged_in
 

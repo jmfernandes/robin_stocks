@@ -34,6 +34,16 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     """This function will try to log the user in and will return the response data.
     It may contain a challenge (sms) or the access token.
 
+    :param username: The username for your robinhood account. Usually your email.
+    :type username: str
+    :param password: The password for your robinhood account.
+    :type password: str
+    :param device_token: The device_token you should re-use (can be saved with "robin_stocks.get_new_device_token()").
+    :type device_token: str
+    :param expiresIn: The time until your login session expires. This is in seconds.
+    :type expiresIn: Optional[int]
+    :param scope: Specifies the scope of the authentication.
+    :type scope: Optional[str]
     :returns:  A dictionary with response information.
 
     """
@@ -56,6 +66,15 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     return(data)
 
 def respond_to_challenge(challenge_id, sms_code):
+    """This functino will post to the challenge url.
+
+    :param challenge_id: The challenge id.
+    :type challenge_id: str
+    :param sms_code: The sms code.
+    :type sms_code: str
+    :returns:  The response from requests.
+
+    """
     url = urls.challenge_url(challenge_id)
     payload = {
         'response': sms_code
