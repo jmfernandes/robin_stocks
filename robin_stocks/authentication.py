@@ -27,7 +27,7 @@ def generate_device_token():
 
         if (i == 3) or (i == 5) or (i == 7) or (i == 9):
             id += "-"
-
+    print(f'generated device_token: {id}')
     return(id)
 
 def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
@@ -66,7 +66,7 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     return(data)
 
 def respond_to_challenge(challenge_id, sms_code):
-    """This functino will post to the challenge url.
+    """This function will post to the challenge url.
 
     :param challenge_id: The challenge id.
     :type challenge_id: str
