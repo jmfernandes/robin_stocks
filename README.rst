@@ -92,4 +92,5 @@ New Features In The Works
 ========================
 
 - Options Trading
+- CryptoCurrency Trading
 - Trading using TD Ameritrade
