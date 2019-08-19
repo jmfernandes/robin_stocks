@@ -161,6 +161,9 @@ def marketdata(id):
 def cancel(url):
     return('https://api.robinhood.com/orders/{}/cancel/'.format(url))
 
+def option_cancel(id):
+    return('https://api.robinhood.com/options/orders/{}/cancel/'.format(id))
+
 def orders(orderID = None):
     if orderID:
         return('https://api.robinhood.com/orders/{}/'.format(orderID))

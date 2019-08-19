@@ -92,7 +92,7 @@ def find_orders(**arguments):
 def cancel_all_open_orders():
     """Cancels all open orders.
 
-    :returns: The list of orders taht were cancelled.
+    :returns: The list of orders that were cancelled.
 
     """
     url = urls.orders()
@@ -117,6 +117,22 @@ def cancel_order(orderID):
 
     """
     url = urls.cancel(orderID)
+    data = helper.request_post(url)
+
+    if data:
+        print('Order '+order_id+' cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_option_order(orderID):
+    """Cancels a specific option order.
+
+    :param orderID: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+    :type orderID: str
+    :returns: Returns the order information for the order that was cancelled.
+
+    """
+    url = urls.option_cancel(orderID)
     data = helper.request_post(url)
 
     if data:
@@ -551,7 +567,28 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 
 @helper.login_required
 def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a limit order for an option.
 
+    :param price: The limit price to trigger a buy or sell of the option.
+    :type price: int
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to buy/sell.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -575,7 +612,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
 	'override_dtbp_checks': False,
     'ref_id': str(uuid4())
     }
-    
+
     url = urls.option_orders()
     data = helper.request_post(url,payload, json=True)
 
