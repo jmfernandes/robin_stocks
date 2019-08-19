@@ -3,6 +3,8 @@ import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
 
+from uuid import uuid4
+
 @helper.login_required
 def get_all_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
@@ -90,7 +92,7 @@ def find_orders(**arguments):
 def cancel_all_open_orders():
     """Cancels all open orders.
 
-    :returns: The list of orders taht were cancelled.
+    :returns: The list of orders that were cancelled.
 
     """
     url = urls.orders()
@@ -115,6 +117,22 @@ def cancel_order(orderID):
 
     """
     url = urls.cancel(orderID)
+    data = helper.request_post(url)
+
+    if data:
+        print('Order '+order_id+' cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_option_order(orderID):
+    """Cancels a specific option order.
+
+    :param orderID: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+    :type orderID: str
+    :returns: Returns the order information for the order that was cancelled.
+
+    """
+    url = urls.option_cancel(orderID)
     data = helper.request_post(url)
 
     if data:
@@ -543,5 +561,59 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 
     url = urls.orders()
     data = helper.request_post(url,payload)
+
+    return(data)
+
+
+@helper.login_required
+def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a limit order for an option.
+
+    :param price: The limit price to trigger a buy or sell of the option.
+    :type price: int
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to buy/sell.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    optionID = helper.id_for_option(symbol,expirationDate,strike,optionType)
+
+    payload = {
+    'account': profiles.load_account_profile(info='url'),
+    'direction': 'debit',
+    'time_in_force': timeInForce,
+    'legs': [
+        {'position_effect': 'open', 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+    ],
+    'type': 'limit',
+    'trigger': 'immediate',
+    'price': price,
+    'quantity': quantity,
+    'override_day_trade_checks': False,
+	'override_dtbp_checks': False,
+    'ref_id': str(uuid4())
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url,payload, json=True)
 
     return(data)
