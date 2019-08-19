@@ -91,6 +91,5 @@ In most cases, you want to use 'pagination' to get all the results.
 New Features In The Works
 ========================
 
-- Options Trading
 - CryptoCurrency Trading
 - Trading using TD Ameritrade
