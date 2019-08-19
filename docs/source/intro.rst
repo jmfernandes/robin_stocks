@@ -23,20 +23,30 @@ This means that calls to a function from the module must be written as ``module.
 The __init__.py file contains an import of all the functions I want to be made public to the user. This allows
 the user to call ``robin_stocks.function`` for all functions. Without the imports, the user would have to call
 ``robin_stocks.module.function`` and be sure to use the correct module name every single time. This may seem contradictory
-to the first standard, but the difference is that whereas I the developer must make explicit calls, for the end user it is
+to the first standard, but the difference is that whereas I (the developer) must make explicit calls, for the end user it is
 unnecessary.
 
 * Three strikes and you refactor
 
 If you find yourself copying and pasting the same code 3 or more times, then it means you should put that code in
-its own function. Thus, I created the :func:`robin_stocks.helper.request_get` function, and then provided input parameters to
-handle different use cases.
+its own function. As an example of this, I created the :func:`robin_stocks.helper.request_get` function, and then provided input parameters to
+handle different use cases. This means that although functions I write may have very different logic for how they handle the get
+requests from Robinhood, none of this logic is contained in the functions themselves. It's all been abstracted away to a single function
+which means the code is easier to debug, easier to propagate changes, and easier to read.
 
 * Type is in the name
 
 A person should be able to look at the code and know the purpose of all the names they see. For this reason
-I have written names of functions as ``snake_case``, names of input parameters and local function variables as
-``camelCase``, and names of global variables, class names, and enum names as ``PascalCase``
+I have written names of functions as ``snake_case``, the names of input parameters and local function variables as
+``camelCase``, the names of class names and enum names as ``PascalCase``, and the names of global
+variables as ``UPPERCASE``.
+
+In addition, the naming of each function is standardized in order to make searching for functions easier. Functions that load user account
+information begin with "load", functions that place orders begin with "order", functions that cancel orders begin with "cancel",
+functions that query begin with "find", and so on. If you are using a text editor/IDE with auto-complete (which I highly recommend!),
+then this naming convention makes it even easier to find the function you want. As long as you know what you want the function to do,
+then you know what word it starts with.
+
 
 License
 -------
