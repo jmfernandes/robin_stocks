@@ -76,7 +76,8 @@ from .orders import get_all_orders,         \
                     order_sell_market,      \
                     order_sell_limit,       \
                     order_sell_stop_loss,   \
-                    order_sell_stop_limit
+                    order_sell_stop_limit,  \
+                    order_buy_option_limit
 
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \

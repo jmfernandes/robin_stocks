@@ -3,6 +3,8 @@ import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
 
+from uuid import uuid4
+
 @helper.login_required
 def get_all_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
@@ -543,5 +545,38 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 
     url = urls.orders()
     data = helper.request_post(url,payload)
+
+    return(data)
+
+
+@helper.login_required
+def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    optionID = helper.id_for_option(symbol,expirationDate,strike,optionType)
+
+    payload = {
+    'account': profiles.load_account_profile(info='url'),
+    'direction': 'debit',
+    'time_in_force': timeInForce,
+    'legs': [
+        {'position_effect': 'open', 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+    ],
+    'type': 'limit',
+    'trigger': 'immediate',
+    'price': price,
+    'quantity': quantity,
+    'override_day_trade_checks': False,
+	'override_dtbp_checks': False,
+    'ref_id': str(uuid4())
+    }
+    
+    url = urls.option_orders()
+    data = helper.request_post(url,payload, json=True)
 
     return(data)

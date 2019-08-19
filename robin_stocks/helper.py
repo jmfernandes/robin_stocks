@@ -253,7 +253,7 @@ def request_get(url,dataType='regular',payload=None):
 
     return data
 
-def request_post(url,payload=None,timeout=16):
+def request_post(url,payload=None,timeout=16,json=False):
     """For a given url and payload, makes a post request and returns the response.
 
     :param url: The url to send a post request to.
@@ -266,7 +266,12 @@ def request_post(url,payload=None,timeout=16):
 
     """
     try:
-        res = Session.post(url, data=payload, timeout=timeout)
+        if json:
+            update_session('Content-Type', 'application/json')
+            res = Session.post(url, json=payload, timeout=timeout)
+            update_session('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+        else:
+            res = Session.post(url, data=payload, timeout=timeout)
         data = res.json()
         if 'challenge' in data:
             return data
