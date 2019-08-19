@@ -262,6 +262,8 @@ def request_post(url,payload=None,timeout=16,json=False):
     :type payload: Optional[dict]
     :param timeout: The time for the post to wait for a response. Should be slightly greater than multiples of 3.
     :type timeout: Optional[int]
+    :param json: This is used for buying and selling options.
+    :type json: bool
     :returns: Returns the data from the post request.
 
     """
