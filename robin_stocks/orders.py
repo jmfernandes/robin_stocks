@@ -567,7 +567,7 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 
 @helper.login_required
 def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
-    """Submits a limit order for an option.
+    """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param price: The limit price to trigger a buy of the option.
     :type price: int
@@ -620,7 +620,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
 
 @helper.login_required
 def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
-    """Submits a limit order for an option.
+    """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param price: The limit price to trigger a sell of the option.
     :type price: int
