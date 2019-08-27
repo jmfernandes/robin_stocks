@@ -1,7 +1,8 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
-def get_quotes(inputSymbols,info=None):
+
+def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -14,21 +15,22 @@ def get_quotes(inputSymbols,info=None):
     """
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.quotes()
-    payload = { 'symbols' : ','.join(symbols)}
-    data = helper.request_get(url,'results',payload)
+    payload = {'symbols': ','.join(symbols)}
+    data = helper.request_get(url, 'results', payload)
 
     if (data == None or data == [None]):
         return data
 
-    for count,item in enumerate(data):
+    for count, item in enumerate(data):
         if item is None:
             print(helper.error_ticker_does_not_exist(symbols[count]))
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_fundamentals(inputSymbols,info=None):
+
+def get_fundamentals(inputSymbols, info=None):
     """Takes any number of stock tickers and returns fundamental information
     about the stock such as what sector it is in, a description of the company, dividend yield, and market cap.
 
@@ -42,21 +44,22 @@ def get_fundamentals(inputSymbols,info=None):
     """
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.fundamentals()
-    payload = { 'symbols' : ','.join(symbols)}
-    data = helper.request_get(url,'results',payload)
+    payload = {'symbols': ','.join(symbols)}
+    data = helper.request_get(url, 'results', payload)
 
     if (data == None or data == [None]):
         return data
 
-    for count,item in enumerate(data):
+    for count, item in enumerate(data):
         if item is None:
             print(helper.error_ticker_does_not_exist(symbols[count]))
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_instruments_by_symbols(inputSymbols,info=None):
+
+def get_instruments_by_symbols(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information held by the market
     such as ticker name, bloomberg id, and listing date.
 
@@ -72,17 +75,18 @@ def get_instruments_by_symbols(inputSymbols,info=None):
     url = urls.instruments()
     data = []
     for item in symbols:
-        payload = { 'symbol' : item}
-        itemData = helper.request_get(url,'indexzero',payload)
+        payload = {'symbol': item}
+        itemData = helper.request_get(url, 'indexzero', payload)
 
         if itemData:
             data.append(itemData)
         else:
             print(helper.error_ticker_does_not_exist(item))
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_instrument_by_url(url,info=None):
+
+def get_instrument_by_url(url, info=None):
     """Takes a single url for the stock. Should be located at ``https://api.robinhood.com/instruments/<id>`` where <id> is the
     id of the stock.
 
@@ -95,9 +99,10 @@ def get_instrument_by_url(url,info=None):
     Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
 
     """
-    data = helper.request_get(url,'regular')
+    data = helper.request_get(url, 'regular')
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
+
 
 def get_latest_price(inputSymbols):
     """Takes any number of stock tickers and returns the latest price of each one as a string.
@@ -116,7 +121,8 @@ def get_latest_price(inputSymbols):
             prices.append(item['last_trade_price'])
         else:
             prices.append(item['last_extended_hours_trade_price'])
-    return(prices)
+    return (prices)
+
 
 def get_name_by_symbol(symbol):
     """Returns the name of a stock from the stock ticker.
@@ -133,13 +139,14 @@ def get_name_by_symbol(symbol):
         return None
 
     url = urls.instruments()
-    payload = { 'symbol' : symbol}
-    data = helper.request_get(url,'indexzero',payload)
+    payload = {'symbol': symbol}
+    data = helper.request_get(url, 'indexzero', payload)
 
     if not data['simple_name']:
         return data['name']
     else:
         return data['simple_name']
+
 
 def get_name_by_url(url):
     """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
@@ -157,7 +164,8 @@ def get_name_by_url(url):
     else:
         return data['simple_name']
 
-def get_ratings(symbol,info=None):
+
+def get_ratings(symbol, info=None):
     """Returns the ratings for a stock, including the number of buy, hold, and sell ratings.
 
     :param symbol: The stock ticker.
@@ -179,15 +187,16 @@ def get_ratings(symbol,info=None):
     url = urls.ratings(symbol)
     data = helper.request_get(url)
     if (len(data['ratings']) == 0):
-        return(data)
+        return (data)
     else:
         for item in data['ratings']:
             oldText = item['text']
             item['text'] = oldText.encode('UTF-8')
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_popularity(symbol,info=None):
+
+def get_popularity(symbol, info=None):
     """Returns the number of open positions.
 
     :param symbol: The stock ticker.
@@ -207,9 +216,10 @@ def get_popularity(symbol,info=None):
     url = urls.popularity(symbol)
     data = helper.request_get(url)
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_events(symbol,info=None):
+
+def get_events(symbol, info=None):
     """Returns the events related to a stock.
 
     :param symbol: The stock ticker.
@@ -226,13 +236,14 @@ def get_events(symbol,info=None):
         print(message)
         return None
 
-    payload = {'equity_instrument_id' : helper.id_for_stock(symbol)}
+    payload = {'equity_instrument_id': helper.id_for_stock(symbol)}
     url = urls.events()
-    data = helper.request_get(url,'results',payload)
+    data = helper.request_get(url, 'results', payload)
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_earnings(symbol,info=None):
+
+def get_earnings(symbol, info=None):
     """Returns the earnings for the differenct financial quarters.
 
     :param symbol: The stock ticker.
@@ -251,12 +262,13 @@ def get_earnings(symbol,info=None):
         return None
 
     url = urls.earnings()
-    payload = {'symbol' : symbol}
-    data = helper.request_get(url,'results',payload)
+    payload = {'symbol': symbol}
+    data = helper.request_get(url, 'results', payload)
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_news(symbol,info=None):
+
+def get_news(symbol, info=None):
     """Returns news stories for a stock.
 
     :param symbol: The stock ticker.
@@ -275,11 +287,12 @@ def get_news(symbol,info=None):
         return None
 
     url = urls.news(symbol)
-    data = helper.request_get(url,'results')
+    data = helper.request_get(url, 'results')
 
-    return(helper.filter(data,info))
+    return (helper.filter(data, info))
 
-def get_splits(symbol,info=None):
+
+def get_splits(symbol, info=None):
     """Returns the date, divisor, and multiplier for when a stock split occureed.
 
     :param symbol: The stock ticker.
@@ -299,8 +312,9 @@ def get_splits(symbol,info=None):
         return None
 
     url = urls.splits(symbol)
-    data = helper.request_get(url,'results')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'results')
+    return (helper.filter(data, info))
+
 
 def find_instrument_data(query):
     """Will search for stocks that contain the query keyword and return the instrument data.
@@ -311,67 +325,135 @@ def find_instrument_data(query):
 
     """
     url = urls.instruments()
-    payload = { 'query' : query}
+    payload = {'query': query}
 
-    data = helper.request_get(url,'pagination',payload)
+    data = helper.request_get(url, 'pagination', payload)
 
     if len(data) == 0:
         print('No results found for that keyword')
-        return([None])
+        return ([None])
     else:
-        print('Found '+str(len(data))+' results')
-        return(data)
+        print('Found ' + str(len(data)) + ' results')
+        return (data)
 
-def get_historicals(inputSymbols,span='week',bounds='regular'):
+
+def get_historicals(inputSymbols, span='week', bounds='regular'):
     """Represents the data that is used to make the graphs.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param span: Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
-    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
+    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are
+    'extended' or 'regular'.
     :type bounds: Optional[str]
-    :returns: Returns a list of dictionaries where each dictionary is for a different time. If multiple stocks are provided \
-    the historical data is listed one after another.
+    :returns: Returns a list of dictionaries where each dictionary is for a different time. If multiple stocks are
+    provided the historical data is listed one after another.
 
     """
-    span_check = ['day','week','year','5year']
-    bounds_check =['extended','regular','trading']
+    span_check = ['day', 'week', 'year', '5year']
+    bounds_check = ['extended', 'regular', 'trading']
     if span not in span_check:
         print('ERROR: Span must be "day","week","year",or "5year"')
-        return([None])
+        return ([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
-        return([None])
+        return ([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
         print('ERROR: extended and trading bounds can only be used with a span of "day"')
-        return([None])
+        return ([None])
 
-    if span=='day':
+    if span == 'day':
         interval = '5minute'
-    elif span=='week':
+    elif span == 'week':
         interval = '10minute'
-    elif span=='year':
+    elif span == 'year':
         interval = 'day'
     else:
         interval = 'week'
 
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.historicals()
-    payload = { 'symbols' : ','.join(symbols),
-                'interval' : interval,
-                'span' : span,
-                'bounds' : bounds}
+    payload = {'symbols': ','.join(symbols),
+               'interval': interval,
+               'span': span,
+               'bounds': bounds}
 
-    data = helper.request_get(url,'results',payload)
+    data = helper.request_get(url, 'results', payload)
     if (data == None or data == [None]):
         return data
     histData = []
-    for count,item in enumerate(data):
+    for count, item in enumerate(data):
         if (len(item['historicals']) == 0):
             print(helper.error_ticker_does_not_exist(symbols[count]))
             continue
         for subitem in item['historicals']:
             histData.append(subitem)
 
-    return(histData)
+    return (histData)
+
+
+def get_stock_quote_by_id(stock_id, info=None):
+    """
+    Represents basic stock quote information
+
+    :param stock_id: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+    """
+    url = urls.marketdata_quotes(stock_id)
+    data = helper.request_get(url)
+
+    return (helper.filter(data, info))
+
+
+def get_stock_quote_by_symbol(symbol, info=None):
+    """
+    Represents basic stock quote information
+
+    :param symbol: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+    """
+
+    return get_stock_quote_by_id(helper.id_for_stock(symbol))
+
+
+def get_pricebook_by_id(stock_id, info=None):
+    """
+    Represents Level II Market Data provided for Gold subscribers
+
+    :param stock_id: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+
+    """
+    url = urls.marketdata_pricebook(stock_id)
+    data = helper.request_get(url)
+
+    return (helper.filter(data, info))
+
+
+def get_pricebook_by_symbol(symbol, info=None):
+    """
+    Represents Level II Market Data provided for Gold subscribers
+
+    :param symbol: symbol id
+    :type symbol: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return: Returns a dictionary of asks and bids.
+
+    """
+
+    return get_pricebook_by_id(helper.id_for_stock(symbol))

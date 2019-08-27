@@ -5,6 +5,7 @@ import random
 TEMP_DEVICE_TOKEN = None
 LOGIN_DATA = None
 
+
 def generate_device_token():
     """This function will generate a token used when loggin on.
 
@@ -12,25 +13,26 @@ def generate_device_token():
 
     """
     rands = []
-    for i in range(0,16):
+    for i in range(0, 16):
         r = random.random()
         rand = 4294967296.0 * r
         rands.append((int(rand) >> ((3 & i) << 3)) & 255)
 
     hexa = []
-    for i in range(0,256):
-        hexa.append(str(hex(i+256)).lstrip("0x").rstrip("L")[1:])
+    for i in range(0, 256):
+        hexa.append(str(hex(i + 256)).lstrip("0x").rstrip("L")[1:])
 
     id = ""
-    for i in range(0,16):
+    for i in range(0, 16):
         id += hexa[rands[i]]
 
         if (i == 3) or (i == 5) or (i == 7) or (i == 9):
             id += "-"
 
-    return(id)
+    return (id)
 
-def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
+
+def base_login(username, password, device_token, expiresIn=86400, scope='internal'):
     """This function will try to log the user in and will return the response data.
     It may contain a challenge (sms) or the access token.
 
@@ -49,21 +51,22 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     """
     if not username or not password:
         raise Exception('login must be called with a non-empty username and '
-            'password')
+                        'password')
 
     url = urls.login_url()
     payload = {
-    'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
-    'expires_in': expiresIn,
-    'grant_type': 'password',
-    'password': password,
-    'scope': scope,
-    'username': username,
-    'challenge_type': 'sms',
-    'device_token': device_token
+        'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
+        'expires_in': expiresIn,
+        'grant_type': 'password',
+        'password': password,
+        'scope': scope,
+        'username': username,
+        'challenge_type': 'sms',
+        'device_token': device_token
     }
-    data = helper.request_post(url,payload)
-    return(data)
+    data = helper.request_post(url, payload)
+    return (data)
+
 
 def respond_to_challenge(challenge_id, sms_code):
     """This functino will post to the challenge url.
@@ -79,7 +82,8 @@ def respond_to_challenge(challenge_id, sms_code):
     payload = {
         'response': sms_code
     }
-    return(helper.request_post(url,payload=payload))
+    return (helper.request_post(url, payload=payload))
+
 
 def get_new_device_token(username, password):
     """This function will create and activate a new device token for the user, which should be stored
@@ -97,7 +101,7 @@ def get_new_device_token(username, password):
     if 'challenge' not in initial_login:
         global LOGIN_DATA
         LOGIN_DATA = initial_login
-        return(device_token)
+        return (device_token)
     challenge_id = initial_login['challenge']['id']
     sms_code = input('Enter sms code for validating device_token: ')
     res = respond_to_challenge(challenge_id, sms_code)
@@ -106,11 +110,12 @@ def get_new_device_token(username, password):
         res = respond_to_challenge(challenge_id, sms_code)
     if 'status' in res and res['status'] == 'validated':
         helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
-        return(device_token)
+        return (device_token)
     else:
         raise Exception(res['detail'])
 
-def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope='internal'):
+
+def login(username, password, device_token=TEMP_DEVICE_TOKEN, expiresIn=86400, scope='internal'):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header.
 
@@ -134,16 +139,17 @@ def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope
         data = base_login(username, password, device_token)
     if LOGIN_DATA:
         token = 'Bearer {}'.format(LOGIN_DATA['access_token'])
-        helper.update_session('Authorization',token)
+        helper.update_session('Authorization', token)
         helper.set_login_state(True)
         data = LOGIN_DATA
     elif 'access_token' in data:
         token = 'Bearer {}'.format(data['access_token'])
-        helper.update_session('Authorization',token)
+        helper.update_session('Authorization', token)
         helper.set_login_state(True)
     else:
         print(data)
-    return(data)
+    return (data)
+
 
 @helper.login_required
 def logout():
@@ -153,4 +159,4 @@ def logout():
 
     """
     helper.set_login_state(False)
-    helper.update_session('Authorization',None)
+    helper.update_session('Authorization', None)
