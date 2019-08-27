@@ -72,3 +72,11 @@ Placing and Cancelling Orders
 
 .. automodule:: robin_stocks.orders
    :members:
+
+Getting Crypto Information
+--------------------------
+
+----
+
+.. automodule:: robin_stocks.crypto
+   :members:

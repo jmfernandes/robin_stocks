@@ -206,6 +206,20 @@ def marketdata_pricebook(id):
     return ('https://api.robinhood.com/marketdata/pricebook/snapshots/{}/'.format(id))
 
 
+### crypto
+
+def order_crypto():
+    return('https://nummus.robinhood.com/orders/')
+
+def crypto_account():
+    return('https://nummus.robinhood.com/accounts/')
+
+def crypto_currency_pairs():
+    return('https://nummus.robinhood.com/currency_pairs/')
+
+def crypto_quote(id):
+    return('https://api.robinhood.com/marketdata/forex/quotes/{}/'.format(id))
+
 ### orders
 
 def cancel(url):
