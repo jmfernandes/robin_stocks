@@ -135,7 +135,7 @@ def movers():
 def aggregate():
     return('https://api.robinhood.com/options/aggregate_positions/')
 
-def chains():
+def chains(symbol):
     return('https://api.robinhood.com/options/chains/{}/'.format(helper.id_for_chain(symbol)))
 
 def option_historicals(id):
