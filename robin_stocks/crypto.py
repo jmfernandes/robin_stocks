@@ -1,6 +1,7 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
+@helper.login_required
 def load_crypto_profile(info=None):
     """Gets the information associated with the crypto account.
 
@@ -48,6 +49,7 @@ def get_crypto_info(symbol, info=None):
         data = None
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_crypto_quote(symbol,info=None):
     """Gets information about a crypto including low price, high price, and open price
 
@@ -64,6 +66,7 @@ def get_crypto_quote(symbol,info=None):
     data = helper.request_get(url)
     return(helper.filter(data,info))
 
+@helper.login_required
 def get_crypto_quote_from_id(id,info=None):
     """Gets information about a crypto including low price, high price, and open price. Uses the id instead of crypto ticker.
 
