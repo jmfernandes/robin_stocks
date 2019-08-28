@@ -29,7 +29,12 @@ from .stocks import get_quotes,                 \
                     get_news,                   \
                     get_splits,                 \
                     find_instrument_data,       \
-                    get_historicals
+                    get_historicals,            \
+                    get_pricebook_by_id,        \
+                    get_pricebook_by_symbol,    \
+                    get_stock_quote_by_id,      \
+                    get_stock_quote_by_symbol
+
 
 from .markets import get_currency_pairs,        \
                      get_markets,               \
