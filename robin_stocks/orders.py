@@ -2,6 +2,7 @@ import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
+import robin_stocks.crypto as crypto
 
 from uuid import uuid4
 
@@ -668,5 +669,91 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
 
     url = urls.option_orders()
     data = helper.request_post(url,payload, json=True)
+
+    return(data)
+
+@helper.login_required
+def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
+    """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param amountInDollars: The amount in dollars of the crypto you want to buy
+    :type amountInDollars: float
+    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
+    :type priceType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    crypto_info = crypto.get_crypto_info(symbol)
+    ask_price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+    # turn the money amount into decimal number of shares
+    try:
+        shares = amountInDollars/float(ask_price)
+    except:
+        shares = 0
+
+    payload = {
+    'account_id': crypto.load_crypto_profile(info="id"),
+    'currency_pair_id': crypto_info['id'],
+    'price': ask_price,
+    'quantity': shares,
+    'ref_id': str(uuid4()),
+    'side': 'buy',
+    'time_in_force': timeInForce,
+    'type': 'market'
+    }
+
+    url = urls.order_crypto()
+    data = helper.request_post(url,payload,json=True)
+
+    return(data)
+
+@helper.login_required
+def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInForce='gtc'):
+    """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param quantity: The decimal amount of shares to buy.
+    :type quantity: float
+    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
+    :type priceType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+
+    crypto_info = crypto.get_crypto_info(symbol)
+    price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+
+    payload = {
+    'account_id': crypto.load_crypto_profile(info="id"),
+    'currency_pair_id': crypto_info['id'],
+    'price': price,
+    'quantity': quantity,
+    'ref_id': str(uuid4()),
+    'side': 'buy',
+    'time_in_force': timeInForce,
+    'type': 'market'
+    }
+
+    url = urls.order_crypto()
+    data = helper.request_post(url,payload,json=True)
 
     return(data)
