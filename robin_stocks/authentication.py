@@ -30,7 +30,7 @@ def generate_device_token():
 
     return(id)
 
-def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
+def base_login(username,password,device_token,expiresIn=86400,scope='internal',by_sms=True):
     """This function will try to log the user in and will return the response data.
     It may contain a challenge (sms) or the access token.
 
@@ -44,12 +44,20 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     :type expiresIn: Optional[int]
     :param scope: Specifies the scope of the authentication.
     :type scope: Optional[str]
+    :param by_sms: Specifies whether to send an email(False) or an sms(True)
+    :type by_sms: Optional[boolean]
     :returns:  A dictionary with response information.
+
 
     """
     if not username or not password:
         raise Exception('login must be called with a non-empty username and '
             'password')
+
+    if by_sms:
+        challenge_type = "sms"
+    else:
+        challenge_type = "email"
 
     url = urls.login_url()
     payload = {
@@ -59,7 +67,7 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal'):
     'password': password,
     'scope': scope,
     'username': username,
-    'challenge_type': 'sms',
+    'challenge_type': challenge_type,
     'device_token': device_token
     }
     data = helper.request_post(url,payload)
@@ -81,7 +89,7 @@ def respond_to_challenge(challenge_id, sms_code):
     }
     return(helper.request_post(url,payload=payload))
 
-def get_new_device_token(username, password):
+def get_new_device_token(username, password,by_sms=True):
     """This function will create and activate a new device token for the user, which should be stored
     and used for future login attempts.
 
@@ -89,28 +97,32 @@ def get_new_device_token(username, password):
     :type username: str
     :param password: The password for your robinhood account.
     :type password: str
+    :param by_sms: Specifies whether to send an email(False) or an sms(True) for auth.
+    :type by_sms: Optional[boolean]
     :returns:  A string which is the device token or None if the token could not be validated with an sms code.
 
     """
     device_token = generate_device_token()
-    initial_login = base_login(username, password, device_token)
+    initial_login = base_login(username, password, device_token,by_sms=by_sms)
     if 'challenge' not in initial_login:
         global LOGIN_DATA
         LOGIN_DATA = initial_login
+        helper.set_device_token(device_token)
         return(device_token)
     challenge_id = initial_login['challenge']['id']
     sms_code = input('Enter sms code for validating device_token: ')
     res = respond_to_challenge(challenge_id, sms_code)
     while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
-        sms_code = input('Incorred code, try again: ')
+        sms_code = input('Incorrect code, try again: ')
         res = respond_to_challenge(challenge_id, sms_code)
     if 'status' in res and res['status'] == 'validated':
         helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
+        helper.set_device_token(device_token)
         return(device_token)
     else:
         raise Exception(res['detail'])
 
-def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope='internal'):
+def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope='internal',by_sms=True):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header.
 
@@ -124,14 +136,16 @@ def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope
     :type expiresIn: Optional[int]
     :param scope: Specifies the scope of the authentication.
     :type scope: Optional[str]
+    :param by_sms: Specifies whether to send an email(False) or an sms(True)
+    :type by_sms: Optional[boolean]
     :returns:  A dictionary with log in information.
 
     """
     if not device_token:
-        TEMP_DEVICE_TOKEN = get_new_device_token(username, password)
+        TEMP_DEVICE_TOKEN = get_new_device_token(username, password,by_sms=by_sms)
         device_token = TEMP_DEVICE_TOKEN
     if not LOGIN_DATA:
-        data = base_login(username, password, device_token)
+        data = base_login(username, password, device_token,by_sms=by_sms)
     if LOGIN_DATA:
         token = 'Bearer {}'.format(LOGIN_DATA['access_token'])
         helper.update_session('Authorization',token)
