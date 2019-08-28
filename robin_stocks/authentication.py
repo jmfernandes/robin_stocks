@@ -107,6 +107,7 @@ def get_new_device_token(username, password,by_sms=True):
     if 'challenge' not in initial_login:
         global LOGIN_DATA
         LOGIN_DATA = initial_login
+        helper.set_device_token(device_token)
         return(device_token)
     challenge_id = initial_login['challenge']['id']
     sms_code = input('Enter sms code for validating device_token: ')
@@ -116,6 +117,7 @@ def get_new_device_token(username, password,by_sms=True):
         res = respond_to_challenge(challenge_id, sms_code)
     if 'status' in res and res['status'] == 'validated':
         helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
+        helper.set_device_token(device_token)
         return(device_token)
     else:
         raise Exception(res['detail'])

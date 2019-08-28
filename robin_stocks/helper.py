@@ -3,6 +3,18 @@ from functools import wraps
 import requests
 
 __is_logged_in__ = False
+DEVICE_TOKEN = None
+
+def get_device_token():
+    """Gets the device token"""
+    global DEVICE_TOKEN
+    token = DEVICE_TOKEN
+    return (token)
+
+def set_device_token(token):
+    """Sets the device token"""
+    global DEVICE_TOKEN
+    DEVICE_TOKEN = token
 
 def set_login_state(logged_in):
     """Sets the login state"""

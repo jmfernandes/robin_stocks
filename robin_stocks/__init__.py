@@ -6,7 +6,8 @@ from .helper import request_get,      \
                     request_post,     \
                     request_delete,   \
                     request_document, \
-                    update_session
+                    update_session,   \
+                    get_device_token
 
 from .profiles import load_account_profile,     \
                       load_basic_profile,       \
@@ -80,7 +81,9 @@ from .orders import get_all_orders,             \
                     order_buy_option_limit,     \
                     order_sell_option_limit,    \
                     order_buy_crypto_by_price,  \
-                    order_buy_crypto_by_quantity
+                    order_buy_crypto_by_quantity,\
+                    order_sell_crypto_by_price, \
+                    order_sell_crypto_by_quantity
 
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \
