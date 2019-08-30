@@ -153,8 +153,16 @@ def option_orders():
 def option_positions():
     return('https://api.robinhood.com/options/positions/')
 
-def marketdata(id):
+def marketdata_options(id):
     return('https://api.robinhood.com/marketdata/options/{}/'.format(id))
+
+### pricebook
+
+def marketdata_quotes(id):
+    return ('https://api.robinhood.com/marketdata/quotes/{}/'.format(id))
+
+def marketdata_pricebook(id):
+    return ('https://api.robinhood.com/marketdata/pricebook/snapshots/{}/'.format(id))
 
 ### crypto
 

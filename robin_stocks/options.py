@@ -292,7 +292,7 @@ def get_list_market_data(inputSymbols,expirationDate,info=None):
                 ids.append(item['id'])
 
     for id in ids:
-        url = urls.marketdata(id)
+        url = urls.marketdata_options(id)
         otherData = helper.request_get(url)
         data.append(otherData)
 
@@ -339,7 +339,7 @@ def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeP
                 ids.append(item['id'])
 
     for id in ids:
-        url = urls.marketdata(id)
+        url = urls.marketdata_options(id)
         otherData = helper.request_get(url)
         data.append(otherData)
 
@@ -365,7 +365,7 @@ def get_option_market_data_by_id(id,info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = urls.marketdata(id)
+    url = urls.marketdata_options(id)
     data = helper.request_get(url)
 
     return(helper.filter(data,info))
@@ -396,7 +396,7 @@ def get_option_market_data(symbol,expirationDate,strike,optionType,info=None):
         return [None]
 
     optionID= helper.id_for_option(symbol,expirationDate,strike,optionType)
-    url = urls.marketdata(optionID)
+    url = urls.marketdata_options(optionID)
     data = helper.request_get(url)
 
     return(helper.filter(data,info))
