@@ -6,7 +6,6 @@ import robin_stocks.crypto as crypto
 
 from uuid import uuid4
 
-
 @helper.login_required
 def get_all_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
