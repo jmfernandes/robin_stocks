@@ -6,6 +6,7 @@ import robin_stocks.crypto as crypto
 
 from uuid import uuid4
 
+
 @helper.login_required
 def get_all_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
@@ -121,7 +122,7 @@ def cancel_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+order_id+' cancelled')
+        print('Order '+orderID+' cancelled')
     return(data)
 
 @helper.login_required
@@ -137,7 +138,7 @@ def cancel_option_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+order_id+' cancelled')
+        print('Order '+orderID+' cancelled')
     return(data)
 
 @helper.login_required
@@ -718,7 +719,7 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
     'currency_pair_id': crypto_info['id'],
     'price': ask_price,
     'quantity': shares,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str( uuid4() ),
     'side': 'buy',
     'time_in_force': timeInForce,
     'type': 'market'
