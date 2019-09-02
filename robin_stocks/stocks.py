@@ -375,3 +375,69 @@ def get_historicals(inputSymbols,span='week',bounds='regular'):
             histData.append(subitem)
 
     return(histData)
+
+
+def get_stock_quote_by_id(stock_id, info=None):
+    """
+    Represents basic stock quote information
+
+    :param stock_id: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+    """
+    url = urls.marketdata_quotes(stock_id)
+    data = helper.request_get(url)
+
+    return (helper.filter(data, info))
+
+
+def get_stock_quote_by_symbol(symbol, info=None):
+    """
+    Represents basic stock quote information
+
+    :param symbol: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+    """
+
+    return get_stock_quote_by_id(helper.id_for_stock(symbol))
+
+
+def get_pricebook_by_id(stock_id, info=None):
+    """
+    Represents Level II Market Data provided for Gold subscribers
+
+    :param stock_id: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return:
+
+    """
+    url = urls.marketdata_pricebook(stock_id)
+    data = helper.request_get(url)
+
+    return (helper.filter(data, info))
+
+
+def get_pricebook_by_symbol(symbol, info=None):
+    """
+    Represents Level II Market Data provided for Gold subscribers
+
+    :param symbol: symbol id
+    :type symbol: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date,
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return: Returns a dictionary of asks and bids.
+
+    """
+
+    return get_pricebook_by_id(helper.id_for_stock(symbol))
