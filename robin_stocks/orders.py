@@ -170,7 +170,7 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     'symbol': symbol,
     'price': float(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'market',
     'stop_price': None,
     'time_in_force': timeInForce,
@@ -215,7 +215,7 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'limit',
     'stop_price': None,
     'time_in_force': timeInForce,
@@ -264,7 +264,7 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     'symbol': symbol,
     'price': stopPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'market',
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
@@ -316,7 +316,7 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'limit',
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
@@ -359,7 +359,7 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     'symbol': symbol,
     'price': float(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'market',
     'stop_price': None,
     'time_in_force': timeInForce,
@@ -404,7 +404,7 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'limit',
     'stop_price': None,
     'time_in_force': timeInForce,
@@ -453,7 +453,7 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     'symbol': symbol,
     'price': stopPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'market',
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
@@ -505,7 +505,7 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': 'limit',
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
@@ -560,7 +560,7 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'type': orderType,
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
@@ -620,7 +620,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     'quantity': quantity,
     'override_day_trade_checks': False,
 	'override_dtbp_checks': False,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     }
 
     url = urls.option_orders()
@@ -673,7 +673,7 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
     'quantity': quantity,
     'override_day_trade_checks': False,
 	'override_dtbp_checks': False,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     }
 
     url = urls.option_orders()
@@ -684,6 +684,7 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
 @helper.login_required
 def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
+    Good for share fractions up to 8 decimal places.
 
     :param symbol: The crypto ticker of the crypto to trade.
     :type symbol: str
@@ -706,19 +707,21 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    ask_price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
+    print(crypto.get_crypto_quote_from_id(crypto_info['id']))
     # turn the money amount into decimal number of shares
     try:
-        shares = amountInDollars/float(ask_price)
+        shares = round(amountInDollars/float(price),8)
     except:
         shares = 0
 
     payload = {
+    'mimeType': 'application/json',
     'account_id': crypto.load_crypto_profile(info="id"),
     'currency_pair_id': crypto_info['id'],
-    'price': ask_price,
+    'price': price,
     'quantity': shares,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'side': 'buy',
     'time_in_force': timeInForce,
     'type': 'market'
@@ -732,6 +735,7 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
 @helper.login_required
 def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
+    Good for share fractions up to 8 decimal places.
 
     :param symbol: The crypto ticker of the crypto to trade.
     :type symbol: str
@@ -749,14 +753,14 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
     'currency_pair_id': crypto_info['id'],
     'price': price,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'side': 'buy',
     'time_in_force': timeInForce,
     'type': 'market'
@@ -770,6 +774,7 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
 @helper.login_required
 def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
+    Good for share fractions up to 8 decimal places.
 
     :param symbol: The crypto ticker of the crypto to trade.
     :type symbol: str
@@ -792,19 +797,19 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    ask_price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
     # turn the money amount into decimal number of shares
     try:
-        shares = amountInDollars/float(ask_price)
+        shares = round(amountInDollars/float(price),8)
     except:
         shares = 0
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
     'currency_pair_id': crypto_info['id'],
-    'price': ask_price,
+    'price': price,
     'quantity': shares,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'side': 'sell',
     'time_in_force': timeInForce,
     'type': 'market'
@@ -818,6 +823,7 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
 @helper.login_required
 def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
+    Good for share fractions up to 8 decimal places.
 
     :param symbol: The crypto ticker of the crypto to trade.
     :type symbol: str
@@ -835,14 +841,14 @@ def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFo
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
     'currency_pair_id': crypto_info['id'],
     'price': price,
     'quantity': quantity,
-    'ref_id': helper.get_device_token(),
+    'ref_id': str(uuid4()),
     'side': 'sell',
     'time_in_force': timeInForce,
     'type': 'market'

@@ -289,7 +289,6 @@ def request_post(url,payload=None,timeout=16,json=False):
         data = res.json()
         if 'challenge' in data:
             return data
-        res.raise_for_status()
         if 'mfa_required' in data:
             mfa_token = input("Please Type In The MFA Code: ")
             payload['mfa_code'] = mfa_token
@@ -301,7 +300,7 @@ def request_post(url,payload=None,timeout=16,json=False):
             data = res.json()
     except (requests.exceptions.HTTPError,AttributeError) as message:
         data = None
-        print(message)
+        print("Error in request_post: {0}".format(message))
 
     return data
 
