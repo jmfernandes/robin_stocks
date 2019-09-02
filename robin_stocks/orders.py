@@ -708,7 +708,6 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
 
     crypto_info = crypto.get_crypto_info(symbol)
     price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
-    print(crypto.get_crypto_quote_from_id(crypto_info['id']))
     # turn the money amount into decimal number of shares
     try:
         shares = round(amountInDollars/float(price),8)
