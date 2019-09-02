@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup,find_packages
 
 from codecs import open
 from os import path
@@ -19,7 +19,7 @@ setup(name='robin_stocks',
       keywords=['robinhood','robin stocks','finance app','stocks','options','trading','investing'],
       license='MIT',
       python_requires='>=3',
-      packages=['robin_stocks'],
+      packages=find_packages(),
       requires=['requests'],
       install_requires=[
           'requests',
