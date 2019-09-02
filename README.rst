@@ -91,5 +91,5 @@ In most cases, you want to use 'pagination' to get all the results.
 New Features In The Works
 ========================
 
-- CryptoCurrency Trading
+- Multi-Leg Options
 - Trading using TD Ameritrade
