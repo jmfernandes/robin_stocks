@@ -118,6 +118,7 @@ def get_latest_price(inputSymbols):
             prices.append(item['last_extended_hours_trade_price'])
     return(prices)
 
+@helper.convert_none_to_string
 def get_name_by_symbol(symbol):
     """Returns the name of a stock from the stock ticker.
 
@@ -135,15 +136,15 @@ def get_name_by_symbol(symbol):
     url = urls.instruments()
     payload = { 'symbol' : symbol}
     data = helper.request_get(url,'indexzero',payload)
-
     if not data:
-        return("")
+        return(None)
+    # If stock doesn't have a simple name attribute then get the full name.
+    filter = helper.filter(data,info='simple_name')
+    if not filter or filter == "":
+        filter = helper.filter(data,info='name')
+    return(filter)
 
-    if not data['simple_name']:
-        return data['name']
-    else:
-        return data['simple_name']
-
+@helper.convert_none_to_string
 def get_name_by_url(url):
     """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
@@ -154,11 +155,13 @@ def get_name_by_url(url):
 
     """
     data = helper.request_get(url)
-
-    if not data['simple_name']:
-        return data['name']
-    else:
-        return data['simple_name']
+    if not data:
+        return(None)
+    # If stock doesn't have a simple name attribute then get the full name.
+    filter = helper.filter(data,info='simple_name')
+    if not filter or filter == "":
+        filter = helper.filter(data,info='name')
+    return(filter)
 
 def get_ratings(symbol,info=None):
     """Returns the ratings for a stock, including the number of buy, hold, and sell ratings.

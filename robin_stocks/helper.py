@@ -33,6 +33,17 @@ def login_required(func):
       return func(*args, **kwargs)
     return login_wrapper
 
+def convert_none_to_string(func):
+    """A decorator for converting a None Type into a blank string"""
+    @wraps(func)
+    def string_wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        if result:
+            return(result)
+        else:
+            return("")
+    return string_wrapper
+
 def id_for_stock(symbol):
     """Takes a stock ticker and returns the instrument id associated with the stock.
 
