@@ -136,6 +136,9 @@ def get_name_by_symbol(symbol):
     payload = { 'symbol' : symbol}
     data = helper.request_get(url,'indexzero',payload)
 
+    if not data:
+        return("")
+
     if not data['simple_name']:
         return data['name']
     else:
