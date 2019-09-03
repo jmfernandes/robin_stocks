@@ -1,3 +1,4 @@
+"""Contains functions to get information about crypto-currencies."""
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 

@@ -1,4 +1,5 @@
-import robin_stocks.helper as helper
+"""Contains all the url endpoints for interacting with Robinhood API."""
+from robin_stocks.helper import id_for_stock, id_for_chain
 
 ### Login
 
@@ -49,16 +50,16 @@ def news(symbol):
     return('https://api.robinhood.com/midlands/news/{}/?'.format(symbol))
 
 def popularity(symbol):
-    return('https://api.robinhood.com/instruments/{}/popularity/'.format(helper.id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{}/popularity/'.format(id_for_stock(symbol)))
 
 def quotes():
     return('https://api.robinhood.com/quotes/')
 
 def ratings(symbol):
-    return('https://api.robinhood.com/midlands/ratings/{}/'.format(helper.id_for_stock(symbol)))
+    return('https://api.robinhood.com/midlands/ratings/{}/'.format(id_for_stock(symbol)))
 
 def splits(symbol):
-    return('https://api.robinhood.com/instruments/{}/splits/'.format(helper.id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{}/splits/'.format(id_for_stock(symbol)))
 
 ### account
 
@@ -136,7 +137,7 @@ def aggregate():
     return('https://api.robinhood.com/options/aggregate_positions/')
 
 def chains(symbol):
-    return('https://api.robinhood.com/options/chains/{}/'.format(helper.id_for_chain(symbol)))
+    return('https://api.robinhood.com/options/chains/{}/'.format(id_for_chain(symbol)))
 
 def option_historicals(id):
     return('https://api.robinhood.com/marketdata/options/historicals/{}/'.format(id))

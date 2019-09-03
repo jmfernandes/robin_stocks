@@ -1,3 +1,4 @@
+"""Contains all functions for placing orders for stocks, options, and crypto."""
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks

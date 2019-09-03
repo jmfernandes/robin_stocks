@@ -1,9 +1,9 @@
+"""Contains all functions for the purpose of logging in and out to Robinhood."""
 import robin_stocks.urls as urls
 import robin_stocks.helper as helper
 import random
-
-TEMP_DEVICE_TOKEN = None
-LOGIN_DATA = None
+import pickle
+import os
 
 def generate_device_token():
     """This function will generate a token used when loggin on.
@@ -30,30 +30,47 @@ def generate_device_token():
 
     return(id)
 
-def base_login(username,password,device_token,expiresIn=86400,scope='internal',by_sms=True):
-    """This function will try to log the user in and will return the response data.
-    It may contain a challenge (sms) or the access token.
+def respond_to_challenge(challenge_id, sms_code):
+    """This functino will post to the challenge url.
+
+    :param challenge_id: The challenge id.
+    :type challenge_id: str
+    :param sms_code: The sms code.
+    :type sms_code: str
+    :returns:  The response from requests.
+
+    """
+    url = urls.challenge_url(challenge_id)
+    payload = {
+        'response': sms_code
+    }
+    return(helper.request_post(url,payload))
+
+def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_session=True):
+    """This function will effectivly log the user into robinhood by getting an
+    authentication token and saving it to the session header. By default, it will store the authentication
+    token in a pickle file and load that value on subsequent logins.
 
     :param username: The username for your robinhood account. Usually your email.
     :type username: str
     :param password: The password for your robinhood account.
     :type password: str
-    :param device_token: The device_token you should re-use (can be saved with "robin_stocks.get_new_device_token()").
-    :type device_token: str
     :param expiresIn: The time until your login session expires. This is in seconds.
     :type expiresIn: Optional[int]
     :param scope: Specifies the scope of the authentication.
     :type scope: Optional[str]
     :param by_sms: Specifies whether to send an email(False) or an sms(True)
     :type by_sms: Optional[boolean]
-    :returns:  A dictionary with response information.
-
+    :param store_session: Specifies whether to save the log in authorization for future log ins.
+    :type store_session: Optional[boolean]
+    :returns:  A dictionary with log in information. Contains the access token and the 'detail' keyword \
+    contains information on whether the access token was generated or loaded from pickle file.
 
     """
-    if not username or not password:
-        raise Exception('login must be called with a non-empty username and '
-            'password')
-
+    device_token = generate_device_token()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    pickle_path = os.path.join(dir_path,"data.pickle")
+    # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
         challenge_type = "sms"
     else:
@@ -70,93 +87,59 @@ def base_login(username,password,device_token,expiresIn=86400,scope='internal',b
     'challenge_type': challenge_type,
     'device_token': device_token
     }
+    # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
+    if os.path.isfile(pickle_path):
+        # If store_session has been set to false then delete the pickle file, otherwise try to load it.
+        # Loading pickle file will fail if the acess_token has expired.
+        if store_session:
+            try:
+                with open(pickle_path, 'rb') as f:
+                    token = pickle.load(f)
+                    helper.set_login_state(True)
+                    helper.update_session('Authorization',token)
+                    # Try to load account profile to check that authorization token is still valid.
+                    res = helper.request_get(urls.portfolio_profile(),'regular',payload,jsonify_data=False)
+                    res.raise_for_status() # Raises exception is response code is not 200.
+                    return({'access_token': token.split(" ")[1],'token_type': token.split(" ")[0],
+                    'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in data.pickle',
+                    'backup_code': None, 'refresh_token': None})
+            except:
+                print("ERROR: There was an issue loading pickle file - logging in normally.")
+                helper.set_login_state(False)
+        else:
+            os.remove(pickle_path)
+    # Try to log in normally.
     data = helper.request_post(url,payload)
-    return(data)
-
-def respond_to_challenge(challenge_id, sms_code):
-    """This functino will post to the challenge url.
-
-    :param challenge_id: The challenge id.
-    :type challenge_id: str
-    :param sms_code: The sms code.
-    :type sms_code: str
-    :returns:  The response from requests.
-
-    """
-    url = urls.challenge_url(challenge_id)
-    payload = {
-        'response': sms_code
-    }
-    return(helper.request_post(url,payload=payload))
-
-def get_new_device_token(username, password,by_sms=True):
-    """This function will create and activate a new device token for the user, which should be stored
-    and used for future login attempts.
-
-    :param username: The username for your robinhood account. Usually your email.
-    :type username: str
-    :param password: The password for your robinhood account.
-    :type password: str
-    :param by_sms: Specifies whether to send an email(False) or an sms(True) for auth.
-    :type by_sms: Optional[boolean]
-    :returns:  A string which is the device token or None if the token could not be validated with an sms code.
-
-    """
-    device_token = generate_device_token()
-    initial_login = base_login(username, password, device_token,by_sms=by_sms)
-    if 'challenge' not in initial_login:
-        global LOGIN_DATA
-        LOGIN_DATA = initial_login
-        helper.set_device_token(device_token)
-        return(device_token)
-    challenge_id = initial_login['challenge']['id']
-    sms_code = input('Enter sms code for validating device_token: ')
-    res = respond_to_challenge(challenge_id, sms_code)
-    while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
-        sms_code = input('Incorrect code, try again: ')
+    # Handle case where mfa or challenge is required.
+    if 'mfa_required' in data:
+        mfa_token = input("Please type in the MFA code: ")
+        payload['mfa_code'] = mfa_token
+        res = helper.request_post(url,payload,jsonify_data=False)
+        while (res.status_code != 200):
+            mfa_token = input("That MFA code was not correct. Please type in another MFA code: ")
+            payload['mfa_code'] = mfa_token
+            res = helper.request_post(url,payload,jsonify_data=False)
+        data = res.json()
+    elif 'challenge' in data:
+        challenge_id = data['challenge']['id']
+        sms_code = input('Enter Robinhood code for validation: ')
         res = respond_to_challenge(challenge_id, sms_code)
-    if 'status' in res and res['status'] == 'validated':
+        while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
+            sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(res['challenge']['remaining_attempts']))
+            res = respond_to_challenge(challenge_id, sms_code)
         helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
-        helper.set_device_token(device_token)
-        return(device_token)
-    else:
-        raise Exception(res['detail'])
-
-def login(username,password,device_token=TEMP_DEVICE_TOKEN,expiresIn=86400,scope='internal',by_sms=True):
-    """This function will effectivly log the user into robinhood by getting an
-    authentication token and saving it to the session header.
-
-    :param username: The username for your robinhood account. Usually your email.
-    :type username: str
-    :param password: The password for your robinhood account.
-    :type password: str
-    :param device_token: The device_token you should re-use (can be saved with "robin_stocks.get_new_device_token()").
-    :type device_token: str
-    :param expiresIn: The time until your login session expires. This is in seconds.
-    :type expiresIn: Optional[int]
-    :param scope: Specifies the scope of the authentication.
-    :type scope: Optional[str]
-    :param by_sms: Specifies whether to send an email(False) or an sms(True)
-    :type by_sms: Optional[boolean]
-    :returns:  A dictionary with log in information.
-
-    """
-    if not device_token:
-        TEMP_DEVICE_TOKEN = get_new_device_token(username, password,by_sms=by_sms)
-        device_token = TEMP_DEVICE_TOKEN
-    if not LOGIN_DATA:
-        data = base_login(username, password, device_token,by_sms=by_sms)
-    if LOGIN_DATA:
-        token = 'Bearer {}'.format(LOGIN_DATA['access_token'])
+        data = helper.request_post(url,payload)
+    # Update Session data with authorization or raise exception with the information present in data.
+    if 'access_token' in data:
+        token = '{0} {1}'.format(data['token_type'],data['access_token'])
         helper.update_session('Authorization',token)
         helper.set_login_state(True)
-        data = LOGIN_DATA
-    elif 'access_token' in data:
-        token = 'Bearer {}'.format(data['access_token'])
-        helper.update_session('Authorization',token)
-        helper.set_login_state(True)
+        data['detail'] = "logged in with brand new authentication code."
+        if store_session:
+            with open(pickle_path, 'wb') as f:
+                pickle.dump(token,f)
     else:
-        print(data)
+        raise Exception(data['detail'])
     return(data)
 
 @helper.login_required

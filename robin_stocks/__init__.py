@@ -1,46 +1,3 @@
-from .authentication import login, \
-                            logout,\
-                            get_new_device_token
-
-from .helper import request_get,      \
-                    request_post,     \
-                    request_delete,   \
-                    request_document, \
-                    update_session,   \
-                    get_device_token
-
-from .profiles import load_account_profile,     \
-                      load_basic_profile,       \
-                      load_investment_profile,  \
-                      load_portfolio_profile,   \
-                      load_security_profile,    \
-                      load_user_profile
-
-from .stocks import get_quotes,                 \
-                    get_fundamentals,           \
-                    get_instruments_by_symbols, \
-                    get_instrument_by_url,      \
-                    get_latest_price,           \
-                    get_name_by_symbol,         \
-                    get_name_by_url,            \
-                    get_ratings,                \
-                    get_popularity,             \
-                    get_events,                 \
-                    get_earnings,               \
-                    get_news,                   \
-                    get_splits,                 \
-                    find_instrument_data,       \
-                    get_historicals,            \
-                    get_pricebook_by_id,        \
-                    get_pricebook_by_symbol,    \
-                    get_stock_quote_by_id,      \
-                    get_stock_quote_by_symbol
-
-
-from .markets import get_currency_pairs,        \
-                     get_markets,               \
-                     get_top_movers
-
 from .account import get_all_positions,             \
                      get_bank_account_info,         \
                      get_bank_transfers,            \
@@ -68,27 +25,24 @@ from .account import get_all_positions,             \
                      build_holdings,                \
                      build_user_profile
 
-from .orders import get_all_orders,             \
-                    get_all_open_orders,        \
-                    get_order_info,             \
-                    find_orders,                \
-                    cancel_all_open_orders,     \
-                    cancel_order,               \
-                    order,                      \
-                    order_buy_market,           \
-                    order_buy_limit,            \
-                    order_buy_stop_loss,        \
-                    order_buy_stop_limit,       \
-                    order_sell_market,          \
-                    order_sell_limit,           \
-                    order_sell_stop_loss,       \
-                    order_sell_stop_limit,      \
-                    order_buy_option_limit,     \
-                    order_sell_option_limit,    \
-                    order_buy_crypto_by_price,  \
-                    order_buy_crypto_by_quantity,\
-                    order_sell_crypto_by_price, \
-                    order_sell_crypto_by_quantity
+from .authentication import login, \
+                            logout
+
+from .crypto import load_crypto_profile,        \
+                    get_crypto_currency_pairs,  \
+                    get_crypto_info,            \
+                    get_crypto_quote,           \
+                    get_crypto_quote_from_id
+
+from .helper import request_get,      \
+                    request_post,     \
+                    request_delete,   \
+                    request_document, \
+                    update_session
+
+from .markets import get_currency_pairs,        \
+                     get_markets,               \
+                     get_top_movers
 
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \
@@ -108,8 +62,51 @@ from .options import get_aggregate_positions,                           \
                      get_option_instrument_data,                        \
                      get_option_historicals
 
-from .crypto import load_crypto_profile,                                \
-                    get_crypto_currency_pairs,                          \
-                    get_crypto_info,                                    \
-                    get_crypto_quote,                                   \
-                    get_crypto_quote_from_id
+from .orders import get_all_orders,                 \
+                    get_all_open_orders,            \
+                    get_order_info,                 \
+                    find_orders,                    \
+                    cancel_all_open_orders,         \
+                    cancel_order,                   \
+                    order,                          \
+                    order_buy_market,               \
+                    order_buy_limit,                \
+                    order_buy_stop_loss,            \
+                    order_buy_stop_limit,           \
+                    order_sell_market,              \
+                    order_sell_limit,               \
+                    order_sell_stop_loss,           \
+                    order_sell_stop_limit,          \
+                    order_buy_option_limit,         \
+                    order_sell_option_limit,        \
+                    order_buy_crypto_by_price,      \
+                    order_buy_crypto_by_quantity,   \
+                    order_sell_crypto_by_price,     \
+                    order_sell_crypto_by_quantity
+
+from .profiles import load_account_profile,     \
+                      load_basic_profile,       \
+                      load_investment_profile,  \
+                      load_portfolio_profile,   \
+                      load_security_profile,    \
+                      load_user_profile
+
+from .stocks import get_quotes,                 \
+                    get_fundamentals,           \
+                    get_instruments_by_symbols, \
+                    get_instrument_by_url,      \
+                    get_latest_price,           \
+                    get_name_by_symbol,         \
+                    get_name_by_url,            \
+                    get_ratings,                \
+                    get_popularity,             \
+                    get_events,                 \
+                    get_earnings,               \
+                    get_news,                   \
+                    get_splits,                 \
+                    find_instrument_data,       \
+                    get_historicals,            \
+                    get_pricebook_by_id,        \
+                    get_pricebook_by_symbol,    \
+                    get_stock_quote_by_id,      \
+                    get_stock_quote_by_symbol

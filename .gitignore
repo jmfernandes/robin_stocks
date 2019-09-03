@@ -1,4 +1,5 @@
 # general things to ignore
+data.pickle
 build/
 dist/
 tests/
