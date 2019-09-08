@@ -63,7 +63,7 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
     :type by_sms: Optional[boolean]
     :param store_session: Specifies whether to save the log in authorization for future log ins.
     :type store_session: Optional[boolean]
-    :returns:  A dictionary with log in information. Contains the access token and the 'detail' keyword \
+    :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
     contains information on whether the access token was generated or loaded from pickle file.
 
     """
@@ -94,18 +94,27 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
         if store_session:
             try:
                 with open(pickle_path, 'rb') as f:
-                    token = pickle.load(f)
+                    pickle_data = pickle.load(f)
+                    access_token = pickle_data['access_token']
+                    token_type = pickle_data['token_type']
+                    refresh_token = pickle_data['refresh_token']
+                    # Set device_token to be the original device token when first logged in.
+                    pickle_device_token = pickle_data['device_token']
+                    payload['device_token'] = pickle_device_token
+                    # Set login status to True in order to try and get account info.
                     helper.set_login_state(True)
-                    helper.update_session('Authorization',token)
+                    helper.update_session('Authorization','{0} {1}'.format(token_type, access_token))
                     # Try to load account profile to check that authorization token is still valid.
                     res = helper.request_get(urls.portfolio_profile(),'regular',payload,jsonify_data=False)
-                    res.raise_for_status() # Raises exception is response code is not 200.
-                    return({'access_token': token.split(" ")[1],'token_type': token.split(" ")[0],
+                    # Raises exception is response code is not 200.
+                    res.raise_for_status()
+                    return({'access_token': access_token,'token_type': token_type,
                     'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in data.pickle',
-                    'backup_code': None, 'refresh_token': None})
+                    'backup_code': None, 'refresh_token': refresh_token})
             except:
-                print("ERROR: There was an issue loading pickle file - logging in normally.")
+                print("ERROR: There was an issue loading pickle file. Authentication may be expired - logging in normally.")
                 helper.set_login_state(False)
+                helper.update_session('Authorization',None)
         else:
             os.remove(pickle_path)
     # Try to log in normally.
@@ -137,7 +146,10 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
         data['detail'] = "logged in with brand new authentication code."
         if store_session:
             with open(pickle_path, 'wb') as f:
-                pickle.dump(token,f)
+                pickle.dump({'token_type' : data['token_type'],
+                            'access_token' : data['access_token'],
+                            'refresh_token' : data['refresh_token'],
+                            'device_token' : device_token},f)
     else:
         raise Exception(data['detail'])
     return(data)

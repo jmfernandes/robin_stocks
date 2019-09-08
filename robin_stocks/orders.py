@@ -581,7 +581,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param price: The limit price to trigger a buy of the option.
-    :type price: int
+    :type price: float
     :param symbol: The stock ticker of the stock to trade.
     :type symbol: str
     :param quantity: The number of options to buy.
@@ -634,7 +634,7 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param price: The limit price to trigger a sell of the option.
-    :type price: int
+    :type price: float
     :param symbol: The stock ticker of the stock to trade.
     :type symbol: str
     :param quantity: The number of options to sell.
@@ -708,7 +708,7 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
     # turn the money amount into decimal number of shares
     try:
         shares = round(amountInDollars/float(price),8)
@@ -753,7 +753,7 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
@@ -797,7 +797,7 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
     # turn the money amount into decimal number of shares
     try:
         shares = round(amountInDollars/float(price),8)
@@ -841,7 +841,8 @@ def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFo
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),2)
+    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
+    print( "pice is ", price)
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
