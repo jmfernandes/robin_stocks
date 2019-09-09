@@ -666,7 +666,7 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
     'direction': 'credit',
     'time_in_force': timeInForce,
     'legs': [
-        {'position_effect': 'open', 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+        {'position_effect': 'close', 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
     ],
     'type': 'limit',
     'trigger': 'immediate',
