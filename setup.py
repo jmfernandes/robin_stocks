@@ -1,6 +1,4 @@
-from setuptools import setup,find_packages
-
-from codecs import open
+from setuptools import setup, find_packages
 from os import path
 
 here = path.abspath(path.dirname(__file__))
@@ -11,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(name='robin_stocks',
       version='0.9.9.4',
       description='A Python wrapper around the Robinhood API',
-      long_description='A Python wrapper around the Robinhood API',
+      long_description=long_description,
       long_description_content_type='text/markdown',
       url='https://github.com/jmfernandes/robin_stocks',
       author='Josh Fernandes',
