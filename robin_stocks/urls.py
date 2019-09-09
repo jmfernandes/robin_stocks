@@ -179,6 +179,9 @@ def crypto_currency_pairs():
 def crypto_quote(id):
     return('https://api.robinhood.com/marketdata/forex/quotes/{}/'.format(id))
 
+def crypto_holdings():
+    return('https://nummus.robinhood.com/holdings/')
+
 ### orders
 
 def cancel(url):

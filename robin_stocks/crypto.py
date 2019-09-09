@@ -17,6 +17,20 @@ def load_crypto_profile(info=None):
     data = helper.request_get(url,'indexzero')
     return(helper.filter(data,info))
 
+@helper.login_required
+def get_crypto_positions(info=None):
+    """Returns crypto positions for the account.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.crypto_holdings()
+    data = helper.request_get(url,'pagination')
+    return(helper.filter(data,info))
+
 def get_crypto_currency_pairs(info=None):
     """Gets a list of all the cypto currencies that you can trade
 

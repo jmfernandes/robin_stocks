@@ -32,7 +32,8 @@ from .crypto import load_crypto_profile,        \
                     get_crypto_currency_pairs,  \
                     get_crypto_info,            \
                     get_crypto_quote,           \
-                    get_crypto_quote_from_id
+                    get_crypto_quote_from_id,   \
+                    get_crypto_positions
 
 from .helper import request_get,      \
                     request_post,     \
