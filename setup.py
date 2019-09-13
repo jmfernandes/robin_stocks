@@ -7,7 +7,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='robin_stocks',
-      version='0.9.9.4',
+      version='0.9.9.5',
       description='A Python wrapper around the Robinhood API',
       long_description=long_description,
       long_description_content_type='text/markdown',

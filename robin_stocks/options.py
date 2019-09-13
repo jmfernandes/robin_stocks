@@ -141,7 +141,7 @@ def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both'
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
     filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate
-                        and item['rhs_tradability'] == 'tradable']
+                        and item['tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -173,7 +173,7 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
     filteredOptions = [item for item in allOptions if float(item["strike_price"]) == float(strike)
-                        and item['rhs_tradability'] == 'tradable']
+                        and item['tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -207,7 +207,7 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
 
     allOptions = find_tradable_options_for_stock(symbol,optionType)
     filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)
-                        and item['rhs_tradability'] == 'tradable']
+                        and item['tradability'] == 'tradable']
 
     for item in filteredOptions:
         marketData = get_option_market_data_by_id(item['id'])
@@ -255,7 +255,7 @@ def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDa
                         'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            if (item['expiration_date'] == expirationDate and item['rhs_tradability'] == 'tradable'):
+            if (item['expiration_date'] == expirationDate and item['tradability'] == 'tradable'):
                 data.append(item)
 
     for item in data:
@@ -289,7 +289,7 @@ def get_list_market_data(inputSymbols,expirationDate,info=None):
                     'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            if (item['expiration_date'] == expirationDate and item['rhs_tradability'] == 'tradable'):
+            if (item['expiration_date'] == expirationDate and item['tradability'] == 'tradable'):
                 ids.append(item['id'])
 
     for id in ids:
@@ -336,7 +336,7 @@ def get_list_options_of_specific_profitability(inputSymbols,expirationDate,typeP
                     'rhs_tradability' : 'tradable'}
         otherData = helper.request_get(url,'pagination',payload)
         for item in otherData:
-            if (item['rhs_tradability'] == 'tradable'):
+            if (item['tradability'] == 'tradable'):
                 ids.append(item['id'])
 
     for id in ids:
