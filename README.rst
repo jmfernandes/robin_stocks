@@ -3,10 +3,11 @@ Robinhood API Library
 
 Introduction
 ========================
-This library aims to create simple to use functions to interact with the
-Robinhood API. This is a pure python interface and it requires Python3. The purpose
-of this library is to allow people to make their own robo-investors or to view
-stock information in real time.
+This library aims to create functions to interact with the
+Robinhood API, which are simple to use, easy to understand, and easy to modify the source code.
+This is a pure python interface and it requires Python3. The purpose
+of this library is to allow people to make their own robo-investors or to view information on
+stocks, options, and crypto-currencies in real time.
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/enQtNjE1MzY4NDY0MzkwLTI0YmVmZDVhZTQzYTdjMGZlYjM2YzQ2ODIwNDk3ZjA5ZDQ0ZWYzNjQyMzY0MmQ5ZWE2YjljODk3YjgwZTQyYmQ
 
@@ -19,6 +20,17 @@ so it can be installed by typing into terminal (on Mac) or into command prompt (
 
 Also be sure that Python 3 is installed. If you need to install python you can download it from `Python.org <https://www.python.org/downloads/>`_.
 Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go to `PyPi.org <https://pypi.org/project/pip/>`_.
+
+If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into terminal or command prompt:
+
+>>> git clone https://github.com/jmfernandes/robin_stocks.git
+>>> cd robin_stocks
+
+Now that you have cd into the repository you can type
+
+>>> pip install .
+
+and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
 
 Functions Contained
 ========================
@@ -38,22 +50,10 @@ Not all of the functions contained in the module need the user to be authenticat
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
 to log into Robinhood at the start of each script.
 
-The code provides a lot of ways to view information about your Robinhood account. One way in particular is to type
-
->>> my_stocks = r.build_holdings()
-
-This will build a dictionary called "my_stocks" where the keys are the ticker symbols of
-all the stocks you hold, and the values of those keys are another dictionary containing
-important information about the stocks. If you then wanted to print this dictionary, you could type
-
->>> for key,value in my_stocks.items():
->>>     print(key,value)
-
-There is also the ability to buy and sell stocks. For example, if you wanted to buy 10 shares
+There is the ability to buy and sell stocks, options, and crypto-currencies. For example, if you wanted to buy 10 shares
 of Apple, you would type
 
 >>> r.order_buy_market('AAPL',10)
-
 
 and if you wanted to sell half your Tesla stock if it fell to 200.00 you would type
 
