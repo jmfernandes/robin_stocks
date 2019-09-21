@@ -467,31 +467,34 @@ def build_holdings():
         if not item:
             continue
 
-        instrument_data = stocks.get_instrument_by_url(item['instrument'])
-        symbol = instrument_data['symbol']
-        fundamental_data = stocks.get_fundamentals(symbol)[0]
+        try:
+            instrument_data = stocks.get_instrument_by_url(item['instrument'])
+            symbol = instrument_data['symbol']
+            fundamental_data = stocks.get_fundamentals(symbol)[0]
 
-        price           = stocks.get_latest_price(instrument_data['symbol'])[0]
-        quantity        = item['quantity']
-        equity          = float(item['quantity'])*float(price)
-        equity_change   = (float(quantity)*float(price))-(float(quantity)*float(item['average_buy_price']))
-        percentage      = float(item['quantity'])*float(price)*100/(float(total_equity)-float(cash))
-        if (float(item['average_buy_price']) == 0.0):
-            percent_change = 0.0
-        else:
-            percent_change  = (float(price)-float(item['average_buy_price']))*100/float(item['average_buy_price'])
+            price           = stocks.get_latest_price(instrument_data['symbol'])[0]
+            quantity        = item['quantity']
+            equity          = float(item['quantity'])*float(price)
+            equity_change   = (float(quantity)*float(price))-(float(quantity)*float(item['average_buy_price']))
+            percentage      = float(item['quantity'])*float(price)*100/(float(total_equity)-float(cash))
+            if (float(item['average_buy_price']) == 0.0):
+                percent_change = 0.0
+            else:
+                percent_change  = (float(price)-float(item['average_buy_price']))*100/float(item['average_buy_price'])
 
-        holdings[symbol]=({'price': price })
-        holdings[symbol].update({'quantity': quantity})
-        holdings[symbol].update({'average_buy_price': item['average_buy_price']})
-        holdings[symbol].update({'equity':"{0:.2f}".format(equity)})
-        holdings[symbol].update({'percent_change': "{0:.2f}".format(percent_change)})
-        holdings[symbol].update({'equity_change':"{0:2f}".format(equity_change)})
-        holdings[symbol].update({'type': instrument_data['type']})
-        holdings[symbol].update({'name': stocks.get_name_by_symbol(symbol)})
-        holdings[symbol].update({'id': instrument_data['id']})
-        holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio'] })
-        holdings[symbol].update({'percentage': "{0:.2f}".format(percentage)})
+            holdings[symbol]=({'price': price })
+            holdings[symbol].update({'quantity': quantity})
+            holdings[symbol].update({'average_buy_price': item['average_buy_price']})
+            holdings[symbol].update({'equity':"{0:.2f}".format(equity)})
+            holdings[symbol].update({'percent_change': "{0:.2f}".format(percent_change)})
+            holdings[symbol].update({'equity_change':"{0:2f}".format(equity_change)})
+            holdings[symbol].update({'type': instrument_data['type']})
+            holdings[symbol].update({'name': stocks.get_name_by_symbol(symbol)})
+            holdings[symbol].update({'id': instrument_data['id']})
+            holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio'] })
+            holdings[symbol].update({'percentage': "{0:.2f}".format(percentage)})
+        except:
+            pass
 
     return(holdings)
 

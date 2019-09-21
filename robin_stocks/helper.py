@@ -137,13 +137,15 @@ def filter(data,info):
     :returns:  A list or string with the values that correspond to the info keyword.
 
     """
-    if (data == None or data == [None]):
+    if (data == None):
         return(data)
+    elif (data == [None]):
+        return([])
     elif (type(data) == list):
         if (len(data) == 0):
-            return([None])
+            return([])
         compareDict = data[0]
-        noneType = [None]
+        noneType = []
     elif (type(data) == dict):
         compareDict = data
         noneType = None
