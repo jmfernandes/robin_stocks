@@ -39,6 +39,23 @@ def get_all_open_orders(info=None):
     return(helper.filter(data,info))
 
 @helper.login_required
+def get_all_open_option_orders(info=None):
+    """Returns a list of all the orders that are currently open.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.option_orders()
+    data = helper.request_get(url,'pagination')
+
+    data = [item for item in data if item['cancel_url'] is not None]
+
+    return(helper.filter(data,info))
+
+@helper.login_required
 def get_order_info(orderID):
     """Returns the information for a single order.
 
