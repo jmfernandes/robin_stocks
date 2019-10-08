@@ -148,8 +148,11 @@ def option_instruments(id=None):
     else:
         return('https://api.robinhood.com/options/instruments/')
 
-def option_orders():
-    return('https://api.robinhood.com/options/orders/')
+def option_orders(orderID = None):
+    if orderID:
+        return('https://api.robinhood.com/options/orders/{}/'.format(orderID))
+    else:
+        return('https://api.robinhood.com/options/orders/')
 
 def option_positions():
     return('https://api.robinhood.com/options/positions/')
