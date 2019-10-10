@@ -592,6 +592,122 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 
     return(data)
 
+@helper.login_required
+def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
+    """Submits a limit order for an option credit spread.
+    :param price: The limit price to trigger a sell of the option.
+    :type price: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to sell.
+    :type quantity: int
+    :param spread:
+    :type dict
+      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+      :type expirationDate: str
+      :param strike: The strike price of the option.
+      :type strike: float
+      :param optionType: This should be 'call' or 'put'
+      :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for.
+     'gtc' = good until cancelled. \
+     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+    """
+    order_option_spread("credit", price, symbol, quantity, spread, timeInForce)
+
+@helper.login_required
+def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
+    """Submits a limit order for an option credit spread.
+    :param price: The limit price to trigger a sell of the option.
+    :type price: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to sell.
+    :type quantity: int
+    :param spread:
+    :type dict
+      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+      :type expirationDate: str
+      :param strike: The strike price of the option.
+      :type strike: float
+      :param optionType: This should be 'call' or 'put'
+      :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for.
+     'gtc' = good until cancelled. \
+     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+    """
+    order_option_spread("debit", price, symbol, quantity, spread, timeInForce)
+
+@helper.login_required
+def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gfd'):
+    """Submits a limit order for an option spread. i.e. place a debit / credit spread
+    :param direction: credit or debit spread
+    :type direction: str
+    :param price: The limit price to trigger a sell of the option.
+    :type price: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to sell.
+    :type quantity: int
+    :param spread:
+    :type dict
+      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+      :type expirationDate: str
+      :param strike: The strike price of the option.
+      :type strike: float
+      :param optionType: This should be 'call' or 'put'
+      :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for.
+     'gtc' = good until cancelled. \
+     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+    legs = []
+    for each in spread:
+        optionID = helper.id_for_option(symbol,
+                                        each['expirationDate'],
+                                        each['strike'],
+                                        each['optionType'])
+        legs.append({'position_effect': each['effect'],
+                     'side' : each['action'],
+                     'ratio_quantity': 1,
+                     'option': urls.option_instruments(optionID)})
+
+    payload = {
+        'account': profiles.load_account_profile(info='url'),
+        'direction': direction,
+        'time_in_force': timeInForce,
+        'legs': legs,
+        'type': 'limit',
+        'trigger': 'immediate',
+        'price': price,
+        'quantity': quantity,
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'ref_id': str(uuid4()),
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url,payload, json=True)
+
+    return(data)
+
 
 @helper.login_required
 def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
