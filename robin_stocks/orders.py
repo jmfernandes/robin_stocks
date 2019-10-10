@@ -595,23 +595,21 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
 @helper.login_required
 def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
     """Submits a limit order for an option credit spread.
+
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
     :type symbol: str
     :param quantity: The number of options to sell.
     :type quantity: int
-    :param spread:
-    :type dict
-      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
-      :type expirationDate: str
-      :param strike: The strike price of the option.
-      :type strike: float
-      :param optionType: This should be 'call' or 'put'
-      :type optionType: str
-    :param timeInForce: Changes how long the order will be in effect for.
+    :param spread: A dictionary of spread options with the following keys: \n
+        - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
+        - strike: The strike price of the option.\n
+        - optionType: This should be 'call' or 'put'
+    :type spread: dict
+    :param timeInForce: Changes how long the order will be in effect for. \
      'gtc' = good until cancelled. \
-     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' = execute at opening.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the selling of options, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
@@ -622,20 +620,18 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd
 @helper.login_required
 def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
     """Submits a limit order for an option credit spread.
+    
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
     :type symbol: str
     :param quantity: The number of options to sell.
     :type quantity: int
-    :param spread:
-    :type dict
-      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
-      :type expirationDate: str
-      :param strike: The strike price of the option.
-      :type strike: float
-      :param optionType: This should be 'call' or 'put'
-      :type optionType: str
+    :param spread: A dictionary of spread options with the following keys: \n
+        - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
+        - strike: The strike price of the option.\n
+        - optionType: This should be 'call' or 'put'
+    :type spread: dict
     :param timeInForce: Changes how long the order will be in effect for.
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
@@ -649,22 +645,20 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'
 @helper.login_required
 def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gfd'):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
+
     :param direction: credit or debit spread
     :type direction: str
-    :param price: The limit price to trigger a sell of the option.
+    :param price: The limit price to trigger a trade of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
     :type symbol: str
-    :param quantity: The number of options to sell.
+    :param quantity: The number of options to trade.
     :type quantity: int
-    :param spread:
-    :type dict
-      :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
-      :type expirationDate: str
-      :param strike: The strike price of the option.
-      :type strike: float
-      :param optionType: This should be 'call' or 'put'
-      :type optionType: str
+    :param spread: A dictionary of spread options with the following keys: \n
+        - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
+        - strike: The strike price of the option.\n
+        - optionType: This should be 'call' or 'put'
+    :type spread: dict
     :param timeInForce: Changes how long the order will be in effect for.
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
