@@ -186,7 +186,7 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     'account': profiles.load_account_profile(info='url'),
     'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
     'symbol': symbol,
-    'price': float(stocks.get_latest_price(symbol)[0]),
+    'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
     'ref_id': str(uuid4()),
     'type': 'market',
@@ -222,7 +222,7 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     """
     try:
         symbol = symbol.upper().strip()
-        limitPrice = float(limitPrice)
+        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -266,8 +266,8 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = float(stocks.get_latest_price(symbol)[0])
-        stopPrice = float(stopPrice)
+        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
+        stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -317,9 +317,9 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = float(stocks.get_latest_price(symbol)[0])
-        stopPrice = float(stopPrice)
-        limitPrice = float(limitPrice)
+        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
+        stopPrice = helper.round_price(stopPrice)
+        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -375,7 +375,7 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     'account': profiles.load_account_profile(info='url'),
     'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
     'symbol': symbol,
-    'price': float(stocks.get_latest_price(symbol)[0]),
+    'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
     'ref_id': str(uuid4()),
     'type': 'market',
@@ -411,7 +411,7 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     """
     try:
         symbol = symbol.upper().strip()
-        limitPrice = float(limitPrice)
+        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -455,8 +455,8 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = float(stocks.get_latest_price(symbol)[0])
-        stopPrice = float(stopPrice)
+        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
+        stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -506,9 +506,9 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = float(stocks.get_latest_price(symbol)[0])
-        stopPrice = float(stopPrice)
-        limitPrice = float(limitPrice)
+        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
+        stopPrice = helper.round_price(stopPrice)
+        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -566,8 +566,8 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     """
     try:
         symbol = symbol.upper().strip()
-        stopPrice = float(stopPrice)
-        limitPrice = float(limitPrice)
+        stopPrice = helper.round_price(stopPrice)
+        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
@@ -620,7 +620,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd
 @helper.login_required
 def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
     """Submits a limit order for an option credit spread.
-    
+
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -835,10 +835,10 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/float(price),8)
+        shares = round(amountInDollars/price,8)
     except:
         shares = 0
 
@@ -880,7 +880,7 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
@@ -924,7 +924,7 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
     # turn the money amount into decimal number of shares
     try:
         shares = round(amountInDollars/float(price),8)
@@ -968,8 +968,7 @@ def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFo
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = round(float(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType)),8)
-    print( "pice is ", price)
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),

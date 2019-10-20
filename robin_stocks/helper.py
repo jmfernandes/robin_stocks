@@ -127,6 +127,24 @@ def id_for_option(symbol,expirationDate,strike,optionType='both'):
 
     return(listOfOptions[0]['id'])
 
+def round_price(price):
+    """Takes a price and rounds it to an appropriate decimal place that Robinhood will accept.
+
+    :param price: The input price to round.
+    :type price: float or int
+    :returns: The rounded price as a float.
+
+    """
+    price = float(price)
+    if price <= 1e-2:
+        returnPrice = round(price,6)
+    elif price <= 0:
+        returnPrice = round(price,4)
+    else:
+        returnPrice = round(price,2)
+
+    return returnPrice
+
 def filter(data,info):
     """Takes the data and extracts the value for the keyword that matches info.
 
