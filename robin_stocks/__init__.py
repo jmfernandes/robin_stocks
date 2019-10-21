@@ -69,6 +69,7 @@ from .orders import get_all_orders,                 \
                     get_order_info,                 \
                     find_orders,                    \
                     cancel_all_open_orders,         \
+                    cancel_all_open_option_orders,  \
                     cancel_order,                   \
                     order,                          \
                     order_buy_market,               \
@@ -82,6 +83,10 @@ from .orders import get_all_orders,                 \
                     order_buy_option_limit,         \
                     order_sell_option_limit,        \
                     order_option_spread,            \
+                    order_option_sell_to_open,      \
+                    order_option_sell_to_close,     \
+                    order_option_buy_to_close,      \
+                    order_option_buy_to_open,       \
                     order_option_credit_spread,     \
                     order_option_debit_spread,      \
                     order_buy_crypto_by_price,      \
