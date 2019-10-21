@@ -1,6 +1,7 @@
 """Contains functions for getting information about options."""
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
+from pprint import pprint as pp
 
 @helper.login_required
 def get_aggregate_positions(info=None):
@@ -61,6 +62,8 @@ def get_open_option_positions(info=None):
 
     return(helper.filter(data,info))
 
+
+
 def get_chains(symbol,info=None):
     """Returns the chain information of an option.
 
@@ -116,6 +119,31 @@ def find_tradable_options_for_stock(symbol,optionType='both',info=None):
 
     data = helper.request_get(url,'pagination',payload)
     return(helper.filter(data,info))
+
+
+def id_of_options_to_close(symbol, expirationDate, strike, optionType, count=0, type='long'):
+    """
+
+    :param symbol:
+    :param expirationDate:
+    :param strike:
+    :param optionType:
+    :return: only when option exists in open position else return None
+    """
+    data = get_open_option_positions()
+    msg = "ZERO holdings in open position to close"
+    pp(data)
+    for item in filter(lambda x: symbol == x['chain_symbol'] and type == x['type'], data):
+        per_data = helper.request_get(item['option'])
+        pp(per_data)
+        if per_data['expiration_date'] == expirationDate and float(per_data["strike_price"]) == float(strike) and per_data['type'] == optionType:
+            if count <= float(item['quantity']):
+                return per_data['id']
+            else:
+                msg = "NOT enough quantity to close. holding {} < {}".format(count, int(float(item['quantity'])))
+    print(msg)
+    return None
+
 
 def find_options_for_stock_by_expiration(symbol,expirationDate,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters

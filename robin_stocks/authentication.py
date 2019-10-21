@@ -46,7 +46,7 @@ def respond_to_challenge(challenge_id, sms_code):
     }
     return(helper.request_post(url,payload))
 
-def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_session=True):
+def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_session=True, pickle_path="data.pickle"):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it will store the authentication
     token in a pickle file and load that value on subsequent logins.
@@ -68,8 +68,13 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
 
     """
     device_token = generate_device_token()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    pickle_path = os.path.join(dir_path,"data.pickle")
+    if pickle_path == "data.pickle":
+        # default code - works and backward compatible
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        pickle_path = os.path.join(dir_path, "data.pickle")
+    else:
+        # user fed pickle_path will be used
+        pass
     # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
         challenge_type = "sms"

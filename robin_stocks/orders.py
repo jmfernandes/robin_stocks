@@ -3,6 +3,7 @@ import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 import robin_stocks.stocks as stocks
 import robin_stocks.profiles as profiles
+import robin_stocks.options as options
 import robin_stocks.crypto as crypto
 
 from uuid import uuid4
@@ -37,6 +38,29 @@ def get_all_open_orders(info=None):
     data = [item for item in data if item['cancel'] is not None]
 
     return(helper.filter(data,info))
+
+@helper.login_required
+def close_all_open_option_positions(symbol=None, type=None):
+    """
+    *** WIP: WORK IN PROGRESS ***
+    filter by symbol and type
+    1) cancel all OPEN option orders
+    2) confirm all OPEN orders cancelled
+    3) close open "short" options around MID and ASK (target price is median of ASK & MID)
+    4) ensure all the SHORT options closed
+    5) close open "long" options around BID and MID
+    6) ensure all the LONG options closed
+    :param symbol: Optional - when filtered will close all open positions
+    :param type: put or call or None==both
+    :return:
+    """
+    open_pos = get_open_option_positions()
+    if symbol:
+        open_pos = filter(lambda x: x.get['chain_symbol'] == symbol, open_pos)
+        print(open_pos)
+    cancel_all_open_orders()
+    print("*** DO NOT USE *** WORK IN PROGRESS ***")
+    pass
 
 @helper.login_required
 def get_all_open_option_orders(info=None):
@@ -106,6 +130,21 @@ def find_orders(**arguments):
                 list_of_orders.append(item)
 
     return(list_of_orders)
+
+@helper.login_required
+def cancel_all_open_option_orders():
+    """Cancels all open orders.
+
+    :returns: The list of orders that were cancelled.
+
+    """
+    items = get_all_open_option_orders()
+    for item in items:
+        cancel_url = item.get('cancel_url')
+        data = helper.request_post(cancel_url)
+
+    print('All Orders Cancelled')
+    return(items)
 
 @helper.login_required
 def cancel_all_open_orders():
@@ -708,6 +747,9 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
     return(data)
 
+@helper.login_required
+def order_option_buy_to_open(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType, timeInForce)
 
 @helper.login_required
 def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
@@ -763,6 +805,58 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     return(data)
 
 @helper.login_required
+def order_option_sell_to_close(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """
+    all close option order - do the lookup on the existing positions
+    :param price:
+    :param symbol:
+    :param quantity:
+    :param expirationDate:
+    :param strike:
+    :param optionType:
+    :param timeInForce:
+    :return:
+    """
+    id = options.id_of_options_to_close(symbol, expirationDate, strike, optionType, count=quantity, type='long')
+    if id:
+        order_option_by_id(id, price, quantity, direction='credit', effect='close', side='sell', timeInForce=timeInForce)
+
+@helper.login_required
+def order_option_by_id(optionID, price, quantity, direction='credit', effect='close', side='sell',
+                       timeInForce='gfd'):
+    """
+
+    :param optionID:
+    :param price:
+    :param quantity:
+    :param direction:
+    :param effect:
+    :param side:
+    :param timeInForce:
+    :return:
+    """
+
+    payload = {
+    'account': profiles.load_account_profile(info='url'),
+    'direction': direction,
+    'time_in_force': timeInForce,
+    'legs': [
+        {'position_effect': effect, 'side': side, 'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+    ],
+    'type': 'limit',
+    'trigger': 'immediate',
+    'price': price,
+    'quantity': quantity,
+    'override_day_trade_checks': False,
+	'override_dtbp_checks': False,
+    'ref_id': str(uuid4()),
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url,payload, json=True)
+    return(data)
+
+@helper.login_required
 def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
@@ -814,6 +908,91 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
     data = helper.request_post(url,payload, json=True)
 
     return(data)
+
+
+
+@helper.login_required
+def order_option_buy_to_close(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a limit order for an option. i.e. place a long call or a long put.
+
+    :param price: The limit price to trigger a buy of the option.
+    :type price: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to buy.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    id = options.id_of_options_to_close(symbol, expirationDate, strike, optionType, count=quantity, type='short')
+    if id:
+        order_option_by_id(id, price, quantity, direction='debit', effect='close', side='buy', timeInForce=timeInForce)
+
+
+@helper.login_required
+def order_option_sell_to_open(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a limit order for an option. i.e. place a short call or a short put.
+
+    :param price: The limit price to trigger a sell of the option.
+    :type price: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to sell.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    optionID = helper.id_for_option(symbol,expirationDate,strike,optionType)
+
+    payload = {
+    'account': profiles.load_account_profile(info='url'),
+    'direction': 'credit',
+    'time_in_force': timeInForce,
+    'legs': [
+        {'position_effect': 'open', 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+    ],
+    'type': 'limit',
+    'trigger': 'immediate',
+    'price': price,
+    'quantity': quantity,
+    'override_day_trade_checks': False,
+	'override_dtbp_checks': False,
+    'ref_id': str(uuid4()),
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url,payload, json=True)
+
+    return(data)
+
 
 @helper.login_required
 def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
