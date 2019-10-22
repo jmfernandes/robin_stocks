@@ -1,9 +1,11 @@
 """Contains all functions for the purpose of logging in and out to Robinhood."""
-import robin_stocks.urls as urls
-import robin_stocks.helper as helper
-import random
-import pickle
 import os
+import pickle
+import random
+
+import robin_stocks.helper as helper
+import robin_stocks.urls as urls
+
 
 def generate_device_token():
     """This function will generate a token used when loggin on.
@@ -12,23 +14,24 @@ def generate_device_token():
 
     """
     rands = []
-    for i in range(0,16):
+    for i in range(0, 16):
         r = random.random()
         rand = 4294967296.0 * r
         rands.append((int(rand) >> ((3 & i) << 3)) & 255)
 
     hexa = []
-    for i in range(0,256):
-        hexa.append(str(hex(i+256)).lstrip("0x").rstrip("L")[1:])
+    for i in range(0, 256):
+        hexa.append(str(hex(i + 256)).lstrip("0x").rstrip("L")[1:])
 
-    id = ""
-    for i in range(0,16):
-        id += hexa[rands[i]]
+    _id = ""
+    for i in range(0, 16):
+        _id += hexa[rands[i]]
 
         if (i == 3) or (i == 5) or (i == 7) or (i == 9):
-            id += "-"
+            _id += "-"
 
-    return(id)
+    return _id
+
 
 def respond_to_challenge(challenge_id, sms_code):
     """This functino will post to the challenge url.
@@ -44,9 +47,11 @@ def respond_to_challenge(challenge_id, sms_code):
     payload = {
         'response': sms_code
     }
-    return(helper.request_post(url,payload))
+    return helper.request_post(url, payload)
 
-def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_session=True, pickle_path="data.pickle"):
+
+def login(username, password, expires_in=86400, scope='internal', by_sms=True, store_session=True,
+          pickle_path="data.pickle"):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it will store the authentication
     token in a pickle file and load that value on subsequent logins.
@@ -55,14 +60,16 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
     :type username: str
     :param password: The password for your robinhood account.
     :type password: str
-    :param expiresIn: The time until your login session expires. This is in seconds.
-    :type expiresIn: Optional[int]
+    :param expires_in: The time until your login session expires. This is in seconds.
+    :type expires_in: Optional[int]
     :param scope: Specifies the scope of the authentication.
     :type scope: Optional[str]
     :param by_sms: Specifies whether to send an email(False) or an sms(True)
     :type by_sms: Optional[boolean]
     :param store_session: Specifies whether to save the log in authorization for future log ins.
     :type store_session: Optional[boolean]
+    :param pickle_path: Specifies where to store the authentication pickle
+    :type pickle_path: Optional[str]
     :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
     contains information on whether the access token was generated or loaded from pickle file.
 
@@ -83,14 +90,14 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
 
     url = urls.login_url()
     payload = {
-    'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
-    'expires_in': expiresIn,
-    'grant_type': 'password',
-    'password': password,
-    'scope': scope,
-    'username': username,
-    'challenge_type': challenge_type,
-    'device_token': device_token
+        'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
+        'expires_in': expires_in,
+        'grant_type': 'password',
+        'password': password,
+        'scope': scope,
+        'username': username,
+        'challenge_type': challenge_type,
+        'device_token': device_token
     }
     # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
     if os.path.isfile(pickle_path):
@@ -108,56 +115,61 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
                     payload['device_token'] = pickle_device_token
                     # Set login status to True in order to try and get account info.
                     helper.set_login_state(True)
-                    helper.update_session('Authorization','{0} {1}'.format(token_type, access_token))
+                    helper.update_session('Authorization', '{0} {1}'.format(token_type, access_token))
                     # Try to load account profile to check that authorization token is still valid.
-                    res = helper.request_get(urls.portfolio_profile(),'regular',payload,jsonify_data=False)
+                    res = helper.request_get(urls.portfolio_profile(), 'regular', payload, jsonify_data=False)
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
-                    return({'access_token': access_token,'token_type': token_type,
-                    'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in data.pickle',
-                    'backup_code': None, 'refresh_token': refresh_token})
-            except:
-                print("ERROR: There was an issue loading pickle file. Authentication may be expired - logging in normally.")
+                    return ({'access_token': access_token, 'token_type': token_type,
+                             'expires_in': expires_in, 'scope': scope,
+                             'detail': 'logged in using authentication in data.pickle',
+                             'backup_code': None, 'refresh_token': refresh_token})
+            except Exception as e:
+                msg = """ERROR: There was an issue loading pickle file. 
+                Authentication may be expired - logging in normally.""".format(e)
+                print(msg)
                 helper.set_login_state(False)
-                helper.update_session('Authorization',None)
+                helper.update_session('Authorization', "")
         else:
             os.remove(pickle_path)
     # Try to log in normally.
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
     # Handle case where mfa or challenge is required.
     if 'mfa_required' in data:
         mfa_token = input("Please type in the MFA code: ")
         payload['mfa_code'] = mfa_token
-        res = helper.request_post(url,payload,jsonify_data=False)
-        while (res.status_code != 200):
+        res = helper.request_post(url, payload, jsonify_data=False)
+        while res.status_code != 200:
             mfa_token = input("That MFA code was not correct. Please type in another MFA code: ")
             payload['mfa_code'] = mfa_token
-            res = helper.request_post(url,payload,jsonify_data=False)
+            res = helper.request_post(url, payload, jsonify_data=False)
         data = res.json()
     elif 'challenge' in data:
         challenge_id = data['challenge']['id']
         sms_code = input('Enter Robinhood code for validation: ')
         res = respond_to_challenge(challenge_id, sms_code)
         while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
-            sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(res['challenge']['remaining_attempts']))
+            sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(
+                res['challenge']['remaining_attempts']))
             res = respond_to_challenge(challenge_id, sms_code)
         helper.update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
-        data = helper.request_post(url,payload)
+        data = helper.request_post(url, payload)
     # Update Session data with authorization or raise exception with the information present in data.
     if 'access_token' in data:
-        token = '{0} {1}'.format(data['token_type'],data['access_token'])
-        helper.update_session('Authorization',token)
+        token = '{0} {1}'.format(data['token_type'], data['access_token'])
+        helper.update_session('Authorization', token)
         helper.set_login_state(True)
         data['detail'] = "logged in with brand new authentication code."
         if store_session:
             with open(pickle_path, 'wb') as f:
-                pickle.dump({'token_type' : data['token_type'],
-                            'access_token' : data['access_token'],
-                            'refresh_token' : data['refresh_token'],
-                            'device_token' : device_token},f)
+                pickle.dump({'token_type': data['token_type'],
+                             'access_token': data['access_token'],
+                             'refresh_token': data['refresh_token'],
+                             'device_token': device_token}, f)
     else:
         raise Exception(data['detail'])
-    return(data)
+    return data
+
 
 @helper.login_required
 def logout():
@@ -167,4 +179,4 @@ def logout():
 
     """
     helper.set_login_state(False)
-    helper.update_session('Authorization',None)
+    helper.update_session('Authorization', "")
