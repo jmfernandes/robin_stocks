@@ -660,9 +660,9 @@ def order_option_credit_spread(price, symbol, quantity, spread, time_in_force='g
     :param quantity: The number of options to sell.
     :type quantity: int
     :param spread: A dictionary of spread options with the following keys: \n
-        - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
+        - expiration_date: The expiration date of the option in 'YYYY-MM-DD' format.\n
         - strike: The strike price of the option.\n
-        - optionType: This should be 'call' or 'put'
+        - option_type: This should be 'call' or 'put'
     :type spread: dict
     :param time_in_force: Changes how long the order will be in effect for.
      'gtc' = good until cancelled. \
