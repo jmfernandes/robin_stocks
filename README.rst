@@ -87,6 +87,28 @@ Keep in mind that RobinHood will sometimes return the data in a different format
 To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
 In most cases, you want to use 'pagination' to get all the results.
 
+Shell app
+=========
+for ease of execution from terminal, this will be linux like prompt with shortcuts to execute order.
+This also comes with the history for you to scroll up and modify orders
+
+*** More work in progress ***
+
+dependencies: pip install pyyaml
+
+YAML file containing the username, password and optional pickle_path
+
+cat myproj/cfg.yaml 
+
+>>> username: sh*****en@some.com
+>>> password: pa$$w0rd
+>>> pickle_path: /tmp/shob.pickle
+
+"?" - list all shortcut commands
+help <shortcut> - provides usage syntax at ease
+
+
+
 
 New Features In The Works
 =========================
