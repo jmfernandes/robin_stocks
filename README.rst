@@ -104,8 +104,9 @@ cat myproj/cfg.yaml
 >>> password: pa$$w0rd
 >>> pickle_path: /tmp/shob.pickle
 
-"?" - list all shortcut commands
-help <shortcut> - provides usage syntax at ease
+
+>>> "?" - list all shortcut commands
+>>> help <shortcut> - provides usage syntax at ease
 
 
 
