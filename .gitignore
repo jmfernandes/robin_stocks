@@ -1,6 +1,6 @@
 # general things to ignore
 data.pickle
-.vscode
+.vscode/
 build/
 dist/
 tests/
