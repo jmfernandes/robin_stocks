@@ -4,13 +4,14 @@ import cmd
 import datetime
 import json
 import logging
+import math
 import re
 import sys
-from os import system, name
 from pprint import pprint as pp
 
 import yaml
 from colorclass import Color
+from tabulate import tabulate
 
 import robin_stocks as rs
 import robin_stocks.helper as helper
@@ -50,171 +51,88 @@ class Helper:
 
     def __init__(self, rs):
         self.rs = rs
+        self.rs.holdings = []
+        self.rs.options = []
 
-    @staticmethod
-    def print_spread(spread):
-
-        if (spread['enable']):
-            if spread['print_empty_line']:
-                print(
-                    "                                                            ------------------------------------------")
-            print("                                                           %10.2f            %10.2f %10.2f"
-                  % (spread['aprice'], spread['cprice'], spread['p_or_l']))
-            spread['aprice'] = 0.0
-            spread['cprice'] = 0.0
-            spread['p_or_l'] = 0.0
-
-    @staticmethod
-    def print_symbol(symbol):
-
-        if (symbol['enable']):
-            if symbol['print_empty_line']:
-                print(
-                    "                                                            ------------------------------------------")
-            print("                                                                                            %10.2f"
-                  % (symbol['p_or_l']))
-            symbol['p_or_l'] = 0.0
-
-    @staticmethod
-    def print_summary(summary):
-
-        if (summary['enable']):
-            if summary['print_empty_line']:
-                print(
-                    "                                                            ------------------------------------------")
-            print("                                                                                    Total   %10.2f"
-                  % (summary['p_or_l']))
-
-    @staticmethod
-    def clear_screen():
-        if name == 'nt':
-            _ = system('cls')
+    def print_stock_positions(self):
+        out = self.rs.get_current_positions()
+        headers = ['No.', 'symbol', 'tradable_qty', 'current_price', 'average_price', 'quantity']
+        holdings = []
+        total = 0.0
+        for idx, each in enumerate(out):
+            each_instrument = each.get('instrument').split('/')[-2]
+            stk_dict = self.rs.get_stock_quote_by_id(each_instrument)
+            cur_price = stk_dict.get('last_extended_hours_trade_price') or stk_dict.get('last_trade_price')
+            holdings.append([idx + 1,
+                             stk_dict.get('symbol'),
+                             float(each.get('quantity')) - sum(
+                                 [float(each[x]) for x in each.keys() if 'shares_held' in x]),
+                             cur_price,
+                             each.get('average_buy_price'),
+                             each.get('quantity'),
+                             ])
+            total += float(cur_price) * float(each.get('quantity'))
+        self.rs.holdings = holdings
+        if holdings:
+            print(tabulate(holdings, headers=headers))
+            print("*** Net Equity: {}".format(total))
         else:
-            _ = system('clear')
+            print("**** No stock holdings")
 
-    def get_mktdata_for_positions(self, posns):
-
-        for position in posns:
-            if position['quantity'] != "0.0000":
-                url = position['option']
-                urll = url.split("/")
-                opt_id = urll[len(urll) - 2]
-                mkt_data = self.rs.get_option_market_data_by_id(opt_id)
-                position['curr_price'] = mkt_data['adjusted_mark_price']
-
-        return posns
-
-    def get_all_my_open_positions(self):
-
-        # !!! Fill out username and password
-        positions = rs.get_open_option_positions()
-        posns = []
-
-        for position in positions:
-
-            if position['quantity'] != "0.0000":
-                url = position['option']
+    def get_open_options(self):
+        positions = []
+        for each_pos in rs.get_open_option_positions():
+            if each_pos['quantity'] != "0.0000":
+                url = each_pos['option']
                 data = helper.request_get(url)
-                optype = data['type']
+                mkt_data = self.rs.get_option_market_data_by_id(url.split('/')[-2])
+                # fill out the data
+                each_pos['optype'] = data['type']
+                each_pos['expiration_date'] = data['expiration_date']
+                each_pos['created_at'] = data['created_at']
+                each_pos['strike_price'] = data['strike_price']
+                price_tag = 'ask_price' if each_pos['type'] is 'short' else 'bid_price'
+                qty_tag = 'pending_buy_quantity' if each_pos['type'] is 'short' else 'pending_sell_quantity'
+                each_pos['curr_price'] = mkt_data[price_tag]
+                each_pos['tradable_qty'] = float(each_pos['quantity']) - float(each_pos[qty_tag])
+                #    sum([float(each_pos[x]) for x in each_pos.keys() if 'pending_' in x])
+                positions.append(each_pos)
+        return positions
 
-                urll = url.split("/")
-                opt_id = urll[len(urll) - 2]
-                mkt_data = self.rs.get_option_market_data_by_id(opt_id)
+    def print_open_options(self):
+        headers = ["No.", "Symbol", "strike", "expiry", "C/P", "curr", "Qty", "avg"]
+        positions = self.get_open_options()
+        positions.sort(key=lambda x: (x['chain_symbol'], x['optype'], x['type'], x['average_price']))
+        table = []
+        total = 0.0
+        for idx, each in enumerate(positions):
+            table.append(["#{}".format(idx + 1),
+                          each['chain_symbol'],
+                          each['strike_price'],
+                          each['expiration_date'],
+                          each['optype'],
+                          each['curr_price'],
+                          "{}/{}".format(int(each['tradable_qty']) * (-1 if each['type'] == "short" else 1),
+                                         int(float(each['quantity']))),
+                          math.ceil(float(each['average_price'])) / 100,
+                          ])
+            total += float(each['quantity']) * float(each['curr_price']) * 100
+        self.rs.options = table
+        if table:
+            print(tabulate(table, headers=headers))
+            print("Net Equity: {}".format(int(total)))
+        else:
+            print("*** No option positions")
 
-                position['optype'] = optype
-                position['expiration_date'] = data['expiration_date']
-                position['created_at'] = data['created_at']
-                position['strike_price'] = data['strike_price']
-                position['curr_price'] = mkt_data['adjusted_mark_price']
-
-                posns.append(position)
-
-        return posns
-
-    def print_positions(self, posns):
-
-        # clear_screen()
-
-        print("Symbol   C/P  Strike  expry  Enter    S/B   Qty      avg/s        avg     curr/s    current        p/l")
-        print("------------------------------------------------------------------------------------------------------")
-
-        p_symbol = None
-        p_optype = ""
-        p_ptype = ""
-        spread = {}
-        spread['enable'] = True
-        spread['print_empty_line'] = False
-        spread['aprice'] = 0.0
-        spread['cprice'] = 0.0
-        spread['p_or_l'] = 0.0
-
-        symbol = {}
-        symbol['enable'] = True
-        symbol['print_empty_line'] = False
-        symbol['sname'] = ""
-        symbol['p_or_l'] = 0.0
-
-        summary = {}
-        summary['enable'] = True
-        summary['print_empty_line'] = False
-        summary['p_or_l'] = 0.0
-
-        for position in posns:
-            sname = position['chain_symbol'].strip()
-            optype = position['optype'].strip()
-            ptype = position['type'].strip()
-
-            if p_symbol is not None:
-                if p_symbol != sname or p_optype != optype:
-                    self.print_spread(spread)
-
-                    if p_symbol != sname:
-                        self.print_symbol(symbol)
-                        symbol['sname'] = sname
-                    print()
-
-            qty = int(float(position['quantity']))
-            aprice = float(position['average_price'])
-            sprice = float(position['strike_price'])
-            cprice = float(position['curr_price'])
-
-            edate = position['expiration_date'][-5:]
-            cdate = position['created_at'][5:10]
-
-            spread['aprice'] += (aprice * qty)
-            cprice = cprice * 100
-
-            if (ptype == "short"):
-                p_or_l = (-1 * aprice * qty) - (cprice * qty)
-            else:
-                p_or_l = cprice * qty - aprice * qty
-
-            spread['cprice'] += (cprice * qty)
-            spread['p_or_l'] += p_or_l
-            symbol['p_or_l'] += p_or_l
-            summary['p_or_l'] += p_or_l
-
-            print(" %5s %5s %7s %6s %6s %6s %5d %10.2f %10.2f %10.2f %10.2f %10.2f"
-                  % (
-                      sname, optype, sprice, edate, cdate, ptype, qty, aprice, aprice * qty, cprice, cprice * qty,
-                      p_or_l))
-
-            p_symbol = sname
-            p_optype = optype
-            p_ptype = ptype
-
-        self.print_spread(spread)
-        self.print_symbol(symbol)
-        self.print_summary(summary)
-
-    def print_all_positions(self):
-
-        posns = self.get_all_my_open_positions()
-        posns.sort(key=lambda x: (x['chain_symbol'], x['optype'], x['type'], x['average_price']))
-        self.print_positions(posns)
-
-        posns = self.get_mktdata_for_positions(posns)
-        self.print_positions(posns)
+    def merge_spread(self, *args):
+        headers = ["No.", "Symbol", "C/P", "strike", "expiry", "St/Lg", "Qty", "avg", "curr"]
+        table = []
+        for each in args:
+            table.append(self.rs.options[int(each) - 1])
+        if table:
+            print(tabulate(table, headers=headers))
+        else:
+            print("*** No option positions")
 
 
 # END OF HELPER CODE
@@ -248,30 +166,23 @@ class RHShell(cmd.Cmd):
         with open(yaml_file) as fh:
             yd = yaml.safe_load(fh)
         rs.login(yd['username'], yd['password'], pickle_path=yd.get('pickle_path', "data.pickle"))
+        self.prompt = "{}> ".format(yd['username'][:2])
         print("Logging in..")
-
-    def do_x(self, arg):
-        """
-
-        """
-        Helper(self.trader).print_all_positions()
+        self.h = Helper(self.trader)
 
     def do_l(self, arg):
         """
         Lists current portfolio
 
         """
-        open_positions = self.trader.get_all_positions()
-        pp(open_positions)
+        self.h.print_stock_positions()
 
     def do_lo(self, arg):
         """
         Lists current options portfolio
 
         """
-        # Load Options
-        option_positions = self.trader.get_open_option_positions()
-        pp(option_positions)
+        self.h.print_open_options()
 
     def do_w(self, arg):
         """
@@ -350,7 +261,16 @@ class RHShell(cmd.Cmd):
         """
         List open orders
         """
-        open_orders = self.trader.get_open_orders()
+        open_orders = self.trader.get_all_open_orders()
+        pp(open_orders)
+
+    def do_op(self, arg):
+        """
+        
+        :param arg: 
+        :return: 
+        """
+        open_orders = self.trader.get_all_open_option_orders()
         pp(open_orders)
 
     def do_c(self, arg):
@@ -366,17 +286,26 @@ class RHShell(cmd.Cmd):
             _id = arg
         self.trader.cancel_order(order_id=_id)
 
+    def do_co(self, arg):
+        """
+        
+        :param arg: 
+        :return: 
+        """
+        self.trader.cancel_all_open_option_orders()
+
     def do_ca(self, arg):
         """
         cancel all open orders
         """
         self.trader.cancel_all_open_orders()
 
-    def do_mp(self, arg):
+    def do_m(self, arg):
         """
 
         """
-        pass
+        args = re.split(r"\W+", arg)
+        self.h.merge_spread(*args)
 
     def do_q(self, arg):
         """
@@ -402,6 +331,7 @@ class RHShell(cmd.Cmd):
 
     def do_bto(self, arg):
         """
+        symbol, strike, expdate, opttype, price, qty
 
         """
         od = self._construct_option_dict(arg)
@@ -409,6 +339,7 @@ class RHShell(cmd.Cmd):
 
     def do_stc(self, arg):
         """
+        symbol, strike, expdate, opttype, price, qty
 
         """
         od = self._construct_option_dict(arg)

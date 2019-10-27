@@ -140,7 +140,6 @@ def id_of_options_to_close(symbol, expiration_date, strike, option_type, count=0
 
     data = get_open_option_positions()
     msg = "ZERO holdings in open position to close"
-    pp(data)
     for item in filter(lambda x: symbol == x['chain_symbol'] and _type == x['type'], data):
         per_data = helper.request_get(item['option'])
         if per_data['expiration_date'] == expiration_date and float(per_data["strike_price"]) == float(strike) and \
