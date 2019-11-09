@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1,'/Users/Kevincheng96/Documents/Coding Projects/Python projects/robin_stocks')
+
 import robin_stocks as r
 
 '''
