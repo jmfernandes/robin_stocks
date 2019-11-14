@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 requests = {extras = ["security"],version = "*"}
 pyttsx3 = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"
