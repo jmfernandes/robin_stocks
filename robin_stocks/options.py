@@ -1,5 +1,4 @@
 """Contains functions for getting information about options."""
-from pprint import pprint as pp
 
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
@@ -142,6 +141,7 @@ def id_of_options_to_close(symbol, expiration_date, strike, option_type, count=0
     msg = "ZERO holdings in open position to close"
     for item in filter(lambda x: symbol == x['chain_symbol'] and _type == x['type'], data):
         per_data = helper.request_get(item['option'])
+        print(per_data)
         if per_data['expiration_date'] == expiration_date and float(per_data["strike_price"]) == float(strike) and \
                 per_data['type'] == option_type:
             if int(count) <= int(float(item['quantity'])):

@@ -99,6 +99,20 @@ def get_order_info(order_id):
 
 
 @helper.login_required
+def get_option_order_info(order_id):
+    """Returns the information for a single order.
+
+    :param order_id: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+    :type order_id: str
+    :returns: Returns a list of dictionaries of key/value pairs for the order.
+
+    """
+    url = urls.option_orders(order_id)
+    data = helper.request_get(url)
+    return data
+
+
+@helper.login_required
 def find_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
 
@@ -747,10 +761,16 @@ def order_option_spread(direction, price, symbol, quantity, spread, time_in_forc
         return None
     legs = []
     for each in spread:
-        option_id = helper.id_for_option(symbol,
-                                         each['expiration_date'],
-                                         each['strike'],
-                                         each['option_type'])
+        if each['effect'] == 'close':
+            option_id = options.id_of_options_to_close(symbol,
+                                                       each['expiration_date'],
+                                                       each['strike'],
+                                                       each['option_type'])
+        else:
+            option_id = helper.id_for_option(symbol,
+                                             each['expiration_date'],
+                                             each['strike'],
+                                             each['option_type'])
         legs.append({'position_effect': each['effect'],
                      'side': each['action'],
                      'ratio_quantity': 1,
@@ -852,8 +872,7 @@ def order_option_sell_to_close(price, symbol, quantity, expiration_date, strike,
     """
     _id = options.id_of_options_to_close(symbol, expiration_date, strike, option_type, count=quantity, _type='long')
     if _id:
-        order_option_by_id(_id, price, quantity, direction='credit', effect='close', side='sell',
-                           time_in_force=time_in_force)
+        return order_option_by_id(_id, price, quantity, direction='credit', effect='close', side='sell', time_in_force=time_in_force)
 
 
 @helper.login_required
@@ -890,6 +909,7 @@ def order_option_by_id(option_id, price, quantity, direction='credit', effect='c
 
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
+    print(data)
     return data
 
 

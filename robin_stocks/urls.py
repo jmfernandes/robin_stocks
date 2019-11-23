@@ -247,3 +247,10 @@ def orders(order_id=None):
         return 'https://api.robinhood.com/orders/{}/'.format(order_id)
     else:
         return 'https://api.robinhood.com/orders/'
+
+
+def options_orders(order_id=None):
+    if order_id:
+        return 'https://api.robinhood.com/options/orders/{}/'.format(order_id)
+    else:
+        return 'https://api.robinhood.com/options/orders/'

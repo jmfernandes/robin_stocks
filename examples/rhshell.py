@@ -94,13 +94,18 @@ class Helper:
                 price_tag = 'ask_price' if each_pos['type'] is 'short' else 'bid_price'
                 qty_tag = 'pending_buy_quantity' if each_pos['type'] is 'short' else 'pending_sell_quantity'
                 each_pos['curr_price'] = mkt_data[price_tag]
+                # each_pos['change'] = mkt_data[]
+                if each_pos['type'] is 'short':
+                    each_pos['change'] = (float(mkt_data['ask_price']) - float(mkt_data['previous_close_price']))
+                else:
+                    each_pos['change'] = float(mkt_data['bid_price']) - float(mkt_data['previous_close_price'])
                 each_pos['tradable_qty'] = float(each_pos['quantity']) - float(each_pos[qty_tag])
                 #    sum([float(each_pos[x]) for x in each_pos.keys() if 'pending_' in x])
                 positions.append(each_pos)
         return positions
 
     def print_open_options(self):
-        headers = ["No.", "Symbol", "strike", "expiry", "C/P", "curr", "Qty", "avg"]
+        headers = ["No.", "Symbol", "strike", "expiry", "C/P", "curr", "chg", "Qty", "avg"]
         positions = self.get_open_options()
         positions.sort(key=lambda x: (x['chain_symbol'], x['optype'], x['type'], x['average_price']))
         table = []
@@ -112,6 +117,7 @@ class Helper:
                           each['expiration_date'],
                           each['optype'],
                           each['curr_price'],
+                          each['change'],
                           "{}/{}".format(int(each['tradable_qty']) * (-1 if each['type'] == "short" else 1),
                                          int(float(each['quantity']))),
                           math.ceil(float(each['average_price'])) / 100,
@@ -317,9 +323,9 @@ class RHShell(cmd.Cmd):
 
     def do_oq(self, arg):
         """
-        Get quote for oq <symbol> <expiration_date> <strike> <call/put>
+        Get quote for oq <symbol> <strike> <expiration_date> <call/put>
         """
-        symbol, expiration_date, strike, option_type = arg.strip().split()
+        symbol, strike, expiration_date, option_type = arg.strip().split()
         out = self.trader.get_option_market_data(symbol, expiration_date, strike, option_type)
         pp(out)
 
