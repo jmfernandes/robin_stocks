@@ -68,8 +68,12 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
 
     """
     device_token = generate_device_token()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    pickle_path = os.path.join(dir_path,"data.pickle")
+    home_dir = os.path.expanduser("~")
+    data_dir = os.path.join(home_dir, ".tokens")
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    creds_file = "robinhood.pickle"
+    pickle_path = os.path.join(data_dir, creds_file)
     # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
         challenge_type = "sms"
@@ -109,7 +113,7 @@ def login(username,password,expiresIn=86400,scope='internal',by_sms=True,store_s
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
                     return({'access_token': access_token,'token_type': token_type,
-                    'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in data.pickle',
+                    'expires_in': expiresIn, 'scope': scope, 'detail': f'logged in using authentication in {creds_file}',
                     'backup_code': None, 'refresh_token': refresh_token})
             except:
                 print("ERROR: There was an issue loading pickle file. Authentication may be expired - logging in normally.")
