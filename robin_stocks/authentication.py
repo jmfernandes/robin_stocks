@@ -45,9 +45,9 @@ def respond_to_challenge(challenge_id, sms_code):
     payload = {
         'response': sms_code
     }
-    return(helper.request_post(url,payload))
+    return(helper.request_post(url, payload))
 
-def login(username=None,password=None,expiresIn=86400,scope='internal',by_sms=True,store_session=True):
+def login(username = None, password = None, expiresIn = 86400, scope = 'internal', by_sms = True, store_session = True):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -73,8 +73,12 @@ def login(username=None,password=None,expiresIn=86400,scope='internal',by_sms=Tr
 
     """
     device_token = generate_device_token()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    pickle_path = os.path.join(dir_path,"data.pickle")
+    home_dir = os.path.expanduser("~")
+    data_dir = os.path.join(home_dir, ".tokens")
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    creds_file = "robinhood.pickle"
+    pickle_path = os.path.join(data_dir, creds_file)
     # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
         challenge_type = "sms"
@@ -110,11 +114,11 @@ def login(username=None,password=None,expiresIn=86400,scope='internal',by_sms=Tr
                     helper.set_login_state(True)
                     helper.update_session('Authorization','{0} {1}'.format(token_type, access_token))
                     # Try to load account profile to check that authorization token is still valid.
-                    res = helper.request_get(urls.portfolio_profile(),'regular',payload,jsonify_data=False)
+                    res = helper.request_get(urls.portfolio_profile(),'regular', payload, jsonify_data = False)
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
                     return({'access_token': access_token,'token_type': token_type,
-                    'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in data.pickle',
+                    'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in {0}'.format(creds_file),
                     'backup_code': None, 'refresh_token': refresh_token})
             except:
                 print("ERROR: There was an issue loading pickle file. Authentication may be expired - logging in normally.")
@@ -133,11 +137,11 @@ def login(username=None,password=None,expiresIn=86400,scope='internal',by_sms=Tr
     if 'mfa_required' in data:
         mfa_token = input("Please type in the MFA code: ")
         payload['mfa_code'] = mfa_token
-        res = helper.request_post(url,payload,jsonify_data=False)
+        res = helper.request_post(url, payload, jsonify_data = False)
         while (res.status_code != 200):
             mfa_token = input("That MFA code was not correct. Please type in another MFA code: ")
             payload['mfa_code'] = mfa_token
-            res = helper.request_post(url,payload,jsonify_data=False)
+            res = helper.request_post(url, payload, jsonify_data = False)
         data = res.json()
     elif 'challenge' in data:
         challenge_id = data['challenge']['id']
@@ -150,8 +154,8 @@ def login(username=None,password=None,expiresIn=86400,scope='internal',by_sms=Tr
         data = helper.request_post(url,payload)
     # Update Session data with authorization or raise exception with the information present in data.
     if 'access_token' in data:
-        token = '{0} {1}'.format(data['token_type'],data['access_token'])
-        helper.update_session('Authorization',token)
+        token = '{0} {1}'.format(data['token_type'], data['access_token'])
+        helper.update_session('Authorization', token)
         helper.set_login_state(True)
         data['detail'] = "logged in with brand new authentication code."
         if store_session:
@@ -172,4 +176,4 @@ def logout():
 
     """
     helper.set_login_state(False)
-    helper.update_session('Authorization',None)
+    helper.update_session('Authorization', None)
