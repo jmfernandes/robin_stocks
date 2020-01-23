@@ -1,6 +1,7 @@
 """Contains all functions for the purpose of logging in and out to Robinhood."""
 import robin_stocks.urls as urls
 import robin_stocks.helper as helper
+import getpass
 import random
 import pickle
 import os
@@ -46,22 +47,26 @@ def respond_to_challenge(challenge_id, sms_code):
     }
     return(helper.request_post(url, payload))
 
-def login(username, password, expiresIn = 86400, scope = 'internal', by_sms = True, store_session = True):
+def login(username = None, password = None, expiresIn = 86400, scope = 'internal', by_sms = True, store_session = True):
     """This function will effectivly log the user into robinhood by getting an
-    authentication token and saving it to the session header. By default, it will store the authentication
-    token in a pickle file and load that value on subsequent logins.
+    authentication token and saving it to the session header. By default, it
+    will store the authentication token in a pickle file and load that value
+    on subsequent logins.
 
-    :param username: The username for your robinhood account. Usually your email.
-    :type username: str
-    :param password: The password for your robinhood account.
-    :type password: str
+    :param username: The username for your robinhood account, usually your email.
+        Not required if credentials are already cached and valid.
+    :type username: Optional[str]
+    :param password: The password for your robinhood account. Not required if
+        credentials are already cached and valid.
+    :type password: Optional[str]
     :param expiresIn: The time until your login session expires. This is in seconds.
     :type expiresIn: Optional[int]
     :param scope: Specifies the scope of the authentication.
     :type scope: Optional[str]
     :param by_sms: Specifies whether to send an email(False) or an sms(True)
     :type by_sms: Optional[boolean]
-    :param store_session: Specifies whether to save the log in authorization for future log ins.
+    :param store_session: Specifies whether to save the log in authorization
+        for future log ins.
     :type store_session: Optional[boolean]
     :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
     contains information on whether the access token was generated or loaded from pickle file.
@@ -122,7 +127,14 @@ def login(username, password, expiresIn = 86400, scope = 'internal', by_sms = Tr
         else:
             os.remove(pickle_path)
     # Try to log in normally.
-    data = helper.request_post(url, payload)
+    if not username:
+        username = input("Robinhood username: ")
+        payload['username'] = username
+    if not password:
+        password = getpass.getpass("Robinhood password: ")
+        payload['password'] = password
+
+    data = helper.request_post(url,payload)
     # Handle case where mfa or challenge is required.
     if 'mfa_required' in data:
         mfa_token = input("Please type in the MFA code: ")
