@@ -127,10 +127,12 @@ def login(username = None, password = None, expiresIn = 86400, scope = 'internal
         else:
             os.remove(pickle_path)
     # Try to log in normally.
-    if not all([username, password]):
+    if not username:
         username = input("Robinhood username: ")
+        payload['username'] = username
+    if not password:
         password = getpass.getpass("Robinhood password: ")
-        payload.update(username=username, password=password)
+        payload['password'] = password
 
     data = helper.request_post(url,payload)
     # Handle case where mfa or challenge is required.
