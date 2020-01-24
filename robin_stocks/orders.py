@@ -197,6 +197,7 @@ def order_buy_market(symbol, quantity, timeInForce="gtc", extendedHours=False):
         "account": profiles.load_account_profile(info="url"),
         "instrument": stocks.get_instruments_by_symbols(symbol, info="url")[0],
         "symbol": symbol,
+        "price": helper.round_price(stocks.get_latest_price(symbol)[0]),
         "quantity": quantity,
         "ref_id": str(uuid4()),
         "type": "market",
@@ -206,9 +207,6 @@ def order_buy_market(symbol, quantity, timeInForce="gtc", extendedHours=False):
         "side": "buy",
         "extended_hours": extendedHours,
     }
-
-    if extendedHours:
-        payload["price"] = helper.round_price(stocks.get_latest_price(symbol)[0])
 
     url = urls.orders()
     data = helper.request_post(url, payload)
