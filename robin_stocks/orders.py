@@ -8,7 +8,7 @@ import robin_stocks.crypto as crypto
 from uuid import uuid4
 
 @helper.login_required
-def get_all_orders(info=None):
+def get_all_orders(info = None):
     """Returns a list of all the orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -18,11 +18,11 @@ def get_all_orders(info=None):
 
     """
     url = urls.orders()
-    data = helper.request_get(url,'pagination')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'pagination')
+    return(helper.filter(data, info))
 
 @helper.login_required
-def get_all_open_orders(info=None):
+def get_all_open_orders(info = None):
     """Returns a list of all the orders that are currently open.
 
     :param info: Will filter the results to get a specific value.
@@ -32,14 +32,14 @@ def get_all_open_orders(info=None):
 
     """
     url = urls.orders()
-    data = helper.request_get(url,'pagination')
+    data = helper.request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel'] is not None]
 
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
 
 @helper.login_required
-def get_all_open_option_orders(info=None):
+def get_all_open_option_orders(info = None):
     """Returns a list of all the orders that are currently open.
 
     :param info: Will filter the results to get a specific value.
@@ -49,11 +49,11 @@ def get_all_open_option_orders(info=None):
 
     """
     url = urls.option_orders()
-    data = helper.request_get(url,'pagination')
+    data = helper.request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
 
 @helper.login_required
 def get_order_info(orderID):
@@ -78,7 +78,7 @@ def find_orders(**arguments):
 
     """
     url = urls.orders()
-    data = helper.request_get(url,'pagination')
+    data = helper.request_get(url, 'pagination')
 
     if (len(arguments) == 0):
         return(data)
@@ -87,7 +87,7 @@ def find_orders(**arguments):
         item['quantity'] = str(int(float(item['quantity'])))
 
     if 'symbol' in arguments.keys():
-        arguments['instrument'] = stocks.get_instruments_by_symbols(arguments['symbol'],info='url')[0]
+        arguments['instrument'] = stocks.get_instruments_by_symbols(arguments['symbol'], info='url')[0]
         del arguments['symbol']
 
     if 'quantity' in arguments.keys():
@@ -115,7 +115,7 @@ def cancel_all_open_orders():
 
     """
     url = urls.orders()
-    items = helper.request_get(url,'pagination')
+    items = helper.request_get(url, 'pagination')
 
     items = [item['id'] for item in items if item['cancel'] is not None]
 
@@ -159,7 +159,7 @@ def cancel_option_order(orderID):
     return(data)
 
 @helper.login_required
-def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
+def order_buy_market(symbol, quantity, timeInForce = 'gtc', extendedHours = False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -170,7 +170,7 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
-    :type extendedHours: str
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -184,7 +184,7 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
@@ -198,12 +198,12 @@ def order_buy_market(symbol,quantity,timeInForce='gtc',extendedHours='false'):
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
+def order_buy_limit(symbol, quantity, limitPrice, timeInForce = 'gtc', extendedHours = False):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -215,6 +215,8 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -229,7 +231,7 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
@@ -238,16 +240,17 @@ def order_buy_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     'stop_price': None,
     'time_in_force': timeInForce,
     'trigger': 'immediate',
-    'side': 'buy'
+    'side': 'buy',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
+def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce = 'gtc', extendedHours = False):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -259,6 +262,8 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -278,7 +283,7 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': stopPrice,
     'quantity': quantity,
@@ -287,16 +292,17 @@ def order_buy_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
     'trigger': 'stop',
-    'side': 'buy'
+    'side': 'buy',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
+def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce = 'gtc', extendedHours = False):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -310,6 +316,8 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -330,7 +338,7 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
@@ -339,16 +347,17 @@ def order_buy_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc')
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
     'trigger': 'stop',
-    'side': 'buy'
+    'side': 'buy',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
+def order_sell_market(symbol, quantity, timeInForce = 'gtc', extendedHours = False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -359,7 +368,7 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
-    :type extendedHours: str
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -373,7 +382,7 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
     'quantity': quantity,
@@ -387,12 +396,12 @@ def order_sell_market(symbol,quantity,timeInForce='gtc', extendedHours='false'):
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
+def order_sell_limit(symbol, quantity, limitPrice, timeInForce = 'gtc', extendedHours = False):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -404,6 +413,8 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -418,7 +429,7 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
@@ -427,16 +438,17 @@ def order_sell_limit(symbol,quantity,limitPrice,timeInForce='gtc'):
     'stop_price': None,
     'time_in_force': timeInForce,
     'trigger': 'immediate',
-    'side': 'sell'
+    'side': 'sell',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
+def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extendedHours = False):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -448,6 +460,8 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -467,7 +481,7 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': stopPrice,
     'quantity': quantity,
@@ -476,16 +490,17 @@ def order_sell_stop_loss(symbol,quantity,stopPrice,timeInForce='gtc'):
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
     'trigger': 'stop',
-    'side': 'sell'
+    'side': 'sell',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'):
+def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours = False):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -499,6 +514,8 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -519,7 +536,7 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
@@ -528,16 +545,17 @@ def order_sell_stop_limit(symbol,quantity,limitPrice,stopPrice,timeInForce='gtc'
     'stop_price': stopPrice,
     'time_in_force': timeInForce,
     'trigger': 'stop',
-    'side': 'sell'
+    'side': 'sell',
+    'extended_hours': extendedHours
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
 @helper.login_required
-def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForce,extendedHours):
+def order(symbol, quantity, orderType, trigger, side, limitPrice = None, stopPrice = None, timeInForce = 'gtc', extendedHours = False):
     """A generic order function. All parameters must be supplied.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -546,19 +564,19 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     :type quantity: int
     :param orderType: Either 'market' or 'limit'
     :type orderType: str
-    :param limitPrice: The price to trigger the market order.
-    :type limitPrice: float
-    :param stopPrice: The price to trigger the limit or market order.
-    :type stopPrice: float
     :param trigger: Either 'immediate' or 'stop'
     :type trigger: str
     :param side: Either 'buy' or 'sell'
     :type side: str
+    :param limitPrice: The price to trigger the market order.
+    :type limitPrice: float
+    :param stopPrice: The price to trigger the limit or market order.
+    :type stopPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
-    :type extendedHours: str
+    :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase or selling of stocks, \
     such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -566,15 +584,20 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     """
     try:
         symbol = symbol.upper().strip()
-        stopPrice = helper.round_price(stopPrice)
-        limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
 
+    if stopPrice:
+        stopPrice = helper.round_price(stopPrice)
+
+    if limitPrice:
+        limitPrice = helper.round_price(limitPrice)
+    else:
+        limitPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'instrument': stocks.get_instruments_by_symbols(symbol,info='url')[0],
+    'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
     'symbol': symbol,
     'price': limitPrice,
     'quantity': quantity,
@@ -588,7 +611,7 @@ def order(symbol,quantity,orderType,limitPrice,stopPrice,trigger,side,timeInForc
     }
 
     url = urls.orders()
-    data = helper.request_post(url,payload)
+    data = helper.request_post(url, payload)
 
     return(data)
 
@@ -698,7 +721,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url,payload, json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
 
@@ -733,7 +756,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
         print(message)
         return None
 
-    optionID = helper.id_for_option(symbol,expirationDate,strike,optionType)
+    optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -752,7 +775,7 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url,payload, json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
 
@@ -786,7 +809,7 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
         print(message)
         return None
 
-    optionID = helper.id_for_option(symbol,expirationDate,strike,optionType)
+    optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -805,12 +828,12 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url,payload, json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
 
 @helper.login_required
-def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
+def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -835,7 +858,7 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
         shares = round(amountInDollars/price,8)
@@ -860,7 +883,7 @@ def order_buy_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeI
     return(data)
 
 @helper.login_required
-def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInForce='gtc'):
+def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -880,7 +903,7 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
@@ -894,12 +917,12 @@ def order_buy_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFor
     }
 
     url = urls.order_crypto()
-    data = helper.request_post(url,payload,json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
 
 @helper.login_required
-def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',timeInForce='gtc'):
+def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -924,10 +947,10 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/float(price),8)
+        shares = round(amountInDollars/float(price), 8)
     except:
         shares = 0
 
@@ -943,12 +966,12 @@ def order_sell_crypto_by_price(symbol,amountInDollars,priceType='ask_price',time
     }
 
     url = urls.order_crypto()
-    data = helper.request_post(url,payload,json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
 
 @helper.login_required
-def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInForce='gtc'):
+def order_sell_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -968,7 +991,7 @@ def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFo
     """
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'],info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
 
     payload = {
     'account_id': crypto.load_crypto_profile(info="id"),
@@ -982,6 +1005,6 @@ def order_sell_crypto_by_quantity(symbol,quantity,priceType='ask_price',timeInFo
     }
 
     url = urls.order_crypto()
-    data = helper.request_post(url,payload,json=True)
+    data = helper.request_post(url, payload, json=True)
 
     return(data)
