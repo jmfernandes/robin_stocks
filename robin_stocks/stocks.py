@@ -164,6 +164,21 @@ def get_name_by_url(url):
         filter = helper.filter(data,info='name')
     return(filter)
 
+@helper.convert_none_to_string
+def get_symbol_by_url(url):
+    """Returns the symbol of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
+    where <id> is the id of the stock.
+    
+    :param symbol: The url of the stock as a string.
+    :type symbol: str
+    :returns: Returns the ticker symbol of the stock.
+    
+    """
+    data = helper.request_get(url)
+    if not data:
+        return(None)
+    return helper.filter(data, info='symbol')
+
 def get_ratings(symbol,info=None):
     """Returns the ratings for a stock, including the number of buy, hold, and sell ratings.
 
