@@ -67,6 +67,31 @@ def get_total_dividends():
         dividend_total += float(item['amount'])
     return(dividend_total)
 
+# Added by frankiejgram - Jan-26-2020
+@helper.login_required
+def get_dividends_by_instrument(instrument, dividend_data):
+    """Returns a dictionary with three fields when given the instrument value for a stock
+
+    :returns: dividend_rate       -- the rate paid for a single share of a specified stock
+              total_dividend      -- the total dividend paid based on total shares for a specified stock
+              amount_paid_to_date -- total amount earned by account for this particular stock
+    """
+    #global dividend_data
+    try:
+        data = list(filter(lambda x: x['instrument'] == instrument, dividend_data))
+        
+        dividend = float(data[0]['rate'])
+        total_dividends = float(data[0]['amount'])
+        total_amount_paid = float(sum([float(d['amount']) for d in data]))
+        
+        return {
+            'dividend_rate':"{0:.2f}".format(dividend),
+            'total_dividend':"{0:.2f}".format(total_dividends),
+            'amount_paid_to_date':"{0:.2f}".format(total_amount_paid)
+        }
+    except:
+        pass
+
 @helper.login_required
 def get_notifications(info=None):
     """Returns a list of notifications.
@@ -439,7 +464,7 @@ def delete_symbols_from_watchlist(inputSymbols,name='Default'):
     return(data)
 
 @helper.login_required
-def build_holdings():
+def build_holdings(with_dividends=False):
     """Builds a dictionary of important information regarding the stocks and positions owned by the user.
 
     :returns: Returns a dictionary where the keys are the stock tickers and the value is another dictionary \
@@ -450,6 +475,11 @@ def build_holdings():
     positions_data = get_current_positions()
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
+
+    # Added by frankiejgram - Jan-26-2020
+    # user wants dividend information in their holdings
+    if with_dividends is True:
+        dividend_data = get_dividends()
 
     if not positions_data or not portfolios_data or not accounts_data:
         return({})
@@ -493,6 +523,12 @@ def build_holdings():
             holdings[symbol].update({'id': instrument_data['id']})
             holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio'] })
             holdings[symbol].update({'percentage': "{0:.2f}".format(percentage)})
+
+            #Added by frankiejgram - Jan-26-2020
+            if with_dividends is True:
+                # dividend_data was retrieved earlier
+                holdings[symbol].update(get_dividends_by_instrument(item['instrument'],dividend_data))
+
         except:
             pass
 
