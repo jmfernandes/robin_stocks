@@ -27,6 +27,7 @@ jobs:
     - name: Test with pytest
       env:
         robin_username: ${{ secrets.username }}
+        robin_password: ${{ secrets.password }}
       run: |
         pip install pytest
         pytest
