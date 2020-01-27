@@ -7,4 +7,4 @@ def test_answer():
     assert func(3) == 4
 
 def test_username():
-    assert os.environ['robin_username'] == "blah"
+    assert os.environ['robin_username'] == "joshfernandes@mac.com"
