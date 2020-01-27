@@ -150,8 +150,8 @@ def get_name_by_url(url):
     """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
 
-    :param symbol: The url of the stock as a string.
-    :type symbol: str
+    :param url: The url of the stock as a string.
+    :type url: str
     :returns: Returns the simple name of the stock. If the simple name does not exist then returns the full name.
 
     """
@@ -169,8 +169,8 @@ def get_symbol_by_url(url):
     """Returns the symbol of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
 
-    :param symbol: The url of the stock as a string.
-    :type symbol: str
+    :param url: The url of the stock as a string.
+    :type url: str
     :returns: Returns the ticker symbol of the stock.
 
     """
