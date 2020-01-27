@@ -139,7 +139,7 @@ def cancel_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+order_id+' cancelled')
+        print('Order '+orderID+' cancelled')
     return(data)
 
 @helper.login_required
@@ -155,7 +155,7 @@ def cancel_option_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+order_id+' cancelled')
+        print('Order '+orderID+' cancelled')
     return(data)
 
 @helper.login_required
