@@ -11,6 +11,10 @@ password = ''
 login = r.login(username,password)
 
 #!!! WARNING - Some option spreads have UNLIMITED risk.
+#!!! Note - Make sure to check the prices of option legs before placing a spread order. Some vertical spreads carry more risk.
+#!!! Note- When you open a sell position, in order to close it out you have to "buy to close" or in other words, you have to
+#!!! buy the same call option but with effet : close. In contrast, when you buy a call you then have to "sell to close".
+
 #!!! An example bull call spread (net debit). For Plug Power currently at a price of 3.10 on October 20th, 2019.
 leg1 = {"expirationDate":"2019-12-20",
         "strike":"2.00",
@@ -21,7 +25,7 @@ leg1 = {"expirationDate":"2019-12-20",
 leg2 = {"expirationDate":"2019-12-20",
         "strike":"4.00",
         "optionType":"call",
-        "effect":"close",
+        "effect":"open",
         "action":"sell"}
 
 spread = [leg1,leg2]
