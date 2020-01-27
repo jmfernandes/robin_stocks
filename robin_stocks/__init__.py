@@ -5,6 +5,7 @@ from .account import get_all_positions,             \
                      get_current_positions,         \
                      get_dividends,                 \
                      get_total_dividends,           \
+                     get_dividends_by_instrument,   \
                      get_notifications,             \
                      get_latest_notification,       \
                      get_linked_bank_accounts,      \
