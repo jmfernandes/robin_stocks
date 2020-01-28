@@ -1,5 +1,5 @@
 import os
-import robin-stocks as r
+import robin_stocks as r
 
 class TestLogin:
     @classmethod
