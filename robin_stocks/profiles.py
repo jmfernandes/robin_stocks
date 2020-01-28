@@ -3,7 +3,7 @@ import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
 @helper.login_required
-def load_account_profile(info=None):
+def load_account_profile(info = None):
     """Gets the information associated with the accounts profile,including day
     trading information and cash being held by Robinhood.
 
@@ -15,11 +15,11 @@ def load_account_profile(info=None):
 
     """
     url = urls.account_profile()
-    data = helper.request_get(url,'indexzero')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'indexzero')
+    return(helper.filter(data, info))
 
 @helper.login_required
-def load_basic_profile(info=None):
+def load_basic_profile(info = None):
     """Gets the information associated with the personal profile,
     such as phone number, city, marital status, and date of birth.
 
@@ -32,10 +32,10 @@ def load_basic_profile(info=None):
     """
     url = urls.basic_profile()
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
 
 @helper.login_required
-def load_investment_profile(info=None):
+def load_investment_profile(info = None):
     """Gets the information associated with the investment profile.
     These are the answers to the questionaire you filled out when you made your profile.
 
@@ -48,10 +48,10 @@ def load_investment_profile(info=None):
     """
     url = urls.investment_profile()
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
 
 @helper.login_required
-def load_portfolio_profile(info=None):
+def load_portfolio_profile(info = None):
     """Gets the information associated with the portfolios profile,
     such as withdrawable amount, market value of account, and excess margin.
 
@@ -63,11 +63,11 @@ def load_portfolio_profile(info=None):
 
     """
     url = urls.portfolio_profile()
-    data = helper.request_get(url,'indexzero')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'indexzero')
+    return(helper.filter(data, info))
 
 @helper.login_required
-def load_security_profile(info=None):
+def load_security_profile(info = None):
     """Gets the information associated with the security profile.
 
     :param info: The name of the key whose value is to be returned from the function.
@@ -79,10 +79,10 @@ def load_security_profile(info=None):
     """
     url = urls.security_profile()
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
 
 @helper.login_required
-def load_user_profile(info=None):
+def load_user_profile(info = None):
     """Gets the information associated with the user profile,
     such as username, email, and links to the urls for other profiles.
 
@@ -95,4 +95,4 @@ def load_user_profile(info=None):
     """
     url = urls.user_profile()
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
