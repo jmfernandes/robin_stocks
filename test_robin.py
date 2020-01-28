@@ -2,7 +2,7 @@ import os
 import robin_stocks as r
 
 class TestStocks:
-    def test_quotes():
+    def test_quotes(self):
         profile_info = r.get_quotes('spy')
         print(profile_info)
         assert profile_info
@@ -19,7 +19,7 @@ class TestStocks:
 #         print('logging out')
 #         r.logout()
         
-#     def test_one():
+#     def test_one(self):
 #         profile_info = r.load_account_profile()
 #         print(profile_info)
 #         assert profile_info
