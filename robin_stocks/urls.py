@@ -7,7 +7,7 @@ def login_url():
     return('https://api.robinhood.com/oauth2/token/')
 
 def challenge_url(challenge_id):
-    return('https://api.robinhood.com/challenge/{}/respond/'.format(challenge_id))
+    return('https://api.robinhood.com/challenge/{0}/respond/'.format(challenge_id))
 
 ### Profiles
 
@@ -47,19 +47,19 @@ def instruments():
     return('https://api.robinhood.com/instruments/')
 
 def news(symbol):
-    return('https://api.robinhood.com/midlands/news/{}/?'.format(symbol))
+    return('https://api.robinhood.com/midlands/news/{0}/?'.format(symbol))
 
 def popularity(symbol):
-    return('https://api.robinhood.com/instruments/{}/popularity/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{0}/popularity/'.format(id_for_stock(symbol)))
 
 def quotes():
     return('https://api.robinhood.com/quotes/')
 
 def ratings(symbol):
-    return('https://api.robinhood.com/midlands/ratings/{}/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/midlands/ratings/{0}/'.format(id_for_stock(symbol)))
 
 def splits(symbol):
-    return('https://api.robinhood.com/instruments/{}/splits/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{0}/splits/'.format(id_for_stock(symbol)))
 
 ### account
 
@@ -70,7 +70,7 @@ def banktransfers():
     return('https://api.robinhood.com/ach/transfers/')
 
 def daytrades(account):
-    return('https://api.robinhood.com/accounts/{}/recent_day_trades/'.format(account))
+    return('https://api.robinhood.com/accounts/{0}/recent_day_trades/'.format(account))
 
 def dividends():
     return('https://api.robinhood.com/dividends/')
@@ -78,11 +78,11 @@ def dividends():
 def documents():
     return('https://api.robinhood.com/documents/')
 
-def linked(id=None,unlink=False):
+def linked(id = None, unlink = False):
     if unlink:
-        return('https://api.robinhood.com/ach/relationships/{}/unlink/'.format(id))
+        return('https://api.robinhood.com/ach/relationships/{0}/unlink/'.format(id))
     if id:
-        return('https://api.robinhood.com/ach/relationships/{}/'.format(id))
+        return('https://api.robinhood.com/ach/relationships/{0}/'.format(id))
     else:
         return('https://api.robinhood.com/ach/relationships/')
 
@@ -92,7 +92,7 @@ def margin():
 def margininterest():
     return('https://api.robinhood.com/cash_journal/margin_interest_charges/')
 
-def notifications(tracker=False):
+def notifications(tracker = False):
     if tracker:
         return('https://api.robinhood.com/midlands/notifications/notification_tracker/')
     else:
@@ -111,12 +111,12 @@ def subscription():
 def wiretransfers():
     return('https://api.robinhood.com/wire/transfers')
 
-def watchlists(name=None,add=False):
+def watchlists(name = None, add = False):
     if add:
-        return('https://api.robinhood.com/watchlists/{}/bulk_add/'.format(name))
+        return('https://api.robinhood.com/watchlists/{0}/bulk_add/'.format(name))
 
     if name:
-        return('https://api.robinhood.com/watchlists/{}/'.format(name))
+        return('https://api.robinhood.com/watchlists/{0}/'.format(name))
     else:
         return('https://api.robinhood.com/watchlists/')
 
@@ -137,20 +137,20 @@ def aggregate():
     return('https://api.robinhood.com/options/aggregate_positions/')
 
 def chains(symbol):
-    return('https://api.robinhood.com/options/chains/{}/'.format(id_for_chain(symbol)))
+    return('https://api.robinhood.com/options/chains/{0}/'.format(id_for_chain(symbol)))
 
 def option_historicals(id):
-    return('https://api.robinhood.com/marketdata/options/historicals/{}/'.format(id))
+    return('https://api.robinhood.com/marketdata/options/historicals/{0}/'.format(id))
 
-def option_instruments(id=None):
+def option_instruments(id = None):
     if id:
-        return('https://api.robinhood.com/options/instruments/{}/'.format(id))
+        return('https://api.robinhood.com/options/instruments/{0}/'.format(id))
     else:
         return('https://api.robinhood.com/options/instruments/')
 
 def option_orders(orderID = None):
     if orderID:
-        return('https://api.robinhood.com/options/orders/{}/'.format(orderID))
+        return('https://api.robinhood.com/options/orders/{0}/'.format(orderID))
     else:
         return('https://api.robinhood.com/options/orders/')
 
@@ -158,15 +158,15 @@ def option_positions():
     return('https://api.robinhood.com/options/positions/')
 
 def marketdata_options(id):
-    return('https://api.robinhood.com/marketdata/options/{}/'.format(id))
+    return('https://api.robinhood.com/marketdata/options/{0}/'.format(id))
 
 ### pricebook
 
 def marketdata_quotes(id):
-    return ('https://api.robinhood.com/marketdata/quotes/{}/'.format(id))
+    return ('https://api.robinhood.com/marketdata/quotes/{0}/'.format(id))
 
 def marketdata_pricebook(id):
-    return ('https://api.robinhood.com/marketdata/pricebook/snapshots/{}/'.format(id))
+    return ('https://api.robinhood.com/marketdata/pricebook/snapshots/{0}/'.format(id))
 
 ### crypto
 
@@ -180,7 +180,7 @@ def crypto_currency_pairs():
     return('https://nummus.robinhood.com/currency_pairs/')
 
 def crypto_quote(id):
-    return('https://api.robinhood.com/marketdata/forex/quotes/{}/'.format(id))
+    return('https://api.robinhood.com/marketdata/forex/quotes/{0}/'.format(id))
 
 def crypto_holdings():
     return('https://nummus.robinhood.com/holdings/')
@@ -188,13 +188,13 @@ def crypto_holdings():
 ### orders
 
 def cancel(url):
-    return('https://api.robinhood.com/orders/{}/cancel/'.format(url))
+    return('https://api.robinhood.com/orders/{0}/cancel/'.format(url))
 
 def option_cancel(id):
-    return('https://api.robinhood.com/options/orders/{}/cancel/'.format(id))
+    return('https://api.robinhood.com/options/orders/{0}/cancel/'.format(id))
 
 def orders(orderID = None):
     if orderID:
-        return('https://api.robinhood.com/orders/{}/'.format(orderID))
+        return('https://api.robinhood.com/orders/{0}/'.format(orderID))
     else:
         return('https://api.robinhood.com/orders/')
