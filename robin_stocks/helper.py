@@ -138,7 +138,7 @@ def round_price(price):
     price = float(price)
     if price <= 1e-2:
         returnPrice = round(price, 6)
-    elif price <= 0:
+    elif price < 1e0:
         returnPrice = round(price, 4)
     else:
         returnPrice = round(price, 2)
