@@ -358,7 +358,7 @@ def get_historicals(inputSymbols, span = 'week', bounds = 'regular'):
     span_check = ['day','week','month','3month','year','5year']
     bounds_check =['extended','regular','trading']
     if span not in span_check:
-        print('ERROR: Span must be "day","week","month","year",or "5year"')
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
         return([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
