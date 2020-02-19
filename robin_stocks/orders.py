@@ -68,6 +68,21 @@ def get_order_info(orderID):
     data = helper.request_get(url)
     return(data)
 
+
+@helper.login_required
+def get_option_order_info(order_id):
+    """Returns the information for a single option order.
+
+    :param order_id: The ID associated with the option order.
+    :type order_id: str
+    :returns: Returns a list of dictionaries of key/value pairs for the order.
+
+    """
+    url = urls.option_orders(order_id)
+    data = helper.request_get(url)
+    return data
+
+
 @helper.login_required
 def find_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
