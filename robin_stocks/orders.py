@@ -742,9 +742,11 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
 
 @helper.login_required
-def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
+    :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
+    :type positionEffect: str
     :param price: The limit price to trigger a buy of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -772,13 +774,18 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+	
+    if (positionEffect == 'close'):
+	direction = 'credit'
+    else:
+	direction = 'debit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': 'debit',
+    'direction': direction,
     'time_in_force': timeInForce,
     'legs': [
-        {'position_effect': 'open', 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+        {'position_effect': positionEffect, 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
     ],
     'type': 'limit',
     'trigger': 'immediate',
@@ -795,9 +802,11 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     return(data)
 
 @helper.login_required
-def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
+    :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
+    :type positionEffect: str
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -825,13 +834,18 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+	
+    if (positionEffect == 'close'):
+	direction = 'debit'
+    else:
+	direction = 'credit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': 'credit',
+    'direction': direction,
     'time_in_force': timeInForce,
     'legs': [
-        {'position_effect': 'close', 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+        {'position_effect': positionEffect, 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
     ],
     'type': 'limit',
     'trigger': 'immediate',
