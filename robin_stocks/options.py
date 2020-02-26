@@ -181,6 +181,7 @@ def find_options_for_stock_by_strike(symbol,strike,optionType='both',info=None):
 
     return(helper.filter(filteredOptions,info))
 
+
 def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -200,20 +201,29 @@ def find_options_for_stock_by_expiration_and_strike(symbol,expirationDate,strike
     """
     try:
         symbol = symbol.upper().strip()
-        optionType = optionType.lower().strip()
+        option_type = optionType.lower().strip()
     except AttributeError as message:
         print(message)
         return [None]
 
-    allOptions = find_tradable_options_for_stock(symbol,optionType)
-    filteredOptions = [item for item in allOptions if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)
-                        and item['tradability'] == 'tradable']
+    url = urls.option_instruments()
+    payload = {'chain_id': helper.id_for_chain(symbol),
+               'expiration_date': expirationDate,
+               'strike_price': strike,
+               'state': 'active',
+               'tradability': 'tradable',
+               'rhs_tradability': 'tradable'}
+    if option_type == 'put' or option_type == 'call':
+        payload['type'] = option_type
 
-    for item in filteredOptions:
-        marketData = get_option_market_data_by_id(item['id'])
-        item.update(marketData)
+    data = helper.request_get(url, 'pagination', payload)
+    data = [item for item in data if item['expiration_date'] == expirationDate and item['tradability'] == 'tradable']
+    for item in data:
+        market_data = get_option_market_data_by_id(item['id'])
+        item.update(market_data)
 
-    return(helper.filter(filteredOptions,info))
+    return helper.filter(data, info)
+
 
 def find_options_for_list_of_stocks_by_expiration_date(inputSymbols,expirationDate,optionType='both',info=None):
     """Returns a list of all the option orders that match the seach parameters
