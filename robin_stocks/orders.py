@@ -775,10 +775,10 @@ def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDa
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 	
-	if (positionEffect == 'close'):
-		direction = 'credit'
+    if (positionEffect == 'close'):
+        direction = 'credit'
     else:
-		direction = 'debit'
+        direction = 'debit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -835,10 +835,10 @@ def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationD
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 	
-	if (positionEffect == 'close'):
-		direction = 'debit'
+    if (positionEffect == 'close'):
+        direction = 'debit'
     else:
-		direction = 'credit'
+        direction = 'credit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
