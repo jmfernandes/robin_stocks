@@ -68,6 +68,7 @@ from .orders import get_all_orders,                 \
                     get_all_open_orders,            \
                     get_all_open_option_orders,     \
                     get_order_info,                 \
+                    get_option_order_info,          \
                     find_orders,                    \
                     cancel_all_open_orders,         \
                     cancel_order,                   \
