@@ -347,7 +347,7 @@ def get_historicals(inputSymbols, span = 'week', bounds = 'regular'):
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
-    :param span: Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
+    :param span: Sets the range of the data to be either 'day', 'week', 'month', '3month', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
     :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
     :type bounds: Optional[str]
@@ -355,10 +355,10 @@ def get_historicals(inputSymbols, span = 'week', bounds = 'regular'):
     the historical data is listed one after another.
 
     """
-    span_check = ['day','week','year','5year']
+    span_check = ['day','week','month','3month','year','5year']
     bounds_check =['extended','regular','trading']
     if span not in span_check:
-        print('ERROR: Span must be "day","week","year",or "5year"')
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
         return([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
@@ -371,6 +371,10 @@ def get_historicals(inputSymbols, span = 'week', bounds = 'regular'):
         interval = '5minute'
     elif span=='week':
         interval = '10minute'
+    elif span=='month':
+        interval = 'hour'
+    elif span=='3month':
+        interval = 'hour'
     elif span=='year':
         interval = 'day'
     else:
