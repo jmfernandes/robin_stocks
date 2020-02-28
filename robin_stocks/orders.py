@@ -292,10 +292,6 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce = 'gtc', extend
         print(message)
         return None
 
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
-        return(None)
-
     payload = {
     'account': profiles.load_account_profile(info='url'),
     'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -346,10 +342,6 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce = 
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -490,10 +482,6 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
         print(message)
         return None
 
-    if (latestPrice < stopPrice):
-        print('Error: stopPrice must be below the current price.')
-        return(None)
-
     payload = {
     'account': profiles.load_account_profile(info='url'),
     'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -544,10 +532,6 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice < stopPrice):
-        print('Error: stopPrice must be below the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
