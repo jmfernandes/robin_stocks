@@ -286,7 +286,6 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce = 'gtc', extend
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
@@ -336,7 +335,6 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce = 
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
@@ -476,7 +474,6 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
@@ -526,7 +523,6 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
