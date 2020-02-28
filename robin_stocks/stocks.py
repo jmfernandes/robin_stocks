@@ -100,11 +100,14 @@ def get_instrument_by_url(url, info = None):
 
     return(helper.filter(data, info))
 
-def get_latest_price(inputSymbols):
+def get_latest_price(inputSymbols, includeExtendedHours = True):
     """Takes any number of stock tickers and returns the latest price of each one as a string.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
+    :param includeExtendedHours: Leave as True if you want to get extendedhours price if available. \
+    False if you only want regular hours price, even after hours.
+    :type includeExtendedHours: bool
     :returns: A list of prices as strings.
 
     """
@@ -113,7 +116,7 @@ def get_latest_price(inputSymbols):
 
     prices = []
     for item in quote:
-        if item['last_extended_hours_trade_price'] is None:
+        if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
             prices.append(item['last_trade_price'])
         else:
             prices.append(item['last_extended_hours_trade_price'])
