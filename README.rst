@@ -9,7 +9,7 @@ This is a pure python interface and it requires Python3. The purpose
 of this library is to allow people to make their own robo-investors or to view information on
 stocks, options, and crypto-currencies in real time.
 
-To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/enQtNjE1MzY4NDY0MzkwLTI0YmVmZDVhZTQzYTdjMGZlYjM2YzQ2ODIwNDk3ZjA5ZDQ0ZWYzNjQyMzY0MmQ5ZWE2YjljODk3YjgwZTQyYmQ
+To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
 
 Installing
 ========================

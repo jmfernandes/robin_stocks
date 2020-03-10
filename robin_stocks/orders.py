@@ -68,6 +68,21 @@ def get_order_info(orderID):
     data = helper.request_get(url)
     return(data)
 
+
+@helper.login_required
+def get_option_order_info(order_id):
+    """Returns the information for a single option order.
+
+    :param order_id: The ID associated with the option order.
+    :type order_id: str
+    :returns: Returns a list of dictionaries of key/value pairs for the order.
+
+    """
+    url = urls.option_orders(order_id)
+    data = helper.request_get(url)
+    return data
+
+
 @helper.login_required
 def find_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
@@ -271,15 +286,10 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce = 'gtc', extend
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -325,16 +335,11 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce = 
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice > stopPrice):
-        print('Error: stopPrice must be above the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -469,15 +474,10 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice < stopPrice):
-        print('Error: stopPrice must be below the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -523,16 +523,11 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     """
     try:
         symbol = symbol.upper().strip()
-        latestPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
         print(message)
         return None
-
-    if (latestPrice < stopPrice):
-        print('Error: stopPrice must be below the current price.')
-        return(None)
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
@@ -727,9 +722,11 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
 
 @helper.login_required
-def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
+    :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
+    :type positionEffect: str
     :param price: The limit price to trigger a buy of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -757,13 +754,18 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+	
+    if (positionEffect == 'close'):
+        direction = 'credit'
+    else:
+        direction = 'debit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': 'debit',
+    'direction': direction,
     'time_in_force': timeInForce,
     'legs': [
-        {'position_effect': 'open', 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+        {'position_effect': positionEffect, 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
     ],
     'type': 'limit',
     'trigger': 'immediate',
@@ -780,9 +782,11 @@ def order_buy_option_limit(price, symbol, quantity, expirationDate, strike, opti
     return(data)
 
 @helper.login_required
-def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
+    :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
+    :type positionEffect: str
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -810,13 +814,18 @@ def order_sell_option_limit(price, symbol, quantity, expirationDate, strike, opt
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+	
+    if (positionEffect == 'close'):
+        direction = 'debit'
+    else:
+        direction = 'credit'
 
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': 'credit',
+    'direction': direction,
     'time_in_force': timeInForce,
     'legs': [
-        {'position_effect': 'close', 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
+        {'position_effect': positionEffect, 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
     ],
     'type': 'limit',
     'trigger': 'immediate',
