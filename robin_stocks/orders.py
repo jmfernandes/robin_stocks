@@ -187,7 +187,7 @@ def order_buy_market(symbol, quantity, timeInForce = 'gtc', extendedHours = Fals
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -233,7 +233,7 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce = 'gtc', extendedH
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -280,7 +280,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce = 'gtc', extend
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -329,7 +329,7 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce = 
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -375,7 +375,7 @@ def order_sell_market(symbol, quantity, timeInForce = 'gtc', extendedHours = Fal
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -421,7 +421,7 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce = 'gtc', extended
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -468,7 +468,7 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -517,7 +517,7 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -573,7 +573,7 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice = None, stopPri
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase or selling of stocks, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -629,8 +629,8 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' = execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the trading of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
     order_option_spread("credit", price, symbol, quantity, spread, timeInForce)
@@ -654,8 +654,8 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the trading of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
     order_option_spread("debit", price, symbol, quantity, spread, timeInForce)
@@ -681,8 +681,8 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the trading of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
     try:
@@ -742,8 +742,8 @@ def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDa
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the buying of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -754,7 +754,7 @@ def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDa
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
-	
+
     if (positionEffect == 'close'):
         direction = 'credit'
     else:
@@ -803,7 +803,7 @@ def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationD
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -814,7 +814,7 @@ def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationD
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
-	
+
     if (positionEffect == 'close'):
         direction = 'debit'
     else:
@@ -855,8 +855,8 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the buying of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -905,11 +905,16 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the buying of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
 
     crypto_info = crypto.get_crypto_info(symbol)
     price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
@@ -931,6 +936,52 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     return(data)
 
 @helper.login_required
+def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
+    """Submits a limit order for a crypto by specifying the decimal amount of shares to buy.
+    Good for share fractions up to 8 decimal places.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param quantity: The decimal amount of shares to buy.
+    :type quantity: float
+    :param price: The limit price to set for the crypto.
+    :type price: float
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the buying of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    crypto_info = crypto.get_crypto_info(symbol)
+
+    if crypto_info['display_only']:
+        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+
+    payload = {
+    'account_id': crypto.load_crypto_profile(info="id"),
+    'currency_pair_id': crypto_info['id'],
+    'price': price,
+    'quantity': quantity,
+    'ref_id': str(uuid4()),
+    'side': 'buy',
+    'time_in_force': timeInForce,
+    'type': 'limit'
+    }
+
+    url = urls.order_crypto()
+    data = helper.request_post(url, payload, json=True)
+
+    return(data)
+
+@helper.login_required
 def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
@@ -944,8 +995,8 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', t
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the selling of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
@@ -993,11 +1044,16 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeI
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of options, \
-    such as the order id, the state of order (queued,confired,filled, failed, canceled, etc.), \
+    :returns: Dictionary that contains information regarding the selling of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
 
     crypto_info = crypto.get_crypto_info(symbol)
     price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
@@ -1011,6 +1067,52 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeI
     'side': 'sell',
     'time_in_force': timeInForce,
     'type': 'market'
+    }
+
+    url = urls.order_crypto()
+    data = helper.request_post(url, payload, json=True)
+
+    return(data)
+
+@helper.login_required
+def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
+    """Submits a limit order for a crypto by specifying the decimal amount of shares to sell.
+    Good for share fractions up to 8 decimal places.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param quantity: The decimal amount of shares to sell.
+    :type quantity: float
+    :param price: The limit price to set for the crypto.
+    :type price: float
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    crypto_info = crypto.get_crypto_info(symbol)
+
+    if crypto_info['display_only']:
+        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+
+    payload = {
+    'account_id': crypto.load_crypto_profile(info="id"),
+    'currency_pair_id': crypto_info['id'],
+    'price': price,
+    'quantity': quantity,
+    'ref_id': str(uuid4()),
+    'side': 'sell',
+    'time_in_force': timeInForce,
+    'type': 'limit'
     }
 
     url = urls.order_crypto()

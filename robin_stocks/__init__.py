@@ -88,8 +88,10 @@ from .orders import get_all_orders,                 \
                     order_option_debit_spread,      \
                     order_buy_crypto_by_price,      \
                     order_buy_crypto_by_quantity,   \
+                    order_buy_crypto_limit,         \
                     order_sell_crypto_by_price,     \
-                    order_sell_crypto_by_quantity
+                    order_sell_crypto_by_quantity,  \
+                    order_sell_crypto_limit
 
 from .profiles import load_account_profile,     \
                       load_basic_profile,       \
