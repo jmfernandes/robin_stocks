@@ -52,6 +52,8 @@ def get_fundamentals(inputSymbols, info = None):
     for count, item in enumerate(data):
         if item is None:
             print(helper.error_ticker_does_not_exist(symbols[count]))
+        else:
+            item['symbol'] = symbols[count]
 
     data = [item for item in data if item is not None]
 
