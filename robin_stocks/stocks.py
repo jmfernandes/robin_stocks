@@ -52,6 +52,8 @@ def get_fundamentals(inputSymbols, info = None):
     for count, item in enumerate(data):
         if item is None:
             print(helper.error_ticker_does_not_exist(symbols[count]))
+        else:
+            item['symbol'] = symbols[count]
 
     data = [item for item in data if item is not None]
 
@@ -393,12 +395,15 @@ def get_historicals(inputSymbols, span = 'week', bounds = 'regular'):
     data = helper.request_get(url, 'results', payload)
     if (data == None or data == [None]):
         return data
+
     histData = []
     for count, item in enumerate(data):
         if (len(item['historicals']) == 0):
             print(helper.error_ticker_does_not_exist(symbols[count]))
             continue
+        stockSymbol = item['symbol']
         for subitem in item['historicals']:
+            subitem['symbol'] = stockSymbol
             histData.append(subitem)
 
     return(histData)
