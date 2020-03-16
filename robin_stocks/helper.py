@@ -78,7 +78,10 @@ def id_for_chain(symbol):
     payload = { 'symbol' : symbol}
     data = request_get(url, 'indexzero', payload)
 
-    return(data['tradable_chain_id'])
+    if data:
+        return(data['tradable_chain_id'])
+    else:
+        return(data)
 
 def id_for_group(symbol):
     """Takes a stock ticker and returns the id associated with the group.
