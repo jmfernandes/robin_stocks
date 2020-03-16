@@ -1,11 +1,12 @@
 """Contains all functions for placing orders for stocks, options, and crypto."""
-import robin_stocks.helper as helper
-import robin_stocks.urls as urls
-import robin_stocks.stocks as stocks
-import robin_stocks.profiles as profiles
-import robin_stocks.crypto as crypto
-
 from uuid import uuid4
+
+import robin_stocks.crypto as crypto
+import robin_stocks.helper as helper
+import robin_stocks.profiles as profiles
+import robin_stocks.stocks as stocks
+import robin_stocks.urls as urls
+
 
 @helper.login_required
 def get_all_orders(info = None):
@@ -136,7 +137,7 @@ def cancel_all_open_orders():
 
     for item in items:
         cancel_url = urls.cancel(item)
-        data = helper.request_post(cancel_url)
+        helper.request_post(cancel_url)
 
     print('All Orders Cancelled')
     return(items)

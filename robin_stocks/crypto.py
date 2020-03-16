@@ -2,6 +2,7 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
+
 @helper.login_required
 def load_crypto_profile(info=None):
     """Gets the information associated with the crypto account.
@@ -14,8 +15,9 @@ def load_crypto_profile(info=None):
 
     """
     url = urls.crypto_account()
-    data = helper.request_get(url,'indexzero')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'indexzero')
+    return(helper.filter(data, info))
+
 
 @helper.login_required
 def get_crypto_positions(info=None):
@@ -28,8 +30,9 @@ def get_crypto_positions(info=None):
 
     """
     url = urls.crypto_holdings()
-    data = helper.request_get(url,'pagination')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'pagination')
+    return(helper.filter(data, info))
+
 
 def get_crypto_currency_pairs(info=None):
     """Gets a list of all the cypto currencies that you can trade
@@ -41,8 +44,9 @@ def get_crypto_currency_pairs(info=None):
 
     """
     url = urls.crypto_currency_pairs()
-    data = helper.request_get(url,'results')
-    return(helper.filter(data,info))
+    data = helper.request_get(url, 'results')
+    return(helper.filter(data, info))
+
 
 def get_crypto_info(symbol, info=None):
     """Gets information about a crpyto currency.
@@ -56,16 +60,17 @@ def get_crypto_info(symbol, info=None):
 
     """
     url = urls.crypto_currency_pairs()
-    data = helper.request_get(url,'results')
+    data = helper.request_get(url, 'results')
     data = [x for x in data if x['asset_currency']['code'] == symbol]
     if len(data) > 0:
         data = data[0]
     else:
         data = None
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
+
 
 @helper.login_required
-def get_crypto_quote(symbol,info=None):
+def get_crypto_quote(symbol, info=None):
     """Gets information about a crypto including low price, high price, and open price
 
     :param symbol: The crypto ticker.
@@ -79,10 +84,11 @@ def get_crypto_quote(symbol,info=None):
     id = get_crypto_info(symbol, info='id')
     url = urls.crypto_quote(id)
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
+
 
 @helper.login_required
-def get_crypto_quote_from_id(id,info=None):
+def get_crypto_quote_from_id(id, info=None):
     """Gets information about a crypto including low price, high price, and open price. Uses the id instead of crypto ticker.
 
     :param id: The id of a crypto.
@@ -95,4 +101,4 @@ def get_crypto_quote_from_id(id,info=None):
     """
     url = urls.crypto_quote(id)
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))

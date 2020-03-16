@@ -1,12 +1,14 @@
 """Contains functions for getting information related to the user account."""
-import robin_stocks.helper as helper
-import robin_stocks.urls as urls
-import robin_stocks.stocks as stocks
-import robin_stocks.profiles as profiles
 import os
 
+import robin_stocks.helper as helper
+import robin_stocks.profiles as profiles
+import robin_stocks.stocks as stocks
+import robin_stocks.urls as urls
+
+
 @helper.login_required
-def get_all_positions(info = None):
+def get_all_positions(info=None):
     """Returns a list containing every position ever traded.
 
     :param info: Will filter the results to get a specific value.
@@ -20,8 +22,9 @@ def get_all_positions(info = None):
 
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_current_positions(info = None):
+def get_current_positions(info=None):
     """Returns a list of stocks/options that are currently held.
 
     :param info: Will filter the results to get a specific value.
@@ -31,13 +34,14 @@ def get_current_positions(info = None):
 
     """
     url = urls.positions()
-    payload = { 'nonzero' : 'true'}
+    payload = {'nonzero': 'true'}
     data = helper.request_get(url, 'pagination', payload)
 
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_dividends(info = None):
+def get_dividends(info=None):
     """Returns a list of dividend trasactions that include information such as the percentage rate,
     amount, shares of held stock, and date paid.
 
@@ -51,6 +55,7 @@ def get_dividends(info = None):
     data = helper.request_get(url, 'pagination')
 
     return(helper.filter(data, info))
+
 
 @helper.login_required
 def get_total_dividends():
@@ -67,6 +72,7 @@ def get_total_dividends():
         dividend_total += float(item['amount'])
     return(dividend_total)
 
+
 @helper.login_required
 def get_dividends_by_instrument(instrument, dividend_data):
     """Returns a dictionary with three fields when given the instrument value for a stock
@@ -81,22 +87,24 @@ def get_dividends_by_instrument(instrument, dividend_data):
     """
     #global dividend_data
     try:
-        data = list(filter(lambda x: x['instrument'] == instrument, dividend_data))
+        data = list(
+            filter(lambda x: x['instrument'] == instrument, dividend_data))
 
         dividend = float(data[0]['rate'])
         total_dividends = float(data[0]['amount'])
         total_amount_paid = float(sum([float(d['amount']) for d in data]))
 
         return {
-            'dividend_rate':"{0:.2f}".format(dividend),
-            'total_dividend':"{0:.2f}".format(total_dividends),
-            'amount_paid_to_date':"{0:.2f}".format(total_amount_paid)
+            'dividend_rate': "{0:.2f}".format(dividend),
+            'total_dividend': "{0:.2f}".format(total_dividends),
+            'amount_paid_to_date': "{0:.2f}".format(total_amount_paid)
         }
     except:
         pass
 
+
 @helper.login_required
-def get_notifications(info = None):
+def get_notifications(info=None):
     """Returns a list of notifications.
 
     :param info: Will filter the results to get a specific value.
@@ -110,6 +118,7 @@ def get_notifications(info = None):
 
     return(helper.filter(data, info))
 
+
 @helper.login_required
 def get_latest_notification():
     """Returns the time of the latest notification.
@@ -121,8 +130,9 @@ def get_latest_notification():
     data = helper.request_get(url)
     return(data)
 
+
 @helper.login_required
-def get_wire_transfers(info = None):
+def get_wire_transfers(info=None):
     """Returns a list of wire transfers.
 
     :param info: Will filter the results to get a specific value.
@@ -135,8 +145,9 @@ def get_wire_transfers(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_margin_calls(symbol = None):
+def get_margin_calls(symbol=None):
     """Returns either all margin calls or margin calls for a specific stock.
 
     :param symbol: Will determine which stock to get margin calls for.
@@ -151,15 +162,16 @@ def get_margin_calls(symbol = None):
         except AttributeError as message:
             print(message)
             return None
-        payload = { 'equity_instrument_id', helper.id_for_stock(symbol)}
+        payload = {'equity_instrument_id', helper.id_for_stock(symbol)}
         data = helper.request_get(url, 'results', payload)
     else:
         data = helper.request_get(url, 'results')
 
     return(data)
 
+
 @helper.login_required
-def get_linked_bank_accounts(info = None):
+def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
 
     :param info: Will filter the results to get a specific value.
@@ -171,8 +183,9 @@ def get_linked_bank_accounts(info = None):
     data = helper.request_get(url, 'results')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_bank_account_info(id, info = None):
+def get_bank_account_info(id, info=None):
     """Returns a single dictionary of bank information
 
     :param id: The bank id.
@@ -187,6 +200,7 @@ def get_bank_account_info(id, info = None):
     data = helper.request_get(url)
     return(helper.filter(data, info))
 
+
 @helper.login_required
 def unlink_bank_account(id):
     """Unlinks a bank account.
@@ -200,8 +214,9 @@ def unlink_bank_account(id):
     data = helper.request_post(url)
     return(data)
 
+
 @helper.login_required
-def get_bank_transfers(info = None):
+def get_bank_transfers(info=None):
     """Returns all bank transfers made for the account.
 
     :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
@@ -214,8 +229,9 @@ def get_bank_transfers(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_stock_loan_payments(info = None):
+def get_stock_loan_payments(info=None):
     """Returns a list of loan payments.
 
     :param info: Will filter the results to get a specific value.
@@ -228,8 +244,9 @@ def get_stock_loan_payments(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_margin_interest(info = None):
+def get_margin_interest(info=None):
     """Returns a list of margin interest.
 
     :param info: Will filter the results to get a specific value.
@@ -242,8 +259,9 @@ def get_margin_interest(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_subscription_fees(info = None):
+def get_subscription_fees(info=None):
     """Returns a list of subscription fees.
 
     :param info: Will filter the results to get a specific value.
@@ -256,8 +274,9 @@ def get_subscription_fees(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_referrals(info = None):
+def get_referrals(info=None):
     """Returns a list of referrals.
 
     :param info: Will filter the results to get a specific value.
@@ -270,8 +289,9 @@ def get_referrals(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_day_trades(info = None):
+def get_day_trades(info=None):
     """Returns recent day trades.
 
     :param info: Will filter the results to get a specific value.
@@ -285,8 +305,9 @@ def get_day_trades(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_documents(info = None):
+def get_documents(info=None):
     """Returns a list of documents that have been released by Robinhood to the account.
 
     :param info: Will filter the results to get a specific value.
@@ -300,8 +321,9 @@ def get_documents(info = None):
 
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def download_document(url, name = None, dirpath = None):
+def download_document(url, name=None, dirpath=None):
     """Downloads a document and saves as it as a PDF. If no name is given, document is saved as
     the name that Robinhood has for the document. If no directory is given, document is saved in the root directory of code.
 
@@ -318,23 +340,24 @@ def download_document(url, name = None, dirpath = None):
 
     print('Writing PDF...')
     if not name:
-        name = url[36:].split('/',1)[0]
+        name = url[36:].split('/', 1)[0]
 
     if dirpath:
         directory = dirpath
     else:
         directory = 'robin_documents/'
 
-    filename = directory + name +' .pdf'
-    os.makedirs(os.path.dirname(filename), exist_ok = True)
+    filename = directory + name + ' .pdf'
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     open(filename, 'wb').write(data.content)
     print('Done - Wrote file {}.pdf to {}'.format(name, os.path.abspath(filename)))
 
     return(data)
 
+
 @helper.login_required
-def download_all_documents(doctype = None, dirpath = None):
+def download_all_documents(doctype=None, dirpath=None):
     """Downloads all the documents associated with an account and saves them as a PDF.
     If no name is given, document is saved as a combination of the data of creation, type, and id.
     If no directory is given, document is saved in the root directory of code.
@@ -359,9 +382,10 @@ def download_all_documents(doctype = None, dirpath = None):
         if doctype == None:
             data = helper.request_document(item['download_url'])
             if data:
-                name = item['created_at'][0:10] + '-' + item['type'] + '-' + item['id']
+                name = item['created_at'][0:10] + '-' + \
+                    item['type'] + '-' + item['id']
                 filename = directory + name + '.pdf'
-                os.makedirs(os.path.dirname(filename), exist_ok = True)
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
                 open(filename, 'wb').write(data.content)
                 downloaded_files = True
                 counter += 1
@@ -370,9 +394,10 @@ def download_all_documents(doctype = None, dirpath = None):
             if item['type'] == doctype:
                 data = helper.request_document(item['download_url'])
                 if data:
-                    name = item['created_at'][0:10] + '-' + item['type'] + '-' + item['id']
+                    name = item['created_at'][0:10] + '-' + \
+                        item['type'] + '-' + item['id']
                     filename = directory + name + '.pdf'
-                    os.makedirs(os.path.dirname(filename), exist_ok = True)
+                    os.makedirs(os.path.dirname(filename), exist_ok=True)
                     open(filename, 'wb').write(data.content)
                     downloaded_files = True
                     counter += 1
@@ -382,14 +407,17 @@ def download_all_documents(doctype = None, dirpath = None):
         print('WARNING: Could not find files of that doctype to download')
     else:
         if counter == 1:
-            print('Done - wrote {} file to {}'.format(counter, os.path.abspath(directory)))
+            print('Done - wrote {} file to {}'.format(counter,
+                                                      os.path.abspath(directory)))
         else:
-            print('Done - wrote {} files to {}'.format(counter, os.path.abspath(directory)))
+            print('Done - wrote {} files to {}'.format(counter,
+                                                       os.path.abspath(directory)))
 
     return(documents)
 
+
 @helper.login_required
-def get_all_watchlists(info = None):
+def get_all_watchlists(info=None):
     """Returns a list of all watchlists that have been created. Everone has a 'default' watchlist.
 
     :param info: Will filter the results to get a specific value.
@@ -401,8 +429,9 @@ def get_all_watchlists(info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def get_watchlist_by_name(name = 'Default', info = None):
+def get_watchlist_by_name(name='Default', info=None):
     """Returns a list of information related to the stocks in a single watchlist.
 
     :param name: The name of the watchlist to get data from.
@@ -416,8 +445,9 @@ def get_watchlist_by_name(name = 'Default', info = None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+
 @helper.login_required
-def post_symbols_to_watchlist(inputSymbols, name = 'Default'):
+def post_symbols_to_watchlist(inputSymbols, name='Default'):
     """Posts multiple stock tickers to a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -429,15 +459,16 @@ def post_symbols_to_watchlist(inputSymbols, name = 'Default'):
     """
     symbols = helper.inputs_to_set(inputSymbols)
     payload = {
-    'symbols': ','.join(symbols)
+        'symbols': ','.join(symbols)
     }
     url = urls.watchlists(name, True)
     data = helper.request_post(url, payload)
 
     return(data)
 
+
 @helper.login_required
-def delete_symbols_from_watchlist(inputSymbols, name = 'Default'):
+def delete_symbols_from_watchlist(inputSymbols, name='Default'):
     """Deletes multiple stock tickers from a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -448,9 +479,9 @@ def delete_symbols_from_watchlist(inputSymbols, name = 'Default'):
 
     """
     symbols = helper.inputs_to_set(inputSymbols)
-    symbols = stocks.get_fundamentals(symbols, info = 'instrument')
+    symbols = stocks.get_fundamentals(symbols, info='instrument')
 
-    watchlist = get_watchlist_by_name(name = name)
+    watchlist = get_watchlist_by_name(name=name)
 
     items = []
     data = None
@@ -466,8 +497,9 @@ def delete_symbols_from_watchlist(inputSymbols, name = 'Default'):
 
     return(data)
 
+
 @helper.login_required
-def build_holdings(with_dividends = False):
+def build_holdings(with_dividends=False):
     """Builds a dictionary of important information regarding the stocks and positions owned by the user.
 
     :param with_dividends: True if you want to include divident information.
@@ -489,11 +521,13 @@ def build_holdings(with_dividends = False):
         return({})
 
     if portfolios_data['extended_hours_equity'] is not None:
-        total_equity = max(float(portfolios_data['equity']), float(portfolios_data['extended_hours_equity']))
+        total_equity = max(float(portfolios_data['equity']), float(
+            portfolios_data['extended_hours_equity']))
     else:
         total_equity = float(portfolios_data['equity'])
 
-    cash = "{0:.2f}".format(float(accounts_data['cash']) + float(accounts_data['uncleared_deposits']))
+    cash = "{0:.2f}".format(
+        float(accounts_data['cash']) + float(accounts_data['uncleared_deposits']))
 
     holdings = {}
     for item in positions_data:
@@ -509,33 +543,43 @@ def build_holdings(with_dividends = False):
             price = stocks.get_latest_price(instrument_data['symbol'])[0]
             quantity = item['quantity']
             equity = float(item['quantity']) * float(price)
-            equity_change = (float(quantity) * float(price)) - (float(quantity) * float(item['average_buy_price']))
-            percentage = float(item['quantity']) * float(price) * 100 / (float(total_equity) - float(cash))
+            equity_change = (float(quantity) * float(price)) - \
+                (float(quantity) * float(item['average_buy_price']))
+            percentage = float(item['quantity']) * float(price) * \
+                100 / (float(total_equity) - float(cash))
             if (float(item['average_buy_price']) == 0.0):
                 percent_change = 0.0
             else:
-                percent_change = (float(price) - float(item['average_buy_price'])) * 100 / float(item['average_buy_price'])
+                percent_change = (float(
+                    price) - float(item['average_buy_price'])) * 100 / float(item['average_buy_price'])
 
-            holdings[symbol]=({'price': price })
+            holdings[symbol] = ({'price': price})
             holdings[symbol].update({'quantity': quantity})
-            holdings[symbol].update({'average_buy_price': item['average_buy_price']})
-            holdings[symbol].update({'equity':"{0:.2f}".format(equity)})
-            holdings[symbol].update({'percent_change': "{0:.2f}".format(percent_change)})
-            holdings[symbol].update({'equity_change':"{0:2f}".format(equity_change)})
+            holdings[symbol].update(
+                {'average_buy_price': item['average_buy_price']})
+            holdings[symbol].update({'equity': "{0:.2f}".format(equity)})
+            holdings[symbol].update(
+                {'percent_change': "{0:.2f}".format(percent_change)})
+            holdings[symbol].update(
+                {'equity_change': "{0:2f}".format(equity_change)})
             holdings[symbol].update({'type': instrument_data['type']})
-            holdings[symbol].update({'name': stocks.get_name_by_symbol(symbol)})
+            holdings[symbol].update(
+                {'name': stocks.get_name_by_symbol(symbol)})
             holdings[symbol].update({'id': instrument_data['id']})
-            holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio'] })
-            holdings[symbol].update({'percentage': "{0:.2f}".format(percentage)})
+            holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio']})
+            holdings[symbol].update(
+                {'percentage': "{0:.2f}".format(percentage)})
 
             if with_dividends is True:
                 # dividend_data was retrieved earlier
-                holdings[symbol].update(get_dividends_by_instrument(item['instrument'], dividend_data))
+                holdings[symbol].update(get_dividends_by_instrument(
+                    item['instrument'], dividend_data))
 
         except:
             pass
 
     return(holdings)
+
 
 @helper.login_required
 def build_user_profile():
@@ -550,12 +594,13 @@ def build_user_profile():
     accounts_data = profiles.load_account_profile()
 
     if portfolios_data:
-      user['equity'] = portfolios_data['equity']
-      user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
+        user['equity'] = portfolios_data['equity']
+        user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
 
     if accounts_data:
-      cash = "{0:.2f}".format(float(accounts_data['cash']) + float(accounts_data['uncleared_deposits']))
-      user['cash'] = cash
+        cash = "{0:.2f}".format(
+            float(accounts_data['cash']) + float(accounts_data['uncleared_deposits']))
+        user['cash'] = cash
 
     user['dividend_total'] = get_total_dividends()
 

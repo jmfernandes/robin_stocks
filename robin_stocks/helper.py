@@ -7,26 +7,30 @@ Functions
     - request_post
     - update_session
 """
-from robin_stocks.globals import SESSION, LOGGED_IN
 from functools import wraps
+
 import requests
+from robin_stocks.globals import LOGGED_IN, SESSION
+
 
 def set_login_state(logged_in):
     """Sets the login state"""
     global LOGGED_IN
     LOGGED_IN = logged_in
 
+
 def login_required(func):
     """A decorator for indicating which methods require the user to be logged
        in."""
     @wraps(func)
     def login_wrapper(*args, **kwargs):
-      global LOGGED_IN
-      if not LOGGED_IN:
-          raise Exception('{} can only be called when logged in'.format(
-              func.__name__))
-      return(func(*args, **kwargs))
+        global LOGGED_IN
+        if not LOGGED_IN:
+            raise Exception('{} can only be called when logged in'.format(
+                func.__name__))
+        return(func(*args, **kwargs))
     return(login_wrapper)
+
 
 def convert_none_to_string(func):
     """A decorator for converting a None Type into a blank string"""
@@ -38,6 +42,7 @@ def convert_none_to_string(func):
         else:
             return("")
     return(string_wrapper)
+
 
 def id_for_stock(symbol):
     """Takes a stock ticker and returns the instrument id associated with the stock.
@@ -54,10 +59,11 @@ def id_for_stock(symbol):
         return(None)
 
     url = 'https://api.robinhood.com/instruments/'
-    payload = { 'symbol' : symbol}
+    payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
 
     return(filter(data, 'id'))
+
 
 def id_for_chain(symbol):
     """Takes a stock ticker and returns the chain id associated with a stocks option.
@@ -75,13 +81,14 @@ def id_for_chain(symbol):
 
     url = 'https://api.robinhood.com/instruments/'
 
-    payload = { 'symbol' : symbol}
+    payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
 
     if data:
         return(data['tradable_chain_id'])
     else:
         return(data)
+
 
 def id_for_group(symbol):
     """Takes a stock ticker and returns the id associated with the group.
@@ -97,11 +104,13 @@ def id_for_group(symbol):
         print(message)
         return(None)
 
-    url = 'https://api.robinhood.com/options/chains/{0}/'.format(id_for_chain(symbol))
+    url = 'https://api.robinhood.com/options/chains/{0}/'.format(
+        id_for_chain(symbol))
     data = request_get(url)
     return(data['underlying_instruments'][0]['id'])
 
-def id_for_option(symbol, expirationDate, strike, optionType = 'both'):
+
+def id_for_option(symbol, expirationDate, strike, optionType='both'):
     """Returns the id associated with a specific option order.
 
     :param symbol: The symbol to get the id for.
@@ -116,19 +125,21 @@ def id_for_option(symbol, expirationDate, strike, optionType = 'both'):
 
     """
     symbol = symbol.upper()
-    payload = { 'chain_id' : id_for_chain(symbol),
-                'state' : 'active',
-                'tradability' : 'tradable',
-                'type' : optionType}
+    payload = {'chain_id': id_for_chain(symbol),
+               'state': 'active',
+               'tradability': 'tradable',
+               'type': optionType}
     url = 'https://api.robinhood.com/options/instruments/'
     data = request_get(url, 'pagination', payload)
 
-    listOfOptions = [item for item in data if item["expiration_date"] == expirationDate and float(item["strike_price"]) == float(strike)]
+    listOfOptions = [item for item in data if item["expiration_date"] ==
+                     expirationDate and float(item["strike_price"]) == float(strike)]
     if (len(listOfOptions) == 0):
         print('Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.')
         return(None)
 
     return(listOfOptions[0]['id'])
+
 
 def round_price(price):
     """Takes a price and rounds it to an appropriate decimal place that Robinhood will accept.
@@ -147,6 +158,7 @@ def round_price(price):
         returnPrice = round(price, 2)
 
     return returnPrice
+
 
 def filter(data, info):
     """Takes the data and extracts the value for the keyword that matches info.
@@ -182,6 +194,7 @@ def filter(data, info):
     else:
         return(data)
 
+
 def inputs_to_set(inputSymbols):
     """Takes in the parameters passed to *args and puts them in a set and a list.
     The set will make sure there are no duplicates, and then the list will keep
@@ -211,7 +224,8 @@ def inputs_to_set(inputSymbols):
 
     return(symbols_list)
 
-def request_document(url, payload = None):
+
+def request_document(url, payload=None):
     """Using a document url, makes a get request and returnes the session data.
 
     :param url: The url to send a get request to.
@@ -220,7 +234,7 @@ def request_document(url, payload = None):
 
     """
     try:
-        res = SESSION.get(url, params = payload)
+        res = SESSION.get(url, params=payload)
         res.raise_for_status()
     except requests.exceptions.HTTPError as message:
         print(message)
@@ -228,7 +242,8 @@ def request_document(url, payload = None):
 
     return(res)
 
-def request_get(url, dataType = 'regular', payload = None, jsonify_data = True):
+
+def request_get(url, dataType='regular', payload=None, jsonify_data=True):
     """For a given url and payload, makes a get request and returns the data.
 
     :param url: The url to send a get request to.
@@ -248,18 +263,18 @@ def request_get(url, dataType = 'regular', payload = None, jsonify_data = True):
     if (dataType == 'results' or dataType == 'pagination'):
         data = [None]
     else:
-        data =  None
+        data = None
     res = None
     if jsonify_data:
         try:
-            res = SESSION.get(url, params = payload)
+            res = SESSION.get(url, params=payload)
             res.raise_for_status()
             data = res.json()
         except (requests.exceptions.HTTPError, AttributeError) as message:
             print(message)
             return(data)
     else:
-        res = SESSION.get(url, params = payload)
+        res = SESSION.get(url, params=payload)
         return(res)
     # Only continue to filter data if jsonify_data=True, and Session.get returned status code <200>.
     if (dataType == 'results'):
@@ -302,7 +317,8 @@ def request_get(url, dataType = 'regular', payload = None, jsonify_data = True):
 
     return(data)
 
-def request_post(url, payload = None, timeout = 16, json = False, jsonify_data = True):
+
+def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     """For a given url and payload, makes a post request and returns the response. Allows for responses other than 200.
 
     :param url: The url to send a post request to.
@@ -323,10 +339,11 @@ def request_post(url, payload = None, timeout = 16, json = False, jsonify_data =
     try:
         if json:
             update_session('Content-Type', 'application/json')
-            res = SESSION.post(url, json = payload, timeout = timeout)
-            update_session('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+            res = SESSION.post(url, json=payload, timeout=timeout)
+            update_session(
+                'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
         else:
-            res = SESSION.post(url, data = payload, timeout = timeout)
+            res = SESSION.post(url, data=payload, timeout=timeout)
         data = res.json()
     except Exception as message:
         print("Error in request_post: {0}".format(message))
@@ -335,6 +352,7 @@ def request_post(url, payload = None, timeout = 16, json = False, jsonify_data =
         return(data)
     else:
         return(res)
+
 
 def request_delete(url):
     """For a given url and payload, makes a delete request and returns the response.
@@ -353,6 +371,7 @@ def request_delete(url):
 
     return(data)
 
+
 def update_session(key, value):
     """Updates the session header used by the requests library.
 
@@ -365,11 +384,14 @@ def update_session(key, value):
     """
     SESSION.headers[key] = value
 
+
 def error_argument_not_key_in_dictionary(keyword):
     return('Error: The keyword "{0}" is not a key in the dictionary.'.format(keyword))
 
+
 def error_ticker_does_not_exist(ticker):
     return('Warning: "{0}" is not a valid stock ticker. It is being ignored'.format(ticker))
+
 
 def error_must_be_nonzero(keyword):
     return('Error: The input parameter "{0}" must be an integer larger than zero and non-negative'.format(keyword))
