@@ -665,7 +665,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'
 def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gfd'):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
-    :param direction: credit or debit spread
+    :param direction: Can be "credit" or "debit".
     :type direction: str
     :param price: The limit price to trigger a trade of the option.
     :type price: float
@@ -723,11 +723,13 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
 
 @helper.login_required
-def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
     :type positionEffect: str
+    :param creditOrDebit: Either 'debit' or 'credit'.
+    :type creditOrDebit: str
     :param price: The limit price to trigger a buy of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -756,14 +758,9 @@ def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDa
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 
-    if (positionEffect == 'close'):
-        direction = 'credit'
-    else:
-        direction = 'debit'
-
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': direction,
+    'direction': creditOrDebit,
     'time_in_force': timeInForce,
     'legs': [
         {'position_effect': positionEffect, 'side' : 'buy', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
@@ -783,11 +780,13 @@ def order_buy_option_limit(positionEffect, price, symbol, quantity, expirationDa
     return(data)
 
 @helper.login_required
-def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
     :type positionEffect: str
+    :param creditOrDebit: Either 'debit' or 'credit'.
+    :type creditOrDebit: str
     :param price: The limit price to trigger a sell of the option.
     :type price: float
     :param symbol: The stock ticker of the stock to trade.
@@ -816,14 +815,9 @@ def order_sell_option_limit(positionEffect, price, symbol, quantity, expirationD
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 
-    if (positionEffect == 'close'):
-        direction = 'debit'
-    else:
-        direction = 'credit'
-
     payload = {
     'account': profiles.load_account_profile(info='url'),
-    'direction': direction,
+    'direction': creditOrDebit,
     'time_in_force': timeInForce,
     'legs': [
         {'position_effect': positionEffect, 'side' : 'sell', 'ratio_quantity': 1, 'option': urls.option_instruments(optionID) },
