@@ -65,6 +65,7 @@ from .options import get_aggregate_positions,                           \
                      get_option_historicals
 
 from .orders import get_all_orders,                 \
+                    get_all_option_orders,          \
                     get_all_open_orders,            \
                     get_all_open_option_orders,     \
                     get_order_info,                 \
@@ -120,3 +121,6 @@ from .stocks import get_quotes,                 \
                     get_pricebook_by_symbol,    \
                     get_stock_quote_by_id,      \
                     get_stock_quote_by_symbol
+
+from .export import export_completed_stock_orders, \
+                    export_completed_option_orders
