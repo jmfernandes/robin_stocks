@@ -7,7 +7,7 @@ LOGGED_IN = False
 SESSION = Session()
 SESSION.headers = {
     "Accept": "*/*",
-    "Accept-Encoding": "gzip,defalte,br",
+    "Accept-Encoding": "gzip,deflate,br",
     "Accept-Language": "en-US,en;q=1",
     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
     "X-Robinhood-API-Version": "1.0.0",
