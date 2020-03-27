@@ -236,7 +236,7 @@ def order_buy_market(symbol, quantity, timeInForce = 'gtc', extendedHours = Fals
 @helper.login_required
 def order_buy_market_fractional(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
-    Good for share fractions up to 8 decimal places.
+    Good for share fractions up to 6 decimal places.
 
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
