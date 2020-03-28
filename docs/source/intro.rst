@@ -14,9 +14,13 @@ Some of these are part of `PEP 20 <https://www.python.org/dev/pep-0020>`_ standa
 
 * Explicit is better than implicit
 
-This is the reason why my code uses ``import robin_stocks.module as module`` instead of ``from module import *``.
+When writing code for this project, you want other developers to be able to follow all function calls.
+A lot of times in C++ it can be confusing when trying to figure out if a function is built-in, defined in the same file,
+defined in another object, or an alias for another function. In Python, it's a lot easier to see where a function comes from,
+but care must still be taken to make code as readable as possible. This is the reason why my code uses ``import robin_stocks.module as module`` instead of ``from module import *``.
 This means that calls to a function from the module must be written as ``module.function`` instead of the simply
-``function``. When viewing the code, it's easy to see which functions come from which modules.
+``function``. When viewing the code, it's easy to see which functions come from which modules. However users do not have to 
+explicity call functions because of the following reason...
 
 * Flat is better than nested
 
@@ -39,7 +43,7 @@ which means the code is easier to debug, easier to propagate changes, and easier
 A person should be able to look at the code and know the purpose of all the names they see. For this reason
 I have written names of functions as ``snake_case``, the names of input parameters and local function variables as
 ``camelCase``, the names of class names and enum names as ``PascalCase``, and the names of global
-variables as ``UPPERCASE``.
+variables as ``UPPER_SNAKE_CASE``.
 
 In addition, the naming of each function is standardized in order to make searching for functions easier. Functions that load user account
 information begin with "load", functions that place orders begin with "order", functions that cancel orders begin with "cancel",
