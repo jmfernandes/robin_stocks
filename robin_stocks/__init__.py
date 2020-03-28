@@ -70,13 +70,20 @@ from .options import get_aggregate_positions,                           \
 
 from .orders import get_all_stock_orders,           \
                     get_all_option_orders,          \
+                    get_all_crypto_orders,          \
                     get_all_open_stock_orders,      \
                     get_all_open_option_orders,     \
-                    get_order_info,                 \
+                    get_all_open_crypto_orders,     \
+                    get_stock_order_info,           \
                     get_option_order_info,          \
-                    find_orders,                    \
-                    cancel_all_open_orders,         \
-                    cancel_order,                   \
+                    get_crypto_order_info,          \
+                    find_stock_orders,              \
+                    cancel_all_stock_orders,        \
+                    cancel_all_option_orders,       \
+                    cancel_all_crypto_orders,       \
+                    cancel_stock_order,             \
+                    cancel_option_order,            \
+                    cancel_crypto_order,            \
                     order,                          \
                     order_buy_market,               \
                     order_buy_fractional_by_quantity,\

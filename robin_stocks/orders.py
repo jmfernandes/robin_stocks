@@ -37,6 +37,20 @@ def get_all_option_orders(info = None):
     return(helper.filter(data,info))
 
 @helper.login_required
+def get_all_crypto_orders(info = None):
+    """Returns a list of all the crypto orders that have been processed for the account.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.crypto_orders()
+    data = helper.request_get(url, 'pagination')
+    return(helper.filter(data,info))
+
+@helper.login_required
 def get_all_open_stock_orders(info = None):
     """Returns a list of all the orders that are currently open.
 
@@ -71,7 +85,24 @@ def get_all_open_option_orders(info = None):
     return(helper.filter(data, info))
 
 @helper.login_required
-def get_order_info(orderID):
+def get_all_open_crypto_orders(info = None):
+    """Returns a list of all the crypto orders that have been processed for the account.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.crypto_orders()
+    data = helper.request_get(url, 'pagination')
+
+    data = [item for item in data if item['state'] != "filled"]
+
+    return(helper.filter(data,info))
+
+@helper.login_required
+def get_stock_order_info(orderID):
     """Returns the information for a single order.
 
     :param orderID: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
@@ -97,9 +128,22 @@ def get_option_order_info(order_id):
     data = helper.request_get(url)
     return data
 
+@helper.login_required
+def get_crypto_order_info(order_id):
+    """Returns the information for a single crypto order.
+
+    :param order_id: The ID associated with the option order.
+    :type order_id: str
+    :returns: Returns a list of dictionaries of key/value pairs for the order.
+
+    """
+    url = urls.crypto_orders(order_id)
+    data = helper.request_get(url)
+    return data
+
 
 @helper.login_required
-def find_orders(**arguments):
+def find_stock_orders(**arguments):
     """Returns a list of orders that match the keyword parameters.
 
     :param arguments: Variable length of keyword arguments. EX. find_orders(symbol='FB',cancel=None,quantity=1)
@@ -138,29 +182,10 @@ def find_orders(**arguments):
     return(list_of_orders)
 
 @helper.login_required
-def cancel_all_open_orders():
-    """Cancels all open orders.
-
-    :returns: The list of orders that were cancelled.
-
-    """
-    url = urls.orders()
-    items = helper.request_get(url, 'pagination')
-
-    items = [item['id'] for item in items if item['cancel'] is not None]
-
-    for item in items:
-        cancel_url = urls.cancel(item)
-        helper.request_post(cancel_url)
-
-    print('All Orders Cancelled')
-    return(items)
-
-@helper.login_required
-def cancel_order(orderID):
+def cancel_stock_order(orderID):
     """Cancels a specific order.
 
-    :param orderID: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+    :param orderID: The ID associated with the order. Can be found using get_all_stock_orders(info=None).
     :type orderID: str
     :returns: Returns the order information for the order that was cancelled.
 
@@ -176,7 +201,7 @@ def cancel_order(orderID):
 def cancel_option_order(orderID):
     """Cancels a specific option order.
 
-    :param orderID: The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+    :param orderID: The ID associated with the order. Can be found using get_all_option_orders(info=None).
     :type orderID: str
     :returns: Returns the order information for the order that was cancelled.
 
@@ -186,6 +211,76 @@ def cancel_option_order(orderID):
 
     if data:
         print('Order '+orderID+' cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_crypto_order(orderID):
+    """Cancels a specific crypto order.
+
+    :param orderID: The ID associated with the order. Can be found using get_all_crypto_orders(info=None).
+    :type orderID: str
+    :returns: Returns the order information for the order that was cancelled.
+
+    """
+    url = urls.crypto_cancel(orderID)
+    data = helper.request_post(url)
+
+    if data:
+        print('Order '+orderID+' cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_all_stock_orders():
+    """Cancels all stock orders.
+
+    :returns: The list of orders that were cancelled.
+
+    """
+    url = urls.orders()
+    data = helper.request_get(url, 'pagination')
+
+    data = [item for item in data if item['cancel'] is not None]
+
+    for item in data:
+        helper.request_post(item['cancel'])
+
+    print('All Stock Orders Cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_all_option_orders():
+    """Cancels all option orders.
+
+    :returns: Returns the order information for the orders that were cancelled.
+
+    """
+    url = urls.option_orders()
+    data = helper.request_get(url, 'pagination')
+
+    data = [item for item in data if item['cancel_url'] is not None]
+
+    for item in data:
+        helper.request_post(item['cancel_url'])
+
+    print('All Option Orders Cancelled')
+    return(data)
+
+@helper.login_required
+def cancel_all_crypto_orders():
+    """Cancels all crypto orders.
+
+    :returns: Returns the order information for the orders that were cancelled.
+
+    """
+    url = urls.crypto_orders()
+    data = helper.request_get(url, 'pagination')
+
+    data = [item for item in data if item['cancel_url'] is not None]
+
+    for item in data:
+        helper.request_post(item['cancel_url'])
+
+    print('All Crypto Orders Cancelled')
     return(data)
 
 @helper.login_required
