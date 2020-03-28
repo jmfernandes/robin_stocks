@@ -34,8 +34,11 @@ from .crypto import load_crypto_profile,        \
                     get_crypto_info,            \
                     get_crypto_quote,           \
                     get_crypto_quote_from_id,   \
-                    get_crypto_positions,        \
+                    get_crypto_positions,       \
                     get_crypto_historical
+
+from .export import export_completed_stock_orders, \
+                    export_completed_option_orders
 
 from .helper import request_get,      \
                     request_post,     \
@@ -126,6 +129,3 @@ from .stocks import get_quotes,                 \
                     get_pricebook_by_symbol,    \
                     get_stock_quote_by_id,      \
                     get_stock_quote_by_symbol
-
-from .export import export_completed_stock_orders, \
-                    export_completed_option_orders

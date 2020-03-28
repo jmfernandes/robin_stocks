@@ -80,3 +80,11 @@ Getting Crypto Information
 
 .. automodule:: robin_stocks.crypto
    :members:
+
+Export Information
+--------------------------
+
+----
+
+.. automodule:: robin_stocks.export
+   :members:
