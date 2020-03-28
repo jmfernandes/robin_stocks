@@ -260,10 +260,6 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
         print(message)
         return None
 
-    if amountInDollars <= 1:
-        print("Fractional share price should meet minimum 1.00.")
-        return None
-
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -559,10 +555,6 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', exten
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message)
-        return None
-
-    if amountInDollars <= 1:
-        print("Fractional share price should meet minimum 1.00.")
         return None
 
     payload = {
