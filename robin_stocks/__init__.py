@@ -64,9 +64,9 @@ from .options import get_aggregate_positions,                           \
                      get_option_instrument_data,                        \
                      get_option_historicals
 
-from .orders import get_all_orders,                 \
+from .orders import get_all_stock_orders,           \
                     get_all_option_orders,          \
-                    get_all_open_orders,            \
+                    get_all_open_stock_orders,      \
                     get_all_open_option_orders,     \
                     get_order_info,                 \
                     get_option_order_info,          \
