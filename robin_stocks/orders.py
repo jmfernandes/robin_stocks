@@ -260,6 +260,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
         print(message)
         return None
 
+    stock_price = stocks.get_latest_price(symbol)[0]
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -557,6 +558,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', exten
         print(message)
         return None
 
+    stock_price = stocks.get_latest_price(symbol)[0]
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
