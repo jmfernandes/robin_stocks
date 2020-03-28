@@ -75,10 +75,14 @@ from .orders import get_all_stock_orders,           \
                     cancel_order,                   \
                     order,                          \
                     order_buy_market,               \
+                    order_buy_fractional_by_quantity,\
+                    order_buy_fractional_by_price,  \
                     order_buy_limit,                \
                     order_buy_stop_loss,            \
                     order_buy_stop_limit,           \
                     order_sell_market,              \
+                    order_sell_fractional_by_quantity,\
+                    order_sell_fractional_by_price, \
                     order_sell_limit,               \
                     order_sell_stop_loss,           \
                     order_sell_stop_limit,          \
