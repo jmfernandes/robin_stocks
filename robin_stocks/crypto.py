@@ -105,6 +105,38 @@ def get_crypto_quote_from_id(id, info=None):
 
 @helper.login_required
 def get_crypto_historical(symbol, interval, span, bound, info=None):
+    """Gets historical information about a crypto including open price, close price, high price, and low price.
+
+    :param symbol: The crypto ticker.
+    :type symbol: str
+    :param interval: The time between data points.
+    :type interval: str
+    :param span: The entire time frame to collect data points.
+    :type span: str
+    :param bound: The times of dat to collect data points.
+    :type bound: str
+    :param info: Will filter the results to have a list of the values that correspond to key that matches info.
+    :type info: Optional[str]
+    :returns: If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
+    Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+    """
+    interval_check = ['15second', '5minute', '10minute', 'hour', 'day', 'week']
+    span_check = ['hour', 'day', 'week', 'month', '3month', 'year', '5year']
+    bounds_check = ['24_7','extended', 'regular', 'trading']
+    
+    if interval not in interval_check:
+        print('ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"')
+        return([None])
+    if span not in span_check:
+        print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"')
+        return([None])
+    if bound not in bounds_check:
+        print('ERROR: Bounds must be "24_7","extended","regular",or "trading"')
+        return([None])
+    if (bound == 'extended' or bound == 'trading') and span != 'day':
+        print('ERROR: extended and trading bounds can only be used with a span of "day"')
+        return([None])
 
     id = get_crypto_info(symbol, info='id')
     url = urls.crypto_historical(id, interval, span, bound)
