@@ -102,3 +102,11 @@ def get_crypto_quote_from_id(id, info=None):
     url = urls.crypto_quote(id)
     data = helper.request_get(url)
     return(helper.filter(data, info))
+
+@helper.login_required
+def get_crypto_historical(symbol, interval, span, bound, info=None):
+
+    id = get_crypto_info(symbol, info='id')
+    url = urls.crypto_historical(id, interval, span, bound)
+    data = helper.request_get(url)
+    return(helper.filter(data,info))
