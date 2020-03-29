@@ -377,7 +377,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
         'price': helper.round_price(stock_price),
-        'quantity': quantity,
+        'quantity': helper.round_price(quantity),
         'ref_id': str(uuid4()),
         'type': 'market',
         'stop_price': None,
@@ -421,8 +421,8 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
         print(message)
         return None
 
-    if amountInDollars <= 1:
-        print("Fractional share price should meet minimum 1.00.")
+    if amountInDollars < 1:
+        print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
     stock_price = stocks.get_latest_price(symbol)[0]
@@ -680,7 +680,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', exten
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
         'price': helper.round_price(stock_price),
-        'quantity': quantity,
+        'quantity': helper.round_price(quantity),
         'ref_id': str(uuid4()),
         'type': 'market',
         'stop_price': None,
@@ -724,8 +724,8 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', e
         print(message)
         return None
 
-    if amountInDollars <= 1:
-        print("Fractional share price should meet minimum 1.00.")
+    if amountInDollars < 1:
+        print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
     stock_price = stocks.get_latest_price(symbol)[0]
