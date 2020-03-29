@@ -233,14 +233,17 @@ def crypto_quote(id):
 def crypto_holdings():
     return('https://nummus.robinhood.com/holdings/')
 
+
 def crypto_historical(id, interval, span, bound):
     return('https://api.robinhood.com/marketdata/forex/historicals/{}/?interval={}&span={}&bounds={}'.format(id, interval, span, bound))
+
 
 def crypto_orders(orderID=None):
     if orderID:
         return('https://nummus.robinhood.com/orders/{0}/'.format(orderID))
     else:
         return('https://nummus.robinhood.com/orders/')
+
 
 def crypto_cancel(id):
     return('https://nummus.robinhood.com/orders/{0}/cancel/'.format(id))

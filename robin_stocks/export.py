@@ -8,18 +8,18 @@ import robin_stocks.stocks as stocks
 @helper.login_required
 def export_completed_stock_orders(file_path):
     """Write all completed orders to a csv file
-    
+
     :param file_path: absolute path to the location the file will be written.
     :type file_path: str
 
     """
-    all_orders = orders.get_all_orders()
+    all_orders = orders.get_all_stock_orders()
     with open(f"{file_path}stock_orders_{dt.date.today().strftime('%b-%d-%Y')}.csv", 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
             'symbol',
             'date',
-            'order_type', 
+            'order_type',
             'side',
             'fees',
             'quantity',
@@ -38,10 +38,11 @@ def export_completed_stock_orders(file_path):
                 ])
         f.close()
 
+
 @helper.login_required
 def export_completed_option_orders(file_path):
     """Write all completed option orders to a csv
-        
+
         :param file_path: absolute path to the location the file will be written.
         :type file_path: str
 

@@ -103,6 +103,7 @@ def get_crypto_quote_from_id(id, info=None):
     data = helper.request_get(url)
     return(helper.filter(data, info))
 
+
 @helper.login_required
 def get_crypto_historical(symbol, interval, span, bound, info=None):
     """Gets historical information about a crypto including open price, close price, high price, and low price.
@@ -123,10 +124,11 @@ def get_crypto_historical(symbol, interval, span, bound, info=None):
     """
     interval_check = ['15second', '5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['hour', 'day', 'week', 'month', '3month', 'year', '5year']
-    bounds_check = ['24_7','extended', 'regular', 'trading']
-    
+    bounds_check = ['24_7', 'extended', 'regular', 'trading']
+
     if interval not in interval_check:
-        print('ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"')
+        print(
+            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"')
         return([None])
     if span not in span_check:
         print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"')
@@ -141,4 +143,4 @@ def get_crypto_historical(symbol, interval, span, bound, info=None):
     id = get_crypto_info(symbol, info='id')
     url = urls.crypto_historical(id, interval, span, bound)
     data = helper.request_get(url)
-    return(helper.filter(data,info))
+    return(helper.filter(data, info))
