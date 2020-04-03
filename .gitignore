@@ -12,3 +12,5 @@ uploadnotes.txt
 __pycache__/
 *.so
 *~
+
+.pypirc
