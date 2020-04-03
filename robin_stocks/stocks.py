@@ -190,7 +190,7 @@ def get_symbol_by_url(url):
     data = helper.request_get(url)
     return helper.filter(data, info='symbol')
 
-
+@helper.convert_none_to_string
 def get_ratings(symbol, info=None):
     """Returns the ratings for a stock, including the number of buy, hold, and sell ratings.
 
@@ -212,6 +212,9 @@ def get_ratings(symbol, info=None):
 
     url = urls.ratings(symbol)
     data = helper.request_get(url)
+    if not data:
+        return(data)
+
     if (len(data['ratings']) == 0):
         return(data)
     else:
@@ -221,7 +224,7 @@ def get_ratings(symbol, info=None):
 
     return(helper.filter(data, info))
 
-
+@helper.convert_none_to_string
 def get_popularity(symbol, info=None):
     """Returns the number of open positions.
 
