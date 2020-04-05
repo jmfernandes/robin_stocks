@@ -53,7 +53,6 @@ to log into Robinhood at the start of each script.
 There is the ability to buy and sell stocks, options, and crypto-currencies.
 There is also the ability to submit market orders, limit orders, and stop orders as long as
 Robinhood supports it. Here is a list of possible trades you can make
-of Apple, you would type
 
 >>> #Buy 10 shares of Apple at market price
 >>> r.order_buy_market('AAPL',10)
