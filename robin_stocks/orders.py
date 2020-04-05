@@ -102,7 +102,7 @@ def get_all_open_crypto_orders(info=None):
     url = urls.crypto_orders()
     data = helper.request_get(url, 'pagination')
 
-    data = [item for item in data if item['state'] != "filled"]
+    data = [item for item in data if item['cancel_url'] is not None]
 
     return(helper.filter(data, info))
 
