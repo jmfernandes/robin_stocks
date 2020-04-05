@@ -55,11 +55,14 @@ There is also the ability to submit market orders, limit orders, and stop orders
 Robinhood supports it. Here is a list of possible trades you can make
 of Apple, you would type
 
->>> r.order_buy_market('AAPL',10) #Buy 10 shares of Apple at market price
->>> r.order_sell_crypto_limit('BTC',0.5,10000) #Sell half a Bitcoin is price reaches 10,000
->>> r.order_buy_crypto_by_price('BTC',500) #Buy $500 worth of Bitcoin
+>>> #Buy 10 shares of Apple at market price
+>>> r.order_buy_market('AAPL',10)
+>>> #Sell half a Bitcoin is price reaches 10,000
+>>> r.order_sell_crypto_limit('BTC',0.5,10000)
+>>> #Buy $500 worth of Bitcoin
+>>> r.order_buy_crypto_by_price('BTC',500)
+>>> #Buy 5 $150 May 1st, 2020 SPY puts if the price per contract is $1.00. Good until cancelled.
 >>> r.order_buy_option_limit('open','debit',1.00,'SPY',5,'2020-05-01',150,'put','gtc')
->>> #Buy 5 $150 SPY puts with a strike of May 1st, 2020 if the price per contract is $1.00. Good until cancelled.
 
 Now let's try a slightly more complex example. Let's say you wanted to sell half your Tesla stock if it fell to 200.00.
 To do this you would type
