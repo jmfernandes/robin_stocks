@@ -50,7 +50,9 @@ Not all of the functions contained in the module need the user to be authenticat
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
 to log into Robinhood at the start of each script.
 
-There is the ability to buy and sell stocks, options, and crypto-currencies. For example, if you wanted to buy 10 shares
+There is the ability to buy and sell stocks, options, and crypto-currencies.
+There is also the ability to submit market orders, limit orders, and stop orders as long as
+Robinhood supports it. For example, if you wanted to buy 10 shares
 of Apple, you would type
 
 >>> r.order_buy_market('AAPL',10)
