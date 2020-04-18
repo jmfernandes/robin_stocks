@@ -326,7 +326,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
+        'price': helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0]),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -371,7 +371,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
         print(message)
         return None
 
-    stock_price = stocks.get_latest_price(symbol)[0]
+    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -425,7 +425,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
         print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
-    stock_price = stocks.get_latest_price(symbol)[0]
+    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
@@ -600,6 +600,69 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
 
     return(data)
 
+# @helper.login_required
+# def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+#     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
+#
+#     :returns: Dictionary that contains information regarding the purchase of stocks, \
+#     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+#     the price, and the quantity.
+#
+#     """
+#     try:
+#         symbol = symbol.upper().strip()
+#         trailAmount = float(trailAmount)
+#     except AttributeError as message:
+#         print(message)
+#         return None
+#
+#     stock_price = helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0])
+#     percentage = 0
+#
+#     print('stock price is ', stock_price)
+#
+#     try:
+#         if trailType == 'amount':
+#             stopPrice = stock_price + trailAmount
+#         else:
+#             stopPrice = stock_price + (stock_price * trailAmount * 0.01)
+#             percentage = trailAmount
+#     except Exception as e:
+#         print('ERROR: {}'.format(e))
+#         stopPrice = 0
+#
+#     stopPrice = helper.round_price(stopPrice)
+#     print('percentage is ', percentage)
+#     print('stop price is ', stopPrice)
+#
+#     payload = {
+#         'account': profiles.load_account_profile(info='url'),
+#         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
+#         'symbol': symbol,
+#         'price': stock_price,
+#         'quantity': quantity,
+#         'ref_id': str(uuid4()),
+#         'type': 'market',
+#         'stop_price': stopPrice,
+#         'time_in_force': timeInForce,
+#         'trigger': 'stop',
+#         'side': 'buy',
+#         'extended_hours': extendedHours
+#     }
+#
+#     if trailType == 'amount':
+#         payload['trailing_peg'] = {'type': 'price', 'price': {'amount': trailAmount, 'currency_code': 'USD'}}
+#     else:
+#         payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage) }
+#
+#     for item, key in payload.items():
+#         print(item, key)
+#
+#     url = urls.orders()
+#     data = helper.request_post(url, payload)
+#
+#     return(data)
+
 
 @helper.login_required
 def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
@@ -629,7 +692,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stocks.get_latest_price(symbol)[0]),
+        'price': helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0]),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -674,7 +737,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', exten
         print(message)
         return None
 
-    stock_price = stocks.get_latest_price(symbol)[0]
+    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
@@ -728,7 +791,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', e
         print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
-    stock_price = stocks.get_latest_price(symbol)[0]
+    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
@@ -836,7 +899,6 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': stopPrice,
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -944,7 +1006,7 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice
     if limitPrice:
         limitPrice = helper.round_price(limitPrice)
     else:
-        limitPrice = helper.round_price(stocks.get_latest_price(symbol)[0])
+        limitPrice = helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0])
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
