@@ -1201,6 +1201,129 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
 
 
 @helper.login_required
+def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+    :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
+    :type positionEffect: str
+    :param creditOrDebit: Either 'debit' or 'credit'.
+    :type creditOrDebit: str
+    :param limitPrice: The limit price to trigger a buy of the option.
+    :type limitPrice: float
+    :param stopPrice: The price to trigger the limit order.
+    :type stopPrice: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to buy.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the buying of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+
+    payload = {
+        'account': profiles.load_account_profile(info='url'),
+        'direction': creditOrDebit,
+        'time_in_force': timeInForce,
+        'legs': [
+            {'position_effect': positionEffect, 'side': 'buy',
+                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+        ],
+        'type': 'limit',
+        'trigger': 'stop',
+        'price': limitPrice,
+        'stop': stopPrice,
+        'quantity': quantity,
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'ref_id': str(uuid4()),
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url, payload, json=True)
+
+    return(data)
+
+
+def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+    """Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+    :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
+    :type positionEffect: str
+    :param creditOrDebit: Either 'debit' or 'credit'.
+    :type creditOrDebit: str
+    :param limitPrice: The limit price to trigger a buy of the option.
+    :type limitPrice: float
+    :param stopPrice: The price to trigger the limit order.
+    :type stopPrice: float
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of options to buy.
+    :type quantity: int
+    :param expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.
+    :type expirationDate: str
+    :param strike: The strike price of the option.
+    :type strike: float
+    :param optionType: This should be 'call' or 'put'
+    :type optionType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :returns: Dictionary that contains information regarding the buying of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message)
+        return None
+
+    optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
+
+    payload = {
+        'account': profiles.load_account_profile(info='url'),
+        'direction': creditOrDebit,
+        'time_in_force': timeInForce,
+        'legs': [
+            {'position_effect': positionEffect, 'side': 'sell',
+                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+        ],
+        'type': 'limit',
+        'trigger': 'stop',
+        'price': limitPrice,
+        'stop': stopPrice,
+        'quantity': quantity,
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'ref_id': str(uuid4()),
+    }
+
+    url = urls.option_orders()
+    data = helper.request_post(url, payload, json=True)
+
+    return(data)
+
+
+@helper.login_required
 def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
