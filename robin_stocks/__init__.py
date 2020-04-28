@@ -97,6 +97,8 @@ from .orders import get_all_stock_orders,           \
                     order_sell_limit,               \
                     order_sell_stop_loss,           \
                     order_sell_stop_limit,          \
+                    order_buy_option_stop_limit,    \
+                    order_sell_option_stop_limit,   \
                     order_buy_option_limit,         \
                     order_sell_option_limit,        \
                     order_option_spread,            \
