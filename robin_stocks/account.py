@@ -24,8 +24,8 @@ def get_all_positions(info=None):
 
 
 @helper.login_required
-def get_current_positions(info=None):
-    """Returns a list of stocks/options that are currently held.
+def get_open_stock_positions(info=None):
+    """Returns a list of stocks that are currently held.
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]

@@ -2,7 +2,7 @@ from .account import get_all_positions,             \
                      get_bank_account_info,         \
                      get_bank_transfers,            \
                      unlink_bank_account,           \
-                     get_current_positions,         \
+                     get_open_stock_positions,      \
                      get_dividends,                 \
                      get_total_dividends,           \
                      get_dividends_by_instrument,   \
