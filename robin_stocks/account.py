@@ -509,7 +509,7 @@ def build_holdings(with_dividends=False):
     percentage of portfolio, and average buy price.
 
     """
-    positions_data = get_current_positions()
+    positions_data = get_open_stock_positions()
     portfolios_data = profiles.load_portfolio_profile()
     accounts_data = profiles.load_account_profile()
 
