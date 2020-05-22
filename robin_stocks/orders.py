@@ -344,7 +344,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
 
 
 @helper.login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False):
+def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -394,7 +394,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
 
 
 @helper.login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
+def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -710,7 +710,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
 
 
 @helper.login_required
-def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False):
+def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -760,7 +760,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', exten
 
 
 @helper.login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
+def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -1029,7 +1029,7 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice
 
 
 @helper.login_required
-def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
+def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc'):
     """Submits a limit order for an option credit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -1055,7 +1055,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gfd
 
 
 @helper.login_required
-def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'):
+def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'):
     """Submits a limit order for an option credit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -1081,7 +1081,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gfd'
 
 
 @helper.login_required
-def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gfd'):
+def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc'):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
     :param direction: Can be "credit" or "debit".
@@ -1142,7 +1142,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
 
 @helper.login_required
-def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1201,7 +1201,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
 
 
 @helper.login_required
-def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1262,7 +1262,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     return(data)
 
 
-def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1324,7 +1324,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
 
 
 @helper.login_required
-def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gfd'):
+def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
