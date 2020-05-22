@@ -118,6 +118,17 @@ Keep in mind that RobinHood will sometimes return the data in a different format
 To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
 In most cases, you want to use 'pagination' to get all the results.
 
+Using Option Spreads
+====================
+When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position. 
+The "direction" has to reverse when you try to close a spread position.
+
+I.e.
+direction="credit"
+when
+"action":"sell","effect":"close"
+
+in the case of a long call or put spread.
 
 New Features In The Works
 =========================
