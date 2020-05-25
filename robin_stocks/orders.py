@@ -20,7 +20,7 @@ def get_all_stock_orders(info=None):
     """
     url = urls.orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -35,7 +35,7 @@ def get_all_option_orders(info=None):
     """
     url = urls.option_orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -50,7 +50,7 @@ def get_all_crypto_orders(info=None):
     """
     url = urls.crypto_orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -68,7 +68,7 @@ def get_all_open_stock_orders(info=None):
 
     data = [item for item in data if item['cancel'] is not None]
 
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -86,7 +86,7 @@ def get_all_open_option_orders(info=None):
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -104,7 +104,7 @@ def get_all_open_crypto_orders(info=None):
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(helper.filter(data, info))
+    return (helper.filter(data, info))
 
 
 @helper.login_required
@@ -118,7 +118,7 @@ def get_stock_order_info(orderID):
     """
     url = urls.orders(orderID)
     data = helper.request_get(url)
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -162,7 +162,7 @@ def find_stock_orders(**arguments):
     data = helper.request_get(url, 'pagination')
 
     if (len(arguments) == 0):
-        return(data)
+        return (data)
 
     for item in data:
         item['quantity'] = str(int(float(item['quantity'])))
@@ -175,19 +175,19 @@ def find_stock_orders(**arguments):
     if 'quantity' in arguments.keys():
         arguments['quantity'] = str(arguments['quantity'])
 
-    stop = len(arguments.keys())-1
+    stop = len(arguments.keys()) - 1
     list_of_orders = []
     for item in data:
         for i, (key, value) in enumerate(arguments.items()):
             if key not in item:
                 print(helper.error_argument_not_key_in_dictionary(key))
-                return([None])
+                return ([None])
             if value != item[key]:
                 break
             if i == stop:
                 list_of_orders.append(item)
 
-    return(list_of_orders)
+    return (list_of_orders)
 
 
 @helper.login_required
@@ -203,8 +203,8 @@ def cancel_stock_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
-    return(data)
+        print('Order ' + orderID + ' cancelled')
+    return (data)
 
 
 @helper.login_required
@@ -220,8 +220,8 @@ def cancel_option_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
-    return(data)
+        print('Order ' + orderID + ' cancelled')
+    return (data)
 
 
 @helper.login_required
@@ -237,8 +237,8 @@ def cancel_crypto_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
-    return(data)
+        print('Order ' + orderID + ' cancelled')
+    return (data)
 
 
 @helper.login_required
@@ -257,7 +257,7 @@ def cancel_all_stock_orders():
         helper.request_post(item['cancel'])
 
     print('All Stock Orders Cancelled')
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -276,7 +276,7 @@ def cancel_all_option_orders():
         helper.request_post(item['cancel_url'])
 
     print('All Option Orders Cancelled')
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -295,7 +295,7 @@ def cancel_all_crypto_orders():
         helper.request_post(item['cancel_url'])
 
     print('All Crypto Orders Cancelled')
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -340,7 +340,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -429,7 +429,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', ex
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
-            amountInDollars/float(stock_price))
+            amountInDollars / float(stock_price))
     except:
         fractional_shares = 0
 
@@ -499,7 +499,7 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHou
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -547,7 +547,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extended
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -598,7 +598,8 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
+
 
 # @helper.login_required
 # def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
@@ -706,7 +707,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -795,7 +796,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', e
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
-            amountInDollars/float(stock_price))
+            amountInDollars / float(stock_price))
     except:
         fractional_shares = 0
 
@@ -865,7 +866,7 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHo
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -912,7 +913,62 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
+
+
+@helper.login_required
+def order_sell_stop_percentage(symbol, quantity, trailValue, trailType='percentage', timeInForce='gtc',
+                             extendedHours=False):
+    """Submits a stop loss order based on the trailing amount/percentage
+    :param symbol: The stock ticker of the stock to purchase.
+    :type symbol: str
+    :param quantity: The number of stocks to sell.
+    :type quantity: int
+    :param trailValue: a certain percentage or dollar amount depending on the trailType.
+    :type trailValue: float
+    :param trailType: percentage/amount
+    :type trailType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
+    :return: Dictionary that contain information regarding the sell of the stock
+    """
+    try:
+        symbol = symbol.upper().strip()
+        trailValue = float(trailValue)
+    except AttributeError as message:
+        print(message)
+        return None
+
+    stock_price = helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0])
+    payload = {
+        'account': profiles.load_account_profile(info='url'),
+        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
+        'symbol': symbol,
+        'quantity': quantity,
+        'ref_id': str(uuid4()),
+        'type': 'market',
+        'stop_price': 0,
+        'time_in_force': timeInForce,
+        'trigger': 'stop',
+        'side': 'sell',
+        'extended_hours': extendedHours
+    }
+
+    if trailType == 'percentage':
+        payload['trailing_peg'] = {'type': 'percentage', 'percentage': trailValue}
+        stop_price = stock_price - (trailValue * 0.01 * stock_price)
+    else:
+        payload['trailing_peg'] = {'type': 'price', 'price': {'amount': trailValue, 'currency_code': 'USD'}}
+        stop_price = stock_price - trailValue
+
+    payload['stop_price'] = helper.round_price(stop_price)
+    url = urls.orders()
+    data = helper.request_post(url, payload)
+
+    return data
 
 
 @helper.login_required
@@ -963,11 +1019,12 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
-def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
+def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice=None, timeInForce='gtc',
+          extendedHours=False):
     """A generic order function. All parameters must be supplied.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -1025,7 +1082,7 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice
     url = urls.orders()
     data = helper.request_post(url, payload)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1138,11 +1195,12 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
-def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike,
+                           optionType='both', timeInForce='gtc'):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1183,7 +1241,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+             'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1197,11 +1255,12 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
-def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate,
+                                strike, optionType='both', timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1244,7 +1303,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+             'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1259,10 +1318,11 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
-def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate,
+                                 strike, optionType='both', timeInForce='gtc'):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1305,7 +1365,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+             'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1320,11 +1380,12 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
-def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike,
+                            optionType='both', timeInForce='gtc'):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
@@ -1365,7 +1426,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
+             'ratio_quantity': 1, 'option': urls.option_instruments(optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1379,7 +1440,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     url = urls.option_orders()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1412,7 +1473,7 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
         crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/price, 8)
+        shares = round(amountInDollars / price, 8)
     except:
         shares = 0
 
@@ -1431,7 +1492,7 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1477,7 +1538,7 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1508,7 +1569,8 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     crypto_info = crypto.get_crypto_info(symbol)
 
     if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+        print(
+            "WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
@@ -1524,7 +1586,7 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1557,7 +1619,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', t
         crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/float(price), 8)
+        shares = round(amountInDollars / float(price), 8)
     except:
         shares = 0
 
@@ -1575,7 +1637,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', t
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1621,7 +1683,7 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeI
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
 
 
 @helper.login_required
@@ -1652,7 +1714,8 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     crypto_info = crypto.get_crypto_info(symbol)
 
     if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+        print(
+            "WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
@@ -1668,4 +1731,4 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
 
-    return(data)
+    return (data)
