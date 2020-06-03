@@ -916,17 +916,17 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
 
 
 @helper.login_required
-def order_sell_stop_percentage(symbol, quantity, trailValue, trailType='percentage', timeInForce='gtc',
-                             extendedHours=False):
+def order_sell_stop_percentage(symbol, quantity, value, type='percentage', timeInForce='gtc',
+                               extendedHours=False):
     """Submits a stop loss order based on the trailing amount/percentage
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
     :param quantity: The number of stocks to sell.
     :type quantity: int
-    :param trailValue: a certain percentage or dollar amount depending on the trailType.
-    :type trailValue: float
-    :param trailType: percentage/amount
-    :type trailType: str
+    :param value: a certain percentage or dollar amount depending on the trailType.
+    :type value: float
+    :param type: percentage/amount
+    :type type: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
@@ -936,7 +936,7 @@ def order_sell_stop_percentage(symbol, quantity, trailValue, trailType='percenta
     """
     try:
         symbol = symbol.upper().strip()
-        trailValue = float(trailValue)
+        value = float(value)
     except AttributeError as message:
         print(message)
         return None
@@ -956,12 +956,10 @@ def order_sell_stop_percentage(symbol, quantity, trailValue, trailType='percenta
         'extended_hours': extendedHours
     }
 
-    if trailType == 'percentage':
-        payload['trailing_peg'] = {'type': 'percentage', 'percentage': trailValue}
-        stop_price = stock_price - (trailValue * 0.01 * stock_price)
+    if type == 'percentage':
+        stop_price = stock_price - (value * 0.01 * stock_price)
     else:
-        payload['trailing_peg'] = {'type': 'price', 'price': {'amount': trailValue, 'currency_code': 'USD'}}
-        stop_price = stock_price - trailValue
+        stop_price = stock_price - value
 
     payload['stop_price'] = helper.round_price(stop_price)
     url = urls.orders()
