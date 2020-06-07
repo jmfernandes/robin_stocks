@@ -143,41 +143,44 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
 
     data = helper.request_post(url, payload)
     # Handle case where mfa or challenge is required.
-    if 'mfa_required' in data:
-        mfa_token = input("Please type in the MFA code: ")
-        payload['mfa_code'] = mfa_token
-        res = helper.request_post(url, payload, jsonify_data=False)
-        while (res.status_code != 200):
-            mfa_token = input(
-                "That MFA code was not correct. Please type in another MFA code: ")
+    if data:
+        if 'mfa_required' in data:
+            mfa_token = input("Please type in the MFA code: ")
             payload['mfa_code'] = mfa_token
             res = helper.request_post(url, payload, jsonify_data=False)
-        data = res.json()
-    elif 'challenge' in data:
-        challenge_id = data['challenge']['id']
-        sms_code = input('Enter Robinhood code for validation: ')
-        res = respond_to_challenge(challenge_id, sms_code)
-        while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
-            sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(
-                res['challenge']['remaining_attempts']))
+            while (res.status_code != 200):
+                mfa_token = input(
+                    "That MFA code was not correct. Please type in another MFA code: ")
+                payload['mfa_code'] = mfa_token
+                res = helper.request_post(url, payload, jsonify_data=False)
+            data = res.json()
+        elif 'challenge' in data:
+            challenge_id = data['challenge']['id']
+            sms_code = input('Enter Robinhood code for validation: ')
             res = respond_to_challenge(challenge_id, sms_code)
-        helper.update_session(
-            'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
-        data = helper.request_post(url, payload)
-    # Update Session data with authorization or raise exception with the information present in data.
-    if 'access_token' in data:
-        token = '{0} {1}'.format(data['token_type'], data['access_token'])
-        helper.update_session('Authorization', token)
-        helper.set_login_state(True)
-        data['detail'] = "logged in with brand new authentication code."
-        if store_session:
-            with open(pickle_path, 'wb') as f:
-                pickle.dump({'token_type': data['token_type'],
-                             'access_token': data['access_token'],
-                             'refresh_token': data['refresh_token'],
-                             'device_token': device_token}, f)
+            while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
+                sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(
+                    res['challenge']['remaining_attempts']))
+                res = respond_to_challenge(challenge_id, sms_code)
+            helper.update_session(
+                'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
+            data = helper.request_post(url, payload)
+        # Update Session data with authorization or raise exception with the information present in data.
+        if 'access_token' in data:
+            token = '{0} {1}'.format(data['token_type'], data['access_token'])
+            helper.update_session('Authorization', token)
+            helper.set_login_state(True)
+            data['detail'] = "logged in with brand new authentication code."
+            if store_session:
+                with open(pickle_path, 'wb') as f:
+                    pickle.dump({'token_type': data['token_type'],
+                                 'access_token': data['access_token'],
+                                 'refresh_token': data['refresh_token'],
+                                 'device_token': device_token}, f)
+        else:
+            raise Exception(data['detail'])
     else:
-        raise Exception(data['detail'])
+        raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
 
