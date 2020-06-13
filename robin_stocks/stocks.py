@@ -12,21 +12,21 @@ def get_quotes(inputSymbols, info=None):
     :type info: Optional[str]
     :returns: If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
     Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.\n\
-    Dictionary contains the following keys:\n \
-        ask_price\n \
-        ask_size\n \
-        bid_price\n \
-        bid_size\n \
-        last_trade_price\n \
-        last_extended_hours_trade_price\n \
+    \t\tDictionary contains the following keys:\n\
+        \t\t\task_price\n\
+        \t\t\task_size\n\
+        \t\t\tbid_price\n\
+        bid_size\n\
+        last_trade_price\n\
+        last_extended_hours_trade_price\n\
         previous_close\n \
-        adjusted_previous_close\n \
+        adjusted_previous_close\n\
         previous_close_date\n \
-        symbol\n \
-        trading_halted\n \
-        has_traded\n \
-        last_trade_price_source\n \
-        \t updated_at \
+        symbol\n\
+        trading_halted\n\
+        has_traded\n\
+        last_trade_price_source\n\
+        \t updated_at\n\
         instrument\n \
     """
     symbols = helper.inputs_to_set(inputSymbols)
