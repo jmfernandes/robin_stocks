@@ -3,8 +3,8 @@ data.pickle
 .vscode/
 build/
 dist/
-tests/
 uploadnotes.txt
+config.ini
 .DS_Store
 *.egg-info/
 *.egg
@@ -14,3 +14,5 @@ __pycache__/
 *~
 
 .pypirc
+
+tests/test_app.py
