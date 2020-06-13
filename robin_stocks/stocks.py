@@ -11,8 +11,23 @@ def get_quotes(inputSymbols, info=None):
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
     :returns: If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
-    Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
-
+    Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info. \
+    Dictionary contains the following keys: \
+        ask_price \
+        ask_size \
+        bid_price \
+        bid_size \
+        last_trade_price \
+        last_extended_hours_trade_price \
+        previous_close \
+        adjusted_previous_close \
+        previous_close_date \
+        symbol \
+        trading_halted \
+        has_traded \
+        last_trade_price_source \
+        updated_at \
+        instrument \
     """
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.quotes()
