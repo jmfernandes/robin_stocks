@@ -1,4 +1,5 @@
 import configparser
+import os
 import unittest
 
 import requests
@@ -54,6 +55,8 @@ class TestStocks(unittest.TestCase):
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    ini_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..','config.ini'))
+    config.read(ini_path)
+    print(config.sections())
     r.login(config.get('authentication', 'email'), config.get('authentication', 'password'), store_session=True)
     unittest.main()
