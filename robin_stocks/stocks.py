@@ -16,10 +16,10 @@ def get_quotes(inputSymbols, info=None):
         \t\t\task_price\n\
         \t\t\task_size\n\
         \t\t\tbid_price\n\
-        bid_size\n\
-        last_trade_price\n\
-        last_extended_hours_trade_price\n\
-        previous_close\n \
+        | bid_size\n \
+        | last_trade_price\n \
+        | last_extended_hours_trade_price\n \
+        | previous_close \
         adjusted_previous_close\n\
         previous_close_date\n \
         symbol\n\
