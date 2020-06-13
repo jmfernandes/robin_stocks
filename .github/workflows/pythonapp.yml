@@ -30,4 +30,4 @@ jobs:
         robin_password: ${{ secrets.password }}
       run: |
         pip install pytest
-        pytest test_robin.py
+        pytest tests/test_github_actions.py
