@@ -210,10 +210,13 @@ def get_latest_price(inputSymbols, includeExtendedHours=True):
 
     prices = []
     for item in quote:
-        if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
-            prices.append(item['last_trade_price'])
+        if item:
+            if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
+                prices.append(item['last_trade_price'])
+            else:
+                prices.append(item['last_extended_hours_trade_price'])
         else:
-            prices.append(item['last_extended_hours_trade_price'])
+            prices.append(None)
     return(prices)
 
 
@@ -356,7 +359,7 @@ def get_events(symbol, info=None):
                       * chain_id
                       * created_at
                       * direction
-                      * equity_comonents
+                      * equity_components
                       * event_date
                       * id
                       * option
