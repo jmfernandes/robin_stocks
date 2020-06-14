@@ -404,6 +404,23 @@ class TestCrypto(unittest.TestCase):
         crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', '24_7', info=None)
         self.assertEqual(len(crypto['data_points']), 24)
 
+class TestAccounts(unittest.TestCase):
+
+    def setUp(self):
+        self.stock = 'AAPL'
+
+    def test_open_stock(self):
+        stock = r.get_open_stock_positions(info=None)
+        self.assertNotEqual(len(stock), 0)
+
+    def test_get_all_positionsself(self):
+        stock = r.get_all_positions(info=None)
+        self.assertNotEqual(len(stock), 0)
+
+    def test_dividends(self):
+        stock = r.get_dividends(info=None)
+        self.assertNotEqual(len(stock), 0)
+
 if __name__ == '__main__':
     config = configparser.ConfigParser()
     ini_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..','config.ini'))
