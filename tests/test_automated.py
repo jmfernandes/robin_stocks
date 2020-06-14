@@ -41,6 +41,10 @@ class TestProfiles(unittest.TestCase):
         self.assertEqual(profile['url'], "https://{}".format(self.user))
         self.assertEqual(profile['username'], self.username)
 
+    def test_crypto_profile(self):
+        profile = r.load_crypto_profile(info=None)
+        self.assertEqual(profile['apex_account_number'], self.account)
+
 
 class TestStocks(unittest.TestCase):
 
@@ -291,6 +295,114 @@ class TestStocks(unittest.TestCase):
         fake_split = r.get_splits(self.fake_stock)
         self.assertEqual(len(fake_split), 0)
 
+class TestCrypto(unittest.TestCase):
+
+    def setUp(self):
+        self.stock = 'AAPL'
+        self.bitcoin = 'BTC'
+        self.bitcoin_currency = 'BTC-USD'
+        self.bitcoin_symbol = 'BTCUSD'
+        self.fake = 'thisisafake'
+        self.account = config.get('account', 'crypto_account')
+
+
+    def test_crypto_positions(self):
+        positions = r.get_crypto_positions(info=None)
+        first = positions[0]
+        self.assertEqual(first['account_id'], self.account)
+        self.assertIn('account_id', first)
+        self.assertIn('cost_bases', first)
+        self.assertIn('created_at', first)
+        self.assertIn('currency', first)
+        self.assertIn('id', first)
+        self.assertIn('quantity', first)
+        self.assertIn('quantity_available', first)
+        self.assertIn('quantity_held_for_buy', first)
+        self.assertIn('quantity_held_for_sell', first)
+        self.assertIn('updated_at', first)
+
+    def test_get_crypto_currency_pairs(self):
+        pairs = r.get_crypto_currency_pairs(info=None)
+        btc = [x for x in pairs if x['symbol'] == self.bitcoin_currency ][0]
+        self.assertIn('asset_currency', btc)
+        self.assertIn('display_only', btc)
+        self.assertIn('id', btc)
+        self.assertIn('max_order_size', btc)
+        self.assertIn('min_order_size', btc)
+        self.assertIn('min_order_price_increment', btc)
+        self.assertIn('min_order_quantity_increment', btc)
+        self.assertIn('name', btc)
+        self.assertIn('quote_currency', btc)
+        self.assertIn('symbol', btc)
+        self.assertIn('tradability', btc)
+        fake = [x for x in pairs if x['symbol'] == self.fake]
+        self.assertEqual(len(fake), 0)
+
+    def test_crypto_info(self):
+        crypto = r.get_crypto_info(self.bitcoin, info=None)
+        self.assertIn('asset_currency', crypto)
+        self.assertIn('display_only', crypto)
+        self.assertIn('id', crypto)
+        self.assertIn('max_order_size', crypto)
+        self.assertIn('min_order_size', crypto)
+        self.assertIn('min_order_price_increment', crypto)
+        self.assertIn('min_order_quantity_increment', crypto)
+        self.assertIn('name', crypto)
+        self.assertIn('quote_currency', crypto)
+        self.assertIn('symbol', crypto)
+        self.assertIn('tradability', crypto)
+        crypto = r.get_crypto_info(self.stock, info=None)
+        self.assertEqual(crypto, None)
+
+    def test_crypto_quote(self):
+        crypto = r.get_crypto_quote(self.bitcoin, info=None)
+        self.assertIn('ask_price', crypto)
+        self.assertIn('bid_price', crypto)
+        self.assertIn('mark_price', crypto)
+        self.assertIn('high_price', crypto)
+        self.assertIn('low_price', crypto)
+        self.assertIn('open_price', crypto)
+        self.assertIn('symbol', crypto)
+        self.assertIn('id', crypto)
+        self.assertIn('volume', crypto)
+        crypto = r.get_crypto_quote(self.stock, info=None)
+        self.assertEqual(crypto, None)
+        crypto = r.get_crypto_quote(self.fake, info=None)
+        self.assertEqual(crypto, None)
+
+    def test_crypto_historical(self):
+        crypto = r.get_crypto_historical(self.bitcoin, 'day', 'week', '24_7', info=None)
+        self.assertEqual(len(crypto['data_points']), 7)
+        first_point = crypto['data_points'][0]
+        # check data points
+        self.assertIn('begins_at', first_point)
+        self.assertIn('open_price', first_point)
+        self.assertIn('close_price', first_point)
+        self.assertIn('high_price', first_point)
+        self.assertIn('low_price', first_point)
+        self.assertIn('volume', first_point)
+        self.assertIn('session', first_point)
+        self.assertIn('interpolated', first_point)
+        # check historical keys
+        self.assertIn('data_points', crypto)
+        self.assertIn('bounds', crypto)
+        self.assertIn('interval', crypto)
+        self.assertIn('span', crypto)
+        self.assertIn('symbol', crypto)
+        self.assertIn('id', crypto)
+        self.assertIn('open_price', crypto)
+        self.assertIn('open_time', crypto)
+        self.assertIn('previous_close_price', crypto)
+        self.assertIn('previous_close_time', crypto)
+        #
+        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'trading', info=None)
+        self.assertEqual(len(crypto['data_points']), 9)
+        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'regular', info=None)
+        self.assertEqual(len(crypto['data_points']), 6)
+        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'extended', info=None)
+        self.assertEqual(len(crypto['data_points']), 16)
+        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', '24_7', info=None)
+        self.assertEqual(len(crypto['data_points']), 24)
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
