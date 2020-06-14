@@ -527,7 +527,7 @@ def find_instrument_data(query):
         return(data)
 
 
-def get_historicals(inputSymbols, span='week', bounds='regular'):
+def get_historicals(inputSymbols, span='week', bounds='regular', interval=None):
     """Represents the data that is used to make the graphs.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -535,6 +535,9 @@ def get_historicals(inputSymbols, span='week', bounds='regular'):
     :param span: Sets the range of the data to be either 'day', 'week', 'month', '3month', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
     :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
+    :type bounds: Optional[str]
+    :param interval: Interval to retrieve data for. Values are '5minute', '10minute', 'hour', 'day', 'week'. If not set default value \
+    is set based on the specified span
     :type bounds: Optional[str]
     :returns: [list] Returns a list of dictionaries where each dictionary is for a different time. If multiple stocks are provided \
     the historical data is listed one after another.
@@ -561,18 +564,19 @@ def get_historicals(inputSymbols, span='week', bounds='regular'):
         print('ERROR: extended and trading bounds can only be used with a span of "day"')
         return([None])
 
-    if span == 'day':
-        interval = '5minute'
-    elif span == 'week':
-        interval = '10minute'
-    elif span == 'month':
-        interval = 'hour'
-    elif span == '3month':
-        interval = 'hour'
-    elif span == 'year':
-        interval = 'day'
-    else:
-        interval = 'week'
+    if interval == None:
+        if span == 'day':
+            interval = '5minute'
+        elif span == 'week':
+            interval = '10minute'
+        elif span == 'month':
+            interval = 'hour'
+        elif span == '3month':
+            interval = 'hour'
+        elif span == 'year':
+            interval = 'day'
+        else:
+            interval = 'week'
 
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.historicals()
