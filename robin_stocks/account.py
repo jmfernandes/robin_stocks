@@ -13,8 +13,25 @@ def get_all_positions(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, \
+    :returns: [list] Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * url
+                      * instrument
+                      * account
+                      * account_number
+                      * average_buy_price
+                      * pending_average_buy_price
+                      * quantity
+                      * intraday_average_buy_price
+                      * intraday_quantity
+                      * shares_held_for_buys
+                      * shares_held_for_sells
+                      * shares_held_for_stock_grants
+                      * shares_held_for_options_collateral
+                      * shares_held_for_options_events
+                      * shares_pending_from_options_events
+                      * updated_at
+                      * created_at
 
     """
     url = urls.positions()
@@ -29,8 +46,25 @@ def get_open_stock_positions(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, \
+    :returns: [list] Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * url
+                      * instrument
+                      * account
+                      * account_number
+                      * average_buy_price
+                      * pending_average_buy_price
+                      * quantity
+                      * intraday_average_buy_price
+                      * intraday_quantity
+                      * shares_held_for_buys
+                      * shares_held_for_sells
+                      * shares_held_for_stock_grants
+                      * shares_held_for_options_collateral
+                      * shares_held_for_options_events
+                      * shares_pending_from_options_events
+                      * updated_at
+                      * created_at
 
     """
     url = urls.positions()
@@ -47,8 +81,22 @@ def get_dividends(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for each divident payment. If info parameter is provided, \
+    :returns: [list] Returns a list of dictionaries of key/value pairs for each divident payment. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * id
+                      * url
+                      * account
+                      * instrument
+                      * amount
+                      * rate
+                      * position
+                      * withholding
+                      * record_date
+                      * payable_date
+                      * paid_at
+                      * state
+                      * nra_withholding
+                      * drip_enabled
 
     """
     url = urls.dividends()

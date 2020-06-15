@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.7    
+    - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
         python-version: 3.7
@@ -30,4 +30,4 @@ jobs:
         robin_password: ${{ secrets.password }}
       run: |
         pip install pytest
-        pytest
+        pytest tests/test_github_actions.py
