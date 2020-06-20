@@ -35,7 +35,7 @@ from .crypto import load_crypto_profile,        \
                     get_crypto_quote,           \
                     get_crypto_quote_from_id,   \
                     get_crypto_positions,       \
-                    get_crypto_historical
+                    get_crypto_historicals
 
 from .export import export_completed_stock_orders, \
                     export_completed_option_orders
@@ -133,7 +133,7 @@ from .stocks import get_quotes,                 \
                     get_news,                   \
                     get_splits,                 \
                     find_instrument_data,       \
-                    get_historicals,            \
+                    get_stock_historicals,      \
                     get_pricebook_by_id,        \
                     get_pricebook_by_symbol,    \
                     get_stock_quote_by_id,      \

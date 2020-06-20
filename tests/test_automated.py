@@ -371,10 +371,10 @@ class TestCrypto(unittest.TestCase):
         self.assertEqual(crypto, None)
 
     def test_crypto_historical(self):
-        crypto = r.get_crypto_historical(self.bitcoin, 'day', 'week', '24_7', info=None)
-        self.assertEqual(len(crypto['data_points']), 7)
-        first_point = crypto['data_points'][0]
-        # check data points
+        crypto = r.get_crypto_historicals(self.bitcoin, 'day', 'week', '24_7', info=None)
+        self.assertEqual(len(crypto), 7)
+        first_point = crypto[0]
+        # check keys
         self.assertIn('begins_at', first_point)
         self.assertIn('open_price', first_point)
         self.assertIn('close_price', first_point)
@@ -383,26 +383,15 @@ class TestCrypto(unittest.TestCase):
         self.assertIn('volume', first_point)
         self.assertIn('session', first_point)
         self.assertIn('interpolated', first_point)
-        # check historical keys
-        self.assertIn('data_points', crypto)
-        self.assertIn('bounds', crypto)
-        self.assertIn('interval', crypto)
-        self.assertIn('span', crypto)
-        self.assertIn('symbol', crypto)
-        self.assertIn('id', crypto)
-        self.assertIn('open_price', crypto)
-        self.assertIn('open_time', crypto)
-        self.assertIn('previous_close_price', crypto)
-        self.assertIn('previous_close_time', crypto)
         #
-        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'trading', info=None)
-        self.assertEqual(len(crypto['data_points']), 9)
-        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'regular', info=None)
-        self.assertEqual(len(crypto['data_points']), 6)
-        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', 'extended', info=None)
-        self.assertEqual(len(crypto['data_points']), 16)
-        crypto = r.get_crypto_historical(self.bitcoin, 'hour', 'day', '24_7', info=None)
-        self.assertEqual(len(crypto['data_points']), 24)
+        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'trading', info=None)
+        self.assertEqual(len(crypto), 9)
+        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'regular', info=None)
+        self.assertEqual(len(crypto), 6)
+        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'extended', info=None)
+        self.assertEqual(len(crypto), 16)
+        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', '24_7', info=None)
+        self.assertEqual(len(crypto), 24)
 
 class TestAccounts(unittest.TestCase):
 

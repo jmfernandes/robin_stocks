@@ -110,7 +110,7 @@ def id_for_group(symbol):
     return(data['underlying_instruments'][0]['id'])
 
 
-def id_for_option(symbol, expirationDate, strike, optionType='both'):
+def id_for_option(symbol, expirationDate, strike, optionType):
     """Returns the id associated with a specific option order.
 
     :param symbol: The symbol to get the id for.
@@ -125,15 +125,18 @@ def id_for_option(symbol, expirationDate, strike, optionType='both'):
 
     """
     symbol = symbol.upper()
-    payload = {'chain_id': id_for_chain(symbol),
-               'state': 'active',
-               'tradability': 'tradable',
-               'type': optionType}
+
+    payload = {
+        'chain_symbol': symbol,
+        'expiration_date': expirationDate,
+        'strike_price': strike,
+        'type': optionType,
+        'state': 'active'
+    }
     url = 'https://api.robinhood.com/options/instruments/'
     data = request_get(url, 'pagination', payload)
 
-    listOfOptions = [item for item in data if item["expiration_date"] ==
-                     expirationDate and float(item["strike_price"]) == float(strike)]
+    listOfOptions = [item for item in data if item["expiration_date"] == expirationDate]
     if (len(listOfOptions) == 0):
         print('Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.')
         return(None)
