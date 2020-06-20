@@ -530,18 +530,19 @@ def find_instrument_data(query):
         return(data)
 
 
-def get_historicals(inputSymbols, span='week', bounds='regular', interval=None):
-    """Represents the data that is used to make the graphs.
+def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='regular', info=None):
+    """Represents the historicl data for a stock.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
+    :param interval: Interval to retrieve data for. Values are '5minute', '10minute', 'hour', 'day', 'week'. Default is 'hour'.
+    :type interval: Optional[str]
     :param span: Sets the range of the data to be either 'day', 'week', 'month', '3month', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
-    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'.
+    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'. Default is 'regular'
     :type bounds: Optional[str]
-    :param interval: Interval to retrieve data for. Values are '5minute', '10minute', 'hour', 'day', 'week'. If not set default value \
-    is set based on the specified span
-    :type bounds: Optional[str]
+    :param info: Will filter the results to have a list of the values that correspond to key that matches info.
+    :type info: Optional[str]
     :returns: [list] Returns a list of dictionaries where each dictionary is for a different time. If multiple stocks are provided \
     the historical data is listed one after another.
     :Dictionary Keys: * begins_at
@@ -555,8 +556,14 @@ def get_historicals(inputSymbols, span='week', bounds='regular', interval=None):
                       * symbol
 
     """
+    interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'month', '3month', 'year', '5year']
     bounds_check = ['extended', 'regular', 'trading']
+
+    if interval not in interval_check:
+        print(
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+        return([None])
     if span not in span_check:
         print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
         return([None])
@@ -566,20 +573,6 @@ def get_historicals(inputSymbols, span='week', bounds='regular', interval=None):
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
         print('ERROR: extended and trading bounds can only be used with a span of "day"')
         return([None])
-
-    if interval == None:
-        if span == 'day':
-            interval = '5minute'
-        elif span == 'week':
-            interval = '10minute'
-        elif span == 'month':
-            interval = 'hour'
-        elif span == '3month':
-            interval = 'hour'
-        elif span == 'year':
-            interval = 'day'
-        else:
-            interval = 'week'
 
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.historicals()
@@ -602,7 +595,7 @@ def get_historicals(inputSymbols, span='week', bounds='regular', interval=None):
             subitem['symbol'] = stockSymbol
             histData.append(subitem)
 
-    return(histData)
+    return(helper.filter(histData, info))
 
 
 def get_stock_quote_by_id(stock_id, info=None):

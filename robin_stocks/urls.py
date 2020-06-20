@@ -234,8 +234,8 @@ def crypto_holdings():
     return('https://nummus.robinhood.com/holdings/')
 
 
-def crypto_historical(id, interval, span, bound):
-    return('https://api.robinhood.com/marketdata/forex/historicals/{}/?interval={}&span={}&bounds={}'.format(id, interval, span, bound))
+def crypto_historical(id):
+    return('https://api.robinhood.com/marketdata/forex/historicals/{0}/'.format(id))
 
 
 def crypto_orders(orderID=None):

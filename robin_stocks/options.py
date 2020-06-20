@@ -478,7 +478,7 @@ def get_option_instrument_data(symbol, expirationDate, strike, optionType, info=
     return(helper.filter(data, info))
 
 
-def get_option_historicals(symbol, expirationDate, strike, optionType, span='week'):
+def get_option_historicals(symbol, expirationDate, strike, optionType, interval='hour', span='week', bounds='regular', info=None):
     """Returns the data that is used to make the graphs.
 
     :param symbol: The ticker of the stock.
@@ -489,8 +489,15 @@ def get_option_historicals(symbol, expirationDate, strike, optionType, span='wee
     :type strike: str
     :param optionType: Can be either 'call' or 'put'.
     :type optionType: str
+    :param interval: Interval to retrieve data for. Values are '5minute', '10minute', 'hour', 'day', 'week'. Default is 'hour'.
+    :type interval: Optional[str]
     :param span: Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
+    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'regular', 'trading', and 'extended'. \
+    regular hours are 6 hours long, trading hours are 9 hours long, and extended hours are 16 hours long. Default is 'regular'
+    :type bounds: Optional[str]
+    :param info: Will filter the results to have a list of the values that correspond to key that matches info.
+    :type info: Optional[str]
     :returns: Returns a list that contains a list for each symbol. \
     Each list contains a dictionary where each dictionary is for a different time.
 
@@ -502,25 +509,33 @@ def get_option_historicals(symbol, expirationDate, strike, optionType, span='wee
         print(message)
         return [None]
 
+    interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'year', '5year']
+    bounds_check = ['extended', 'regular', 'trading']
+    if interval not in interval_check:
+        print(
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+        return([None])
     if span not in span_check:
         print('ERROR: Span must be "day", "week", "year", or "5year"')
         return([None])
-
-    if span == 'day':
-        interval = '5minute'
-    elif span == 'week':
-        interval = '10minute'
-    elif span == 'year':
-        interval = 'day'
-    else:
-        interval = 'week'
+    if bounds not in bounds_check:
+        print('ERROR: Bounds must be "extended","regular",or "trading"')
+        return([None])
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
 
     url = urls.option_historicals(optionID)
     payload = {'span': span,
-               'interval': interval}
+               'interval': interval,
+               'bounds': bounds}
     data = helper.request_get(url, 'regular', payload)
+    if (data == None or data == [None]):
+        return data
 
-    return(data)
+    histData = []
+    for subitem in data['data_points']:
+        subitem['symbol'] = symbol
+        histData.append(subitem)
+
+    return(helper.filter(histData, info))
