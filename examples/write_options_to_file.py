@@ -16,9 +16,9 @@ password = ''
 login = r.login(username,password)
 
 #!!! fill out the specific option information
-strike = 150.0
-date = "2019-06-21"
-stock = "V"
+strike = 300
+date = "2020-07-02"
+stock = "AAPL"
 optionType = "call" #or "put"
 #!!!
 
@@ -33,7 +33,7 @@ writeType = "w" #or enter "a" to have it continuously append every time script i
 os.chdir(os.path.dirname(__file__))
 path = os.getcwd()
 filename = os.path.join(path,fileName)
-fileStream = open(filename,mode=writeType)
+fileStream = open(filename, mode=writeType)
 
 while t.time() < endTime:
     time = str(datetime.datetime.now())
@@ -42,14 +42,14 @@ while t.time() < endTime:
     fileStream.write(time)
     print(time)
     #Get the data
-    instrument_Data = r.get_option_instrument_data(stock,date,strike,optionType)
-    market_Data = r.get_option_market_data(stock,date,strike,optionType)
+    instrument_data = r.get_option_instrument_data(stock,date,strike,optionType)
+    market_data = r.get_option_market_data(stock,date,strike,optionType)
 
     fileStream.write("\n")
     fileStream.write("{} Instrument Data {}".format("="*30,"="*30))
     print("{} Instrument Data {}".format("="*30,"="*30))
-    #Instrument_Data is a dictionary, and the key/value pairs can be accessed with .items()
-    for key, value in instrument_Data.items():
+    # instrument_data is a dictionary, and the key/value pairs can be accessed with .items()
+    for key, value in instrument_data.items():
         fileStream.write("\n")
         fileStream.write("key: {:<25} value: {}".format(key,value))
         print("key: {:<25} value: {}".format(key,value))
@@ -58,12 +58,12 @@ while t.time() < endTime:
     fileStream.write("{} Market Data {}".format("="*30,"="*30))
     print("{} Market Data {}".format("="*30,"="*30))
 
-    for key, value in market_Data.items():
+    for key, value in market_data[0].items():
         fileStream.write("\n")
         fileStream.write("key: {:<25} value: {}".format(key,value))
         print("key: {:<25} value: {}".format(key,value))
 
     t.sleep(PrintInterval)
 
-#make sure to close the file stream when you are done with it.
+# make sure to close the file stream when you are done with it.
 fileStream.close()
