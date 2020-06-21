@@ -92,7 +92,7 @@ If you want to cancel all your limit sells, you would type
 
 If you want to view all the call options for a list of stocks you could type
 
->>> optionData = r.find_options_for_list_of_stocks_by_expiration_date(['fb','aapl','tsla','nflx'],
+>>> optionData = r.find_options_by_expiration(['fb','aapl','tsla','nflx'],
 >>>              expirationDate='2018-11-16',optionType='call')
 >>> for item in optionData:
 >>>     print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
