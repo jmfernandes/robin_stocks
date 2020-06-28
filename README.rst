@@ -50,6 +50,9 @@ Not all of the functions contained in the module need the user to be authenticat
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
 to log into Robinhood at the start of each script.
 
+Placing Orders
+--------------
+
 There is the ability to buy and sell stocks, options, and crypto-currencies.
 There is also the ability to submit market orders, limit orders, and stop orders as long as
 Robinhood supports it. Here is a list of possible trades you can make
@@ -76,6 +79,9 @@ To do this you would type
 >>> sellQuantity = float(TSLAData['quantity'])//2.0
 >>> r.order_sell_limit('TSLA',sellQuantity,200.00)
 
+Viewing Orders
+--------------
+
 You can also view all orders you have made. This includes filled orders, cancelled orders, and open orders.
 Stocks, options, and cryptocurrencies are separated into three different locations.
 For example, let's say that you have some limit orders to buy and sell Bitcoin and those orders have yet to be filled.
@@ -97,6 +103,9 @@ If you want to view all the call options for a list of stocks you could type
 >>> for item in optionData:
 >>>     print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
 >>>           item['chain_symbol'],' delta - ',item['delta'],' theta - ',item['theta'])
+
+Retrieving/Sending Data Directly to API
+---------------------------------------
 
 There is a lot more that you can do with this API. Be sure to check out the examples folder to
 see even more examples. This folder will get updated periodically to demonstrate new functionality
