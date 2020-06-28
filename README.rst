@@ -118,9 +118,20 @@ Keep in mind that RobinHood will sometimes return the data in a different format
 To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
 In most cases, you want to use 'pagination' to get all the results.
 
+Saving to CSV File
+------------------
+Users can also export a list of all orders to a CSV file. There is a function for stocks and options. Each function
+takes a directory path and an optional filename. If no filename is provided, a date stamped filename will be generated. The directory path
+can be either absolute or relative. To save the file in the current directory, simply pass in "." as the directory. Note that ".csv" is the only valid
+file extension. If it is missing it will be added, and any other file extension will be automatically changed. Below are example calls.
+
+>>> # let's say that I am running code from C:/Users/josh/documents/
+>>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
+>>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
+
 Using Option Spreads
 ====================
-When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position. 
+When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position.
 The "direction" has to reverse when you try to close a spread position.
 
 I.e.

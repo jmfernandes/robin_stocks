@@ -1,6 +1,7 @@
 import configparser
 import os
 import unittest
+import datetime
 
 import requests
 import robin_stocks as r
@@ -295,6 +296,45 @@ class TestStocks(unittest.TestCase):
         fake_split = r.get_splits(self.fake_stock)
         self.assertEqual(len(fake_split), 0)
 
+class TestOptions(unittest.TestCase):
+
+    def setUp(self):
+        now = datetime.datetime.now()
+        self.expiration_date = third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
+        self.strike = 300
+        self.symbol = 'AAPL'
+
+    def test_find_tradable_options(self):
+        info = r.find_options_by_expiration(self.symbol, self.expiration_date)
+        first = info[0]
+        self.assertEqual(first['expiration_date'], self.expiration_date)
+        self.assertGreater(len(info), 100)
+        info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='strike_price')
+        first = info[0]
+        self.assertEqual(type(first), str)
+        self.assertGreater(len(info), 100)
+        info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='expiration_date')
+        self.assertEqual(len(set(info)), 1)
+
+    def test_find_options_by_strike(self):
+        info = r.find_options_by_strike(self.symbol, self.strike)
+        self.assertGreater(len(info), 30)
+        info = r.find_options_by_strike(self.symbol, self.strike,'call')
+        self.assertEqual(info[0]['type'], 'call')
+        info = r.find_options_by_strike(self.symbol, self.strike, info='expiration_date')
+        self.assertGreater(len(set(info)), 1)
+        info = r.find_options_by_strike(self.symbol, self.strike, info='strike_price')
+        self.assertEqual(len(set(info)), 1)
+
+    def test_find_options_by_expiration_and_strike(self):
+        info = r.find_options_by_expiration_and_strike(self.symbol, self.expiration_date, self.strike)
+        self.assertEqual(len(info), 2)
+        self.assertEqual(info[0]['expiration_date'], self.expiration_date)
+        self.assertEqual(float(info[0]['strike_price']), self.strike)
+        info = r.find_options_by_expiration_and_strike(self.symbol, self.expiration_date, self.strike, 'call')
+        self.assertEqual(len(info), 1)
+        self.assertEqual(info[0]['type'], 'call')
+
 class TestCrypto(unittest.TestCase):
 
     def setUp(self):
@@ -409,6 +449,28 @@ class TestAccounts(unittest.TestCase):
     def test_dividends(self):
         stock = r.get_dividends(info=None)
         self.assertNotEqual(len(stock), 0)
+
+def third_friday(year, month, day):
+    """Return datetime.date for monthly option expiration given year and
+    month
+    """
+    # The 15th is the lowest third day in the month
+    third = datetime.date(year, month, 15)
+    # What day of the week is the 15th?
+    w = third.weekday()
+    # Friday is weekday 4
+    if w != 4:
+        # Replace just the day (of month)
+        third = third.replace(day=(15 + (4 - w) % 7))
+
+    if day > third.day:
+        month += 1
+        third = datetime.date(year, month, 15)
+        w = third.weekday()
+        if w != 4:
+            third = third.replace(day=(15 + (4 - w) % 7))
+
+    return third
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
