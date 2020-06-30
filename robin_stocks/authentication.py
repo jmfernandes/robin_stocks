@@ -6,6 +6,9 @@ import random
 
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
+import pyotp
+
+
 
 
 def generate_device_token():
@@ -51,7 +54,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(helper.request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True):
+def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, qr_code =None):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -145,7 +148,9 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     # Handle case where mfa or challenge is required.
     if data:
         if 'mfa_required' in data:
-            mfa_token = input("Please type in the MFA code: ")
+            #mfa_token = input("Please type in the MFA code: ")
+            totp = pyotp.TOTP(qr_code)
+            mfa=totp.now()
             payload['mfa_code'] = mfa_token
             res = helper.request_post(url, payload, jsonify_data=False)
             while (res.status_code != 200):
