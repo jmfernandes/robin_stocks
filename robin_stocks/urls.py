@@ -151,6 +151,9 @@ def watchlists(name=None, add=False):
     else:
         return('https://api.robinhood.com/midlands/lists/default/')
 
+def watchlist_delete(name, instrument):
+    return('https://api.robinhood.com/watchlists/{}/{}/'.format(name,instrument))
+
 # markets
 
 

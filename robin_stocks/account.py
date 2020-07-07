@@ -535,21 +535,12 @@ def delete_symbols_from_watchlist(inputSymbols, name='Default'):
 
     """
     symbols = helper.inputs_to_set(inputSymbols)
-    symbols = stocks.get_fundamentals(symbols, info='instrument')
+    ids = stocks.get_instruments_by_symbols(symbols, info='id')
+    data = []
 
-    watchlist = get_watchlist_by_name(name=name)
-
-    items = []
-    data = None
-
-    for symbol in symbols:
-        for list_ in watchlist:
-            if symbol == list_['instrument']:
-                items.append(symbol[37:])
-
-    for item in items:
-        url = urls.watchlists() + name + item
-        data = helper.request_delete(url)
+    for id in ids:
+        url = urls.watchlist_delete(name, id)
+        data.append(helper.request_delete(url))
 
     return(data)
 
