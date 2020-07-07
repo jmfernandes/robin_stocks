@@ -368,10 +368,11 @@ def request_delete(url):
     try:
         res = SESSION.delete(url)
         res.raise_for_status()
+        data = res
     except Exception as message:
         data = None
         print("Error in request_delete: {0}".format(message))
-
+        
     return(data)
 
 

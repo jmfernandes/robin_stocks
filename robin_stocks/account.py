@@ -474,7 +474,7 @@ def get_all_watchlists(info=None):
 
     """
     url = urls.watchlists()
-    data = helper.request_get(url, 'pagination')
+    data = helper.request_get(url, 'result')
     return(helper.filter(data, info))
 
 
@@ -489,8 +489,16 @@ def get_watchlist_by_name(name='Default', info=None):
     :returns: Returns a list of dictionaries that contain the instrument urls and a url that references itself.
 
     """
+
+    #Get id of requested watchlist
+    all_watchlists = get_all_watchlists()
+    watchlist_id = ''
+    for wl in all_watchlists['results']:
+        if wl['display_name'] == name:
+            watchlist_id = wl['id']
+
     url = urls.watchlists(name)
-    data = helper.request_get(url, 'pagination')
+    data = helper.request_get(url,'list_id',{'list_id':watchlist_id})
     return(helper.filter(data, info))
 
 
@@ -527,21 +535,12 @@ def delete_symbols_from_watchlist(inputSymbols, name='Default'):
 
     """
     symbols = helper.inputs_to_set(inputSymbols)
-    symbols = stocks.get_fundamentals(symbols, info='instrument')
+    ids = stocks.get_instruments_by_symbols(symbols, info='id')
+    data = []
 
-    watchlist = get_watchlist_by_name(name=name)
-
-    items = []
-    data = None
-
-    for symbol in symbols:
-        for list_ in watchlist:
-            if symbol == list_['instrument']:
-                items.append(symbol[37:])
-
-    for item in items:
-        url = urls.watchlists() + name + item
-        data = helper.request_delete(url)
+    for id in ids:
+        url = urls.watchlist_delete(name, id)
+        data.append(helper.request_delete(url))
 
     return(data)
 
