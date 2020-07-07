@@ -1056,7 +1056,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
 
 @helper.login_required
 def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'):
-    """Submits a limit order for an option credit spread.
+    """Submits a limit order for an option debit spread.
 
     :param price: The limit price to trigger a sell of the option.
     :type price: float
