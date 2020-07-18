@@ -1,4 +1,5 @@
-from .account import get_all_positions,             \
+from .account import get_historical_portfolio,      \
+                     get_all_positions,             \
                      get_bank_account_info,         \
                      get_bank_transfers,            \
                      unlink_bank_account,           \

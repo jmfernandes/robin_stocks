@@ -8,6 +8,40 @@ import robin_stocks.urls as urls
 
 
 @helper.login_required
+def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
+    interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
+    span_check = ['day', 'week', 'month', '3month', 'year', '5year', 'all']
+    bounds_check = ['extended', 'regular', 'trading']
+
+    if interval not in interval_check:
+        if interval is None and (bounds != 'regular' and span != 'all'):
+            print ('ERROR: Interval must be None for "all" span "regular" bounds')
+            return ([None])
+        print(
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+        return([None])
+    if span not in span_check:
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
+        return([None])
+    if bounds not in bounds_check:
+        print('ERROR: Bounds must be "extended","regular",or "trading"')
+        return([None])
+    if (bounds == 'extended' or bounds == 'trading') and span != 'day':
+        print('ERROR: extended and trading bounds can only be used with a span of "day"')
+        return([None])
+
+    account = profiles.load_account_profile('account_number')
+    url = urls.portfolis_historicals(account)
+    payload = {
+        'interval': interval,
+        'span': span,
+        'bounds': bounds
+    }
+    data = helper.request_get(url, 'regular', payload)
+
+    return(helper.filter(data, info))
+
+@helper.login_required
 def get_all_positions(info=None):
     """Returns a list containing every position ever traded.
 

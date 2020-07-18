@@ -37,6 +37,9 @@ def security_profile():
 def user_profile():
     return('https://api.robinhood.com/user/')
 
+def portfolis_historicals(account_number):
+    return('https://api.robinhood.com/portfolios/historicals/{0}/'.format(account_number))
+
 # Stocks
 
 
