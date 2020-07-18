@@ -43,8 +43,25 @@ Example Usage
 When you write a new python script, you'll have to load the module and login to Robinhood. This is
 accomplished by typing
 
+### Basic
+
 >>> import robin_stocks as r
 >>> login = r.login('joshsmith@email.com','password')
+
+You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
+
+### With MFA entered programmatically from Time-based One-Time Password (TOPT)
+
+Install pyotp
+
+>>> pip install pyotp
+
+Login
+
+>>> import pyotp
+>>> import robin_stocks as r
+>>> totp = pyotp.TOTP("JBSWY3DPEHPK3PXP").now()
+>>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
 
 Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice

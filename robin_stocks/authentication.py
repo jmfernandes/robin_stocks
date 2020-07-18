@@ -51,7 +51,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(helper.request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True):
+def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None):
     """This function will effectivly log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -72,6 +72,8 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     :param store_session: Specifies whether to save the log in authorization
         for future log ins.
     :type store_session: Optional[boolean]
+    :param mfa_code: MFA token if enabled.
+    :type mfa_code: Optional[str]
     :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
     contains information on whether the access token was generated or loaded from pickle file.
 
@@ -100,6 +102,10 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         'challenge_type': challenge_type,
         'device_token': device_token
     }
+
+    if mfa_code:
+        payload['mfa_code'] = mfa_code
+
     # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
     if os.path.isfile(pickle_path):
         # If store_session has been set to false then delete the pickle file, otherwise try to load it.
@@ -133,10 +139,12 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                 helper.update_session('Authorization', None)
         else:
             os.remove(pickle_path)
-    # Try to log in normally.
+
+    # Try to log in normOally.
     if not username:
         username = input("Robinhood username: ")
         payload['username'] = username
+
     if not password:
         password = getpass.getpass("Robinhood password: ")
         payload['password'] = password
