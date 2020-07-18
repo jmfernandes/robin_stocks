@@ -50,7 +50,7 @@ accomplished by typing
 
 You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
 
-### With MFA entered programmatically from Time-based One-Time Password (TOPT)
+### With MFA entered programmatically from Time-based One-Time Password (TOTP)
 
 Install pyotp
 
