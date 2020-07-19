@@ -54,15 +54,9 @@ You will be prompted for your MFA token if you have MFA enabled and choose to do
 With MFA entered programmatically from Time-based One-Time Password (TOTP)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Install pyotp
-"""""""""""""
->>> pip install pyotp
-
-Login
-"""""
 >>> import pyotp
 >>> import robin_stocks as r
->>> totp = pyotp.TOTP("JBSWY3DPEHPK3PXP").now()
+>>> totp  = pyotp.TOTP("JBSWY3DPEHPK3PXP").now()
 >>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
 
 Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
