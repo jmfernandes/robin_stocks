@@ -21,5 +21,6 @@ setup(name='robin_stocks',
       requires=['requests'],
       install_requires=[
           'requests',
+          'pyotp',
       ],
       zip_safe=False)
