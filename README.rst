@@ -54,9 +54,23 @@ You will be prompted for your MFA token if you have MFA enabled and choose to do
 With MFA entered programmatically from Time-based One-Time Password (TOTP)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+NOTE: to use this feature, you will have to sign into your robinhood account and turn on two factor authentication.
+Robinhood will ask you which two factor authorization app you want to use. Select "other". Robinhood will present you with
+an alphanumeric code. This code is what you will use for "My2factorAppHere" in the code below. Run the following code and put
+the resulting MFA code into the prompt on your robinhood app.
+
+>>> import pyotp
+>>> totp  = pyotp.TOTP("My2factorAppHere").now()
+>>> print("Current OTP:", totp)
+
+Once you have entered the above MFA code (the totp variable that is printed out) into your Robinhood account, it will give you a backup code.
+Make sure you do not lose this code or you may be locked out of your account!!!
+
+Now you should be able to login with the following code,
+
 >>> import pyotp
 >>> import robin_stocks as r
->>> totp  = pyotp.TOTP("JBSWY3DPEHPK3PXP").now()
+>>> totp  = pyotp.TOTP("My2factorAppHere").now()
 >>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
 
 Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
