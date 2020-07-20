@@ -140,7 +140,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         else:
             os.remove(pickle_path)
 
-    # Try to log in normOally.
+    # Try to log in normally.
     if not username:
         username = input("Robinhood username: ")
         payload['username'] = username

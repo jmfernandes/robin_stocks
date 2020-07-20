@@ -64,7 +64,9 @@ the resulting MFA code into the prompt on your robinhood app.
 >>> print("Current OTP:", totp)
 
 Once you have entered the above MFA code (the totp variable that is printed out) into your Robinhood account, it will give you a backup code.
-Make sure you do not lose this code or you may be locked out of your account!!!
+Make sure you do not lose this code or you may be locked out of your account!!! You can also take the exact same "My2factorAppHere" from above
+and enter it into your phone's authentication app, such as Google Authenticator. This will cause the exact same MFA code to be generated on your phone
+as well as your python code. This is important to do if you plan on being away from your computer and need to access your Robinhood account from your phone.
 
 Now you should be able to login with the following code,
 
