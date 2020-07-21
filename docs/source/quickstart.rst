@@ -22,11 +22,43 @@ then import Robin Stocks by typing
 Keep in mind that this method is not considered good practice as it obfuscates the distinction between Robin Stocks'
 functions and other functions. For the rest of the documentation, I will assume that Robin Stocks was imported as ``import robin_stocks``.
 
-Once you have imported Robin Stocks, you will need to login in order to store an authentication token using
+Once you have imported Robin Stocks, you will need to login in order to store an authentication token.
 
->>> robin_stocks.login(<username>,<password>)
+Basic
+^^^^^
 
-Not all functions require authentication, but its good practice to log in to Robinhood at the beginning of your script.
+>>> import robin_stocks as r
+>>> login = r.login(<username>,<password>)
+
+You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
+
+With MFA entered programmatically from Time-based One-Time Password (TOTP)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NOTE: to use this feature, you will have to sign into your robinhood account and turn on two factor authentication.
+Robinhood will ask you which two factor authorization app you want to use. Select "other". Robinhood will present you with
+an alphanumeric code. This code is what you will use for "My2factorAppHere" in the code below. Run the following code and put
+the resulting MFA code into the prompt on your robinhood app.
+
+>>> import pyotp
+>>> totp  = pyotp.TOTP("My2factorAppHere").now()
+>>> print("Current OTP:", totp)
+
+Once you have entered the above MFA code (the totp variable that is printed out) into your Robinhood account, it will give you a backup code.
+Make sure you do not lose this code or you may be locked out of your account!!! You can also take the exact same "My2factorAppHere" from above
+and enter it into your phone's authentication app, such as Google Authenticator. This will cause the exact same MFA code to be generated on your phone
+as well as your python code. This is important to do if you plan on being away from your computer and need to access your Robinhood account from your phone.
+
+Now you should be able to login with the following code,
+
+>>> import pyotp
+>>> import robin_stocks as r
+>>> totp  = pyotp.TOTP("My2factorAppHere").now()
+>>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
+
+Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
+contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
+to log into Robinhood at the start of each script.
 
 
 Building Profile and User Data
@@ -98,3 +130,26 @@ If you want to cancel all your limit sells, you would type
 >>> btcOrders = [item for item in positions_data if item['symbol'] == 'BTCUSD' and item['side'] == 'sell']
 >>> for item in btcOrders:
 >>>    robin_stocks.cancel_crypto_order(item['id'])
+
+Saving to CSV File
+------------------
+Users can also export a list of all orders to a CSV file. There is a function for stocks and options. Each function
+takes a directory path and an optional filename. If no filename is provided, a date stamped filename will be generated. The directory path
+can be either absolute or relative. To save the file in the current directory, simply pass in "." as the directory. Note that ".csv" is the only valid
+file extension. If it is missing it will be added, and any other file extension will be automatically changed. Below are example calls.
+
+>>> # let's say that I am running code from C:/Users/josh/documents/
+>>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
+>>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
+
+Using Option Spreads
+--------------------
+When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position.
+The "direction" has to reverse when you try to close a spread position.
+
+I.e.
+direction="credit"
+when
+"action":"sell","effect":"close"
+
+in the case of a long call or put spread.
