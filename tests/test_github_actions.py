@@ -2,6 +2,7 @@
 import os
 import robin_stocks as r
 import pyotp
+import pytest
 
 class TestStocks:
     def test_quotes(self):
