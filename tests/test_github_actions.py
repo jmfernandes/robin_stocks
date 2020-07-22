@@ -15,8 +15,8 @@ class TestStocks:
 class TestProfiles:
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(robin_mfa).now()
-        login = r.login(robin_username, robin_password, mfa_code=totp)
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
