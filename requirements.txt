@@ -1,1 +1,2 @@
 requests==2.20.0
+pyotp==2.3.0
