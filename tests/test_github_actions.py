@@ -23,5 +23,40 @@ class TestProfiles:
         r.logout()
 
     def test_load_account_profile(self):
-        info = r.load_account_profile()
-        assert info
+        profile = r.load_account_profile(info=None)
+        assert profile
+
+    def test_basic_profile(self):
+        profile = r.load_basic_profile(info=None)
+        assert profile
+
+    def test_investment_profile(self):
+        profile = r.load_investment_profile(info=None)
+        assert profile
+
+    def test_portfolio_profile(self):
+        profile = r.load_portfolio_profile(info=None)
+        assert profile
+
+    def test_security_profile(self):
+        profile = r.load_security_profile(info=None)
+        assert profile
+
+    def test_user_profile(self):
+        profile = r.load_user_profile(info=None)
+        assert profile
+
+    def test_crypto_profile(self):
+        profile = r.load_crypto_profile(info=None)
+        assert profile
+
+    @pytest.mark.xfail()
+    def test_key_failed(self):
+        profile = r.load_account_profile(info='cheese')
+        assert profile
+
+    @pytest.mark.xfail()
+    def test_login_failed(self):
+        r.logout()
+        profile = r.load_account_profile(info=None)
+        assert profile
