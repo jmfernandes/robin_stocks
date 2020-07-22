@@ -28,6 +28,7 @@ jobs:
       env:
         robin_username: ${{ secrets.username }}
         robin_password: ${{ secrets.password }}
+        robin_mfa : ${{ secrets.mfa }}
       run: |
         pip install pytest
         pytest tests/test_github_actions.py
