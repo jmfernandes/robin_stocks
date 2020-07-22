@@ -18,7 +18,7 @@ setup(name='robin_stocks',
       license='MIT',
       python_requires='>=3',
       packages=find_packages(),
-      requires=['requests'],
+      requires=['requests', 'pyotp'],
       install_requires=[
           'requests',
           'pyotp',
