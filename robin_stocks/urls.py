@@ -88,10 +88,11 @@ def splits(symbol):
 def positions():
     return('https://api.robinhood.com/positions/')
 
-
 def banktransfers():
     return('https://api.robinhood.com/ach/transfers/')
 
+def cardtransactions():
+    return('https://minerva.robinhood.com/history/transactions')
 
 def daytrades(account):
     return('https://api.robinhood.com/accounts/{0}/recent_day_trades/'.format(account))

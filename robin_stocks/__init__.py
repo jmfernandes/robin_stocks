@@ -2,6 +2,7 @@ from .account import get_historical_portfolio,      \
                      get_all_positions,             \
                      get_bank_account_info,         \
                      get_bank_transfers,            \
+                     get_card_transactions,         \
                      unlink_bank_account,           \
                      get_open_stock_positions,      \
                      get_dividends,                 \
