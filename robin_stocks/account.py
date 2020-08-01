@@ -313,9 +313,9 @@ def get_bank_transfers(info=None):
 
 @helper.login_required
 def get_card_transactions(info=None):
-    """Returns all bank transfers made for the account.
+    """Returns all debit card transactions made on the account
 
-    :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
+    :param info: Will filter the results to get a specific value. 'direction' gives if it was debit or credit. 
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
