@@ -11,6 +11,10 @@ stocks, options, and crypto-currencies in real time.
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
 
+Contributing
+============
+If you would like to contribute to this project, follow our contributing guidelines `Here <https://github.com/jmfernandes/robin_stocks/blob/master/contributing.md>`_.
+
 Installing
 ========================
 There is no need to download these files directly. This project is published on PyPi,
