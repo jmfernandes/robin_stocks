@@ -311,6 +311,19 @@ def get_bank_transfers(info=None):
     data = helper.request_get(url, 'pagination')
     return(helper.filter(data, info))
 
+@helper.login_required
+def get_card_transactions(info=None):
+    """Returns all debit card transactions made on the account
+
+    :param info: Will filter the results to get a specific value. 'direction' gives if it was debit or credit. 
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = urls.cardtransactions()
+    data = helper.request_get(url, 'pagination')
+    return(helper.filter(data, info))
 
 @helper.login_required
 def get_stock_loan_payments(info=None):
