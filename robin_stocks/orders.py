@@ -1041,7 +1041,9 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
     :param spread: A dictionary of spread options with the following keys: \n
         - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
         - strike: The strike price of the option.\n
-        - optionType: This should be 'call' or 'put'
+        - optionType: This should be 'call' or 'put'.\n
+        - effect: This should be 'open' or 'close'.\n
+        - action: This should be 'buy' or 'sell'.
     :type spread: dict
     :param timeInForce: Changes how long the order will be in effect for. \
      'gtc' = good until cancelled. \
@@ -1051,7 +1053,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    order_option_spread("credit", price, symbol, quantity, spread, timeInForce)
+    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce))
 
 
 @helper.login_required
@@ -1067,7 +1069,9 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
     :param spread: A dictionary of spread options with the following keys: \n
         - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
         - strike: The strike price of the option.\n
-        - optionType: This should be 'call' or 'put'
+        - optionType: This should be 'call' or 'put'.\n
+        - effect: This should be 'open' or 'close'.\n
+        - action: This should be 'buy' or 'sell'.
     :type spread: dict
     :param timeInForce: Changes how long the order will be in effect for.
      'gtc' = good until cancelled. \
@@ -1077,7 +1081,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    order_option_spread("debit", price, symbol, quantity, spread, timeInForce)
+    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce))
 
 
 @helper.login_required
@@ -1095,7 +1099,9 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     :param spread: A dictionary of spread options with the following keys: \n
         - expirationDate: The expiration date of the option in 'YYYY-MM-DD' format.\n
         - strike: The strike price of the option.\n
-        - optionType: This should be 'call' or 'put'
+        - optionType: This should be 'call' or 'put'.\n
+        - effect: This should be 'open' or 'close'.\n
+        - action: This should be 'buy' or 'sell'.
     :type spread: dict
     :param timeInForce: Changes how long the order will be in effect for.
      'gtc' = good until cancelled. \
