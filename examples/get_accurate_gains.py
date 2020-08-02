@@ -23,7 +23,8 @@ allTransactions = r.get_bank_transfers()
 
 deposits = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'deposit') and (x['state'] == 'completed'))
 withdrawals = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'withdraw') and (x['state'] == 'completed'))
-money_invested = deposits - withdrawals
+debits = sum(float(x['amount']['amount']) for x in cardTransactions if (x['direction'] == 'debit' and (x['transaction_type'] == 'settled')))
+money_invested = deposits - (withdrawals - debits)
 
 dividends = r.get_total_dividends()
 percentDividend = dividends/money_invested*100
