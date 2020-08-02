@@ -20,6 +20,7 @@ login = r.login(username,password)
 profileData = r.load_portfolio_profile()
 #print(profileData)
 allTransactions = r.get_bank_transfers()
+cardTransactions= r.get_card_transactions()
 
 deposits = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'deposit') and (x['state'] == 'completed'))
 withdrawals = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'withdraw') and (x['state'] == 'completed'))
