@@ -35,7 +35,7 @@ def generate_device_token():
 
 
 def respond_to_challenge(challenge_id, sms_code):
-    """This functino will post to the challenge url.
+    """This function will post to the challenge url.
 
     :param challenge_id: The challenge id.
     :type challenge_id: str
@@ -52,7 +52,7 @@ def respond_to_challenge(challenge_id, sms_code):
 
 
 def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None):
-    """This function will effectivly log the user into robinhood by getting an
+    """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
     on subsequent logins.
