@@ -168,9 +168,11 @@ def currency():
 def markets():
     return('https://api.robinhood.com/markets/')
 
-
-def movers():
+def movers_sp500():
     return('https://api.robinhood.com/midlands/movers/sp500/')
+
+def movers_top():
+    return('https://api.robinhood.com/midlands/tags/tag/top-movers/')
 
 # options
 
