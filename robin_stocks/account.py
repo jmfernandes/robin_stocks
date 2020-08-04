@@ -151,7 +151,7 @@ def get_total_dividends():
 
     dividend_total = 0
     for item in data:
-        dividend_total += float(item['amount'])
+        dividend_total += float(item['amount']) if (item['state'] == 'paid' or item['state'] == 'reinvested') else 0
     return(dividend_total)
 
 
