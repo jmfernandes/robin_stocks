@@ -48,7 +48,7 @@ def get_top_movers(info=None):
     return(helper.filter(data, info))
 
 
-def get_markets(info='instruments'):
+def get_markets(info=None):
     """Returns a list of available markets.
 
     :param info: Will filter the results to get a specific value.
