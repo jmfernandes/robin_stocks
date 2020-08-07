@@ -153,7 +153,8 @@ def get_market_next_open_hours_after_date(market, date, info=None):
     :type date: str
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a string value for the date of the next open
+    :returns: Returns a dictionary of key/value pairs for the specific market. If info parameter is provided, \
+    the string value for the corresponding key will be provided.
     :Dictionary Keys: * date
                       * is_open
                       * opens_at
