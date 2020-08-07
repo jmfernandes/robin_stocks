@@ -48,11 +48,15 @@ from .helper import request_get,      \
                     request_document, \
                     update_session
 
-from .markets import get_currency_pairs,        \
-                     get_markets,               \
-                     get_top_movers,             \
+from .markets import get_currency_pairs,                    \
+                     get_markets,                           \
+                     get_market_today_hours,                \
+                     get_market_next_open_hours,            \
+                     get_market_next_open_hours_after_date, \
+                     get_market_hours,                      \
+                     get_top_movers,                        \
                      get_top_movers_sp500
-                     
+
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \
                      get_all_option_positions,                          \
@@ -62,54 +66,54 @@ from .options import get_aggregate_positions,                           \
                      find_options_by_expiration,                        \
                      find_options_by_strike,                            \
                      find_options_by_expiration_and_strike,             \
-                     find_options_by_specific_profitability,        \
+                     find_options_by_specific_profitability,            \
                      get_option_market_data_by_id,                      \
                      get_option_market_data,                            \
                      get_option_instrument_data_by_id,                  \
                      get_option_instrument_data,                        \
                      get_option_historicals
 
-from .orders import get_all_stock_orders,           \
-                    get_all_option_orders,          \
-                    get_all_crypto_orders,          \
-                    get_all_open_stock_orders,      \
-                    get_all_open_option_orders,     \
-                    get_all_open_crypto_orders,     \
-                    get_stock_order_info,           \
-                    get_option_order_info,          \
-                    get_crypto_order_info,          \
-                    find_stock_orders,              \
-                    cancel_all_stock_orders,        \
-                    cancel_all_option_orders,       \
-                    cancel_all_crypto_orders,       \
-                    cancel_stock_order,             \
-                    cancel_option_order,            \
-                    cancel_crypto_order,            \
-                    order,                          \
-                    order_buy_market,               \
-                    order_buy_fractional_by_quantity,\
-                    order_buy_fractional_by_price,  \
-                    order_buy_limit,                \
-                    order_buy_stop_loss,            \
-                    order_buy_stop_limit,           \
-                    order_sell_market,              \
-                    order_sell_fractional_by_quantity,\
-                    order_sell_fractional_by_price, \
-                    order_sell_limit,               \
-                    order_sell_stop_loss,           \
-                    order_sell_stop_limit,          \
-                    order_buy_option_stop_limit,    \
-                    order_sell_option_stop_limit,   \
-                    order_buy_option_limit,         \
-                    order_sell_option_limit,        \
-                    order_option_spread,            \
-                    order_option_credit_spread,     \
-                    order_option_debit_spread,      \
-                    order_buy_crypto_by_price,      \
-                    order_buy_crypto_by_quantity,   \
-                    order_buy_crypto_limit,         \
-                    order_sell_crypto_by_price,     \
-                    order_sell_crypto_by_quantity,  \
+from .orders import get_all_stock_orders,               \
+                    get_all_option_orders,              \
+                    get_all_crypto_orders,              \
+                    get_all_open_stock_orders,          \
+                    get_all_open_option_orders,         \
+                    get_all_open_crypto_orders,         \
+                    get_stock_order_info,               \
+                    get_option_order_info,              \
+                    get_crypto_order_info,              \
+                    find_stock_orders,                  \
+                    cancel_all_stock_orders,            \
+                    cancel_all_option_orders,           \
+                    cancel_all_crypto_orders,           \
+                    cancel_stock_order,                 \
+                    cancel_option_order,                \
+                    cancel_crypto_order,                \
+                    order,                              \
+                    order_buy_market,                   \
+                    order_buy_fractional_by_quantity,   \
+                    order_buy_fractional_by_price,      \
+                    order_buy_limit,                    \
+                    order_buy_stop_loss,                \
+                    order_buy_stop_limit,               \
+                    order_sell_market,                  \
+                    order_sell_fractional_by_quantity,  \
+                    order_sell_fractional_by_price,     \
+                    order_sell_limit,                   \
+                    order_sell_stop_loss,               \
+                    order_sell_stop_limit,              \
+                    order_buy_option_stop_limit,        \
+                    order_sell_option_stop_limit,       \
+                    order_buy_option_limit,             \
+                    order_sell_option_limit,            \
+                    order_option_spread,                \
+                    order_option_credit_spread,         \
+                    order_option_debit_spread,          \
+                    order_buy_crypto_by_price,          \
+                    order_buy_crypto_by_quantity,       \
+                    order_buy_crypto_limit,             \
+                    order_sell_crypto_by_price,         \
+                    order_sell_crypto_by_quantity,      \
                     order_sell_crypto_limit
 
 from .profiles import load_account_profile,     \

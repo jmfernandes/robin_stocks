@@ -451,6 +451,14 @@ class TestOptions:
         assert (info[0]['type'] == 'call')
 
 class TestMarkets:
+
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    american_time = datetime.datetime.today().strftime('%m-%d-%Y')
+    nyse = 'XNYS'
+    amex = 'XASE'
+    nasdaq = 'XNAS'
+    fake = 'blah'
+
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
@@ -499,6 +507,92 @@ class TestMarkets:
         first = movers[0]
         assert (float(first['price_movement']['market_hours_last_movement_pct']) < 0)
 
+    def test_get_markets(self):
+        markets = r.get_markets()
+        assert (markets)
+        first = markets[0]
+        assert ('url' in first)
+        assert ('todays_hours' in first)
+        assert ('mic' in first)
+        assert ('operating_mic' in first)
+        assert ('acronym' in first)
+        assert ('name' in first)
+        assert ('city' in first)
+        assert ('country' in first)
+        assert ('timezone' in first)
+        assert ('website' in first)
+
+    def test_get_market_today_hours(self):
+        market = r.get_market_today_hours(self.nyse)
+        assert ('date' in market)
+        assert ('is_open' in market)
+        assert ('opens_at' in market)
+        assert ('closes_at' in market)
+        assert ('extended_opens_at' in market)
+        assert ('extended_closes_at' in market)
+        assert ('previous_open_hours' in market)
+        assert ('next_open_hours' in market)
+
+    def test_get_market_next_open_hours(self):
+        market = r.get_market_next_open_hours(self.amex)
+        assert ('date' in market)
+        assert ('is_open' in market)
+        assert ('opens_at' in market)
+        assert ('closes_at' in market)
+        assert ('extended_opens_at' in market)
+        assert ('extended_closes_at' in market)
+        assert ('previous_open_hours' in market)
+        assert ('next_open_hours' in market)
+
+    def test_get_market_next_open_hours_after_date(self):
+        market = r.get_market_next_open_hours_after_date(self.nasdaq, self.today)
+        assert ('date' in market)
+        assert ('is_open' in market)
+        assert ('opens_at' in market)
+        assert ('closes_at' in market)
+        assert ('extended_opens_at' in market)
+        assert ('extended_closes_at' in market)
+        assert ('previous_open_hours' in market)
+        assert ('next_open_hours' in market)
+
+    def test_get_market_hours(self):
+        market = r.get_market_hours(self.nasdaq, self.today)
+        assert ('date' in market)
+        assert ('is_open' in market)
+        assert ('opens_at' in market)
+        assert ('closes_at' in market)
+        assert ('extended_opens_at' in market)
+        assert ('extended_closes_at' in market)
+        assert ('previous_open_hours' in market)
+        assert ('next_open_hours' in market)
+        todaymarket = r.get_market_today_hours(self.nasdaq)
+        assert (market['date'] == todaymarket['date'])
+
+    def test_currency_pairs(self):
+        currency = r.get_currency_pairs()
+        assert currency
+        first = currency[0]
+        assert ('asset_currency' in first)
+        assert ('display_only' in first)
+        assert ('id' in first)
+        assert ('max_order_size' in first)
+        assert ('min_order_size' in first)
+        assert ('min_order_price_increment' in first)
+        assert ('min_order_quantity_increment' in first)
+        assert ('name' in first)
+        assert ('quote_currency' in first)
+        assert ('symbol' in first)
+        assert ('tradability' in first)
+
+    @pytest.mark.xfail()
+    def test_market_fail(self):
+        market = r.get_market_hours(self.fake, self.today)
+        assert market
+
+    @pytest.mark.xfail()
+    def test_market_date_fail(self):
+        market = r.get_market_hours(self.nasdaq, self.american_time)
+        assert market
 
 class TestProfiles:
     @classmethod

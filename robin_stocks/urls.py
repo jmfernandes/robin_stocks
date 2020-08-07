@@ -164,9 +164,11 @@ def watchlist_delete(name, instrument):
 def currency():
     return('https://nummus.robinhood.com/currency_pairs/')
 
-
 def markets():
     return('https://api.robinhood.com/markets/')
+
+def market_hours(market, date):
+    return('https://api.robinhood.com/markets/{}/hours/{}/'.format(market, date))
 
 def movers_sp500():
     return('https://api.robinhood.com/midlands/movers/sp500/')
