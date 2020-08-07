@@ -50,8 +50,9 @@ from .helper import request_get,      \
 
 from .markets import get_currency_pairs,        \
                      get_markets,               \
-                     get_top_movers
-
+                     get_top_movers,             \
+                     get_top_movers_sp500
+                     
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \
                      get_all_option_positions,                          \
