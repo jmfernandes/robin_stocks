@@ -480,7 +480,7 @@ class TestMarkets:
         assert ('updated_at' in first)
         assert ('instrument' in first)
 
-    def tesst_top_movers_sp500(self):
+    def test_top_movers_sp500(self):
         # going up
         movers = r.get_top_movers_sp500('up')
         assert (movers)
