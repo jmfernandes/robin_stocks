@@ -34,4 +34,5 @@ jobs:
         crypto_account: ${{ secrets.crypto }}
       run: |
         pip install pytest
+        pip install pytest-dotenv
         pytest tests/test_github_actions.py
