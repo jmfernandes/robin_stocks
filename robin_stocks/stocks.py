@@ -539,7 +539,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
     :type interval: Optional[str]
     :param span: Sets the range of the data to be either 'day', 'week', 'month', '3month', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
-    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended' or 'regular'. Default is 'regular'
+    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'extended', 'trading', or 'regular'. Default is 'regular'
     :type bounds: Optional[str]
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]

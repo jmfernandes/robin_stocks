@@ -15,6 +15,26 @@ Contributing
 ============
 If you would like to contribute to this project, follow our contributing guidelines `Here <https://github.com/jmfernandes/robin_stocks/blob/master/contributing.md>`_.
 
+Automatic Testing
+^^^^^^^^^^^^^^^^^
+
+If you are contributing to this project and would like to use automatic testing for your changes, you will need to install pytest and pytest-dotenv. To do this type into terminal or command prompt:
+
+>>> pip install pytest
+>>> pip install pytest-dotenv
+
+You will also need to fill out all the fields in .test.env. I recommend that you rename the file as .env once you are done adding in all your personal information. After that, you can simply run:
+
+>>> pytest
+
+to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
+
+>>> pytest tests/test_github_actions.py -k test_name_apple # runs only the 1 test
+>>> pytest tests/test_github_actions.py -k TestStocks # runs every test in TestStocks but nothing else
+
+Finally, if you would like the API calls to print out to terminal, then add the -s flag to any of the above pytest calls.
+
+
 Installing
 ========================
 There is no need to download these files directly. This project is published on PyPi,

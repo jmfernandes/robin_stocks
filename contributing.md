@@ -13,10 +13,13 @@ that do not have a noticable effect on performance are generally not accepted.
    XX is only changed when there is a fundamental and major change, YY is changed for features added, and ZZ is changed
    for bug fixes. When updating a number, all the numbers to the right get changed to zero. i.e. 1.23.50 => 1.24.0. Numbers
    are also allowed to go as high as you want, so 1.65289.0 is a valid version number.
-4. After submitting a pull request, please be on the lookout for any messages from me about things that need to be fixed
-   before I merge the branch.
-   
-   
+4. Write tests to cover the functionality of code you added.
+5. After submitting a pull request, please be on the lookout for any messages from me about things that need to be fixed before I merge the branch.
+
+## Testing
+
+Make sure to install pytest and pytest-dotenv from PyPi and run every test in test_github_actions.py. Add new tests to cover the changes you have made, but not if you need to test placing orders. Currently there is no way to submit fake orders, so any tests for orders would submit a real order.
+
 ## Code of Conduct
 
 ### Our Pledge

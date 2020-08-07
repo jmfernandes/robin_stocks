@@ -29,6 +29,9 @@ jobs:
         robin_username: ${{ secrets.username }}
         robin_password: ${{ secrets.password }}
         robin_mfa: ${{ secrets.mfa }}
+        account_number: ${{ secrets.account }}
+        zipcode: ${{ secrets.zipcode }}
+        crypto_account: ${{ secrets.crypto }}
       run: |
         pip install pytest
         pytest tests/test_github_actions.py

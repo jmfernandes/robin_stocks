@@ -1,20 +1,25 @@
-# general things to ignore
+# sensitive environment information
+.env
 data.pickle
-.vscode/
+
+# build and distribution files that are auto-generated
 build/
 dist/
+
+# notes to self
 uploadnotes.txt
-config.ini
+
+# testing
+tests/app_tests.py
+
+# generated app info
+.vscode/
 .DS_Store
+.pypirc
+.cache/v/cache/
 *.egg-info/
 *.egg
 *.py[cod]
 __pycache__/
 *.so
 *~
-
-.pypirc
-
-tests/test_app.py
-
-.cache/v/cache/
