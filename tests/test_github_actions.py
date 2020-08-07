@@ -450,6 +450,56 @@ class TestOptions:
         assert (len(info) == 1)
         assert (info[0]['type'] == 'call')
 
+class TestMarkets:
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+
+    @classmethod
+    def teardown_class(cls):
+        r.logout()
+
+    def test_top_movers(self):
+        movers = r.get_top_movers()
+        assert (movers)
+        first = movers[0]
+        assert ('ask_price' in first)
+        assert ('ask_size' in first)
+        assert ('bid_price' in first)
+        assert ('bid_size' in first)
+        assert ('last_trade_price' in first)
+        assert ('last_extended_hours_trade_price' in first)
+        assert ('previous_close' in first)
+        assert ('adjusted_previous_close' in first)
+        assert ('previous_close_date' in first)
+        assert ('symbol' in first)
+        assert ('trading_halted' in first)
+        assert ('has_traded' in first)
+        assert ('last_trade_price_source' in first)
+        assert ('updated_at' in first)
+        assert ('instrument' in first)
+
+    def tesst_top_movers_sp500(self):
+        # going up
+        movers = r.get_top_movers_sp500('up')
+        assert (movers)
+        first = movers[0]
+        assert ('instrument_url' in first)
+        assert ('symbol' in first)
+        assert ('updated_at' in first)
+        assert ('price_movement' in first)
+        assert ('description' in first)
+        assert ('market_hours_last_movement_pct' in first['price_movement'])
+        assert ('market_hours_last_price' in first['price_movement'])
+        assert (float(first['price_movement']['market_hours_last_movement_pct']) > 0)
+        # going down
+        movers = r.get_top_movers_sp500('down')
+        assert (movers)
+        first = movers[0]
+        assert (float(first['price_movement']['market_hours_last_movement_pct']) < 0)
+
+
 class TestProfiles:
     @classmethod
     def setup_class(cls):
