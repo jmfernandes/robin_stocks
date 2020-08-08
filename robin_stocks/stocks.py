@@ -386,7 +386,7 @@ def get_events(symbol, info=None):
 
 
 def get_earnings(symbol, info=None):
-    """Returns the earnings for the differenct financial quarters.
+    """Returns the earnings for the different financial quarters.
 
     :param symbol: The stock ticker.
     :type symbol: str
