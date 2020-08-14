@@ -1389,7 +1389,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
 
 
 @helper.login_required
-def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
+def order_buy_crypto_by_price(symbol, amountInDollars, priceType='bid_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1418,12 +1418,11 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
         crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/price, 8)
+        shares = helper.round_price(amountInDollars/price)
     except:
         shares = 0
 
     payload = {
-        'mimeType': 'application/json',
         'account_id': crypto.load_crypto_profile(info="id"),
         'currency_pair_id': crypto_info['id'],
         'price': price,
@@ -1436,12 +1435,11 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
 
     url = urls.order_crypto()
     data = helper.request_post(url, payload, json=True)
-
     return(data)
 
 
 @helper.login_required
-def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
+def order_buy_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1563,7 +1561,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', t
         crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
-        shares = round(amountInDollars/float(price), 8)
+        shares = helper.round_price(amountInDollars/price)
     except:
         shares = 0
 
