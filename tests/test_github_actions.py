@@ -246,8 +246,6 @@ class TestStocks:
         assert ('type' in event)
         assert ('underlying_price' in event)
         assert ('updated_at' in event)
-        fake_event = r.get_popularity(self.fake_stock)
-        assert (fake_event == '')
 
     def test_earning(self):
         earnings = r.get_earnings(self.single_stock)[0]
