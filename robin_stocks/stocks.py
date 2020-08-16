@@ -316,32 +316,7 @@ def get_ratings(symbol, info=None):
             item['text'] = oldText.encode('UTF-8')
 
     return(helper.filter(data, info))
-
-@helper.convert_none_to_string
-def get_popularity(symbol, info=None):
-    """Returns the number of open positions.
-
-    :param symbol: The stock ticker.
-    :type symbol: str
-    :param info: Will filter the results to be a string value.
-    :type info: Optional[str]
-    :returns: [dict] If the info parameter is provided, then the function will extract the value of the key \
-    that matches the info parameter. Otherwise, the whole dictionary is returned.
-    :Dictionary Keys: * instrument
-                      * num_open_positions
-
-    """
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message)
-        return None
-
-    url = urls.popularity(symbol)
-    data = helper.request_get(url)
-
-    return(helper.filter(data, info))
-
+    
 
 def get_events(symbol, info=None):
     """Returns the events related to a stock that the user owns. For example, if you owned options for USO and that stock \

@@ -6,6 +6,46 @@ import robin_stocks.profiles as profiles
 import robin_stocks.stocks as stocks
 import robin_stocks.urls as urls
 
+@helper.login_required
+def load_phoenix_account(info=None):
+    """Returns unified information about your account.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: [list] Returns a list of dictionaries of key/value pairs. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * account_buying_power
+                      * cash_available_from_instant_deposits
+                      * cash_held_for_currency_orders
+                      * cash_held_for_dividends
+                      * cash_held_for_equity_orders
+                      * cash_held_for_options_collateral
+                      * cash_held_for_orders
+                      * crypto
+                      * crypto_buying_power
+                      * equities
+                      * extended_hours_portfolio_equity
+                      * instant_allocated
+                      * levered_amount
+                      * near_margin_call
+                      * options_buying_power
+                      * portfolio_equity
+                      * portfolio_previous_close
+                      * previous_close
+                      * regular_hours_portfolio_equity
+                      * total_equity
+                      * total_extended_hours_equity
+                      * total_extended_hours_market_value
+                      * total_market_value
+                      * total_regular_hours_equity
+                      * total_regular_hours_market_value
+                      * uninvested_cash
+                      * withdrawable_cash
+
+    """
+    url = urls.phoenix()
+    data = helper.request_get(url, 'regular')
+    return(helper.filter(data, info))
 
 @helper.login_required
 def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
@@ -312,17 +352,23 @@ def get_bank_transfers(info=None):
     return(helper.filter(data, info))
 
 @helper.login_required
-def get_card_transactions(info=None):
+def get_card_transactions(cardType=None, info=None):
     """Returns all debit card transactions made on the account
 
-    :param info: Will filter the results to get a specific value. 'direction' gives if it was debit or credit. 
+    :param cardType: Will filter the card transaction types. Can be 'pending' or 'settled'.
+    :type cardType: Optional[str]
+    :param info: Will filter the results to get a specific value. 'direction' gives if it was debit or credit.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
+    payload = None
+    if type:
+        payload = { 'type': type }
+
     url = urls.cardtransactions()
-    data = helper.request_get(url, 'pagination')
+    data = helper.request_get(url, 'pagination', payload)
     return(helper.filter(data, info))
 
 @helper.login_required

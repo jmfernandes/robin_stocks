@@ -70,7 +70,6 @@ def news(symbol):
 def popularity(symbol):
     return('https://api.robinhood.com/instruments/{0}/popularity/'.format(id_for_stock(symbol)))
 
-
 def quotes():
     return('https://api.robinhood.com/quotes/')
 
@@ -84,6 +83,8 @@ def splits(symbol):
 
 # account
 
+def phoenix():
+    return('https://phoenix.robinhood.com/accounts/unified')
 
 def positions():
     return('https://api.robinhood.com/positions/')
@@ -173,8 +174,14 @@ def market_hours(market, date):
 def movers_sp500():
     return('https://api.robinhood.com/midlands/movers/sp500/')
 
+def get_100_most_popular():
+    return('https://api.robinhood.com/midlands/tags/tag/100-most-popular/')
+
 def movers_top():
     return('https://api.robinhood.com/midlands/tags/tag/top-movers/')
+
+def market_category(category):
+    return('https://api.robinhood.com/midlands/tags/tag/{}/'.format(category))
 
 # options
 

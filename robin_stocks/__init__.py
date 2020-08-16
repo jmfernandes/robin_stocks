@@ -26,7 +26,8 @@ from .account import get_historical_portfolio,      \
                      post_symbols_to_watchlist,     \
                      delete_symbols_from_watchlist, \
                      build_holdings,                \
-                     build_user_profile
+                     build_user_profile,            \
+                     load_phoenix_account
 
 from .authentication import login, \
                             logout
@@ -54,8 +55,10 @@ from .markets import get_currency_pairs,                    \
                      get_market_next_open_hours,            \
                      get_market_next_open_hours_after_date, \
                      get_market_hours,                      \
+                     get_all_stocks_from_market_tag,        \
                      get_top_movers,                        \
-                     get_top_movers_sp500
+                     get_top_movers_sp500,                  \
+                     get_top_100
 
 from .options import get_aggregate_positions,                           \
                      get_market_options,                                \
@@ -132,7 +135,6 @@ from .stocks import get_quotes,                 \
                     get_name_by_url,            \
                     get_symbol_by_url,          \
                     get_ratings,                \
-                    get_popularity,             \
                     get_events,                 \
                     get_earnings,               \
                     get_news,                   \

@@ -224,14 +224,6 @@ class TestStocks:
         fake_ratings = r.get_ratings(self.fake_stock)
         assert (fake_ratings == '')
 
-    def test_get_popularity(self):
-        popularity = r.get_popularity(self.single_stock)
-        assert (popularity['instrument'] == self.instrument)
-        assert ('instrument' in popularity)
-        assert ('num_open_positions' in popularity)
-        fake_popularity = r.get_popularity(self.fake_stock)
-        assert (fake_popularity == '')
-
     def test_events(self):
         event = r.get_events(self.single_stock)
         assert (len(event) == 0)

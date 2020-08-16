@@ -191,6 +191,17 @@ file extension. If it is missing it will be added, and any other file extension 
 >>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
 >>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
 
+Getting Quote Information For Stocks In A Specific Category
+-----------------------------------------------------------
+When you are on Robinhood, there are these green tags you can click on to get all the stocks for that category.
+You can now get the quote information for those categories by calling
+
+>>> r.get_all_stocks_from_market_tag('upcoming-earnings') # get upcoming earnings
+>>> r.get_all_stocks_from_market_tag('technology') # get all tech tags
+
+These functions do some processing to get the quote data so they may run a little slow.
+The Robinhood API only returns a list of instrument urls.
+
 Using Option Spreads
 ====================
 When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position.

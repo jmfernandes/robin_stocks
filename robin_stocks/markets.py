@@ -35,9 +35,43 @@ def get_top_movers_sp500(direction, info=None):
 
     return(helper.filter(data, info))
 
+def get_top_100(info=None):
+    """Returns a list of the Top 100 stocks on Robin Hood.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * ask_price
+                      * ask_size
+                      * bid_price
+                      * bid_size
+                      * last_trade_price
+                      * last_extended_hours_trade_price
+                      * previous_close
+                      * adjusted_previous_close
+                      * previous_close_date
+                      * symbol
+                      * trading_halted
+                      * has_traded
+                      * last_trade_price_source
+                      * updated_at
+                      * instrument
+
+    """
+    url = urls.get_100_most_popular()
+    data = helper.request_get(url, 'regular')
+    data = helper.filter(data, 'instruments')
+
+    symbols = [stocks.get_symbol_by_url(x) for x in data]
+    data = stocks.get_quotes(symbols)
+
+    return(heper.filter(data, info))
+
 def get_top_movers(info=None):
     """Returns a list of the Top 20 movers on Robin Hood.
 
+    :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
@@ -59,6 +93,41 @@ def get_top_movers(info=None):
 
     """
     url = urls.movers_top()
+    data = helper.request_get(url, 'regular')
+    data = helper.filter(data, 'instruments')
+
+    symbols = [stocks.get_symbol_by_url(x) for x in data]
+    data = stocks.get_quotes(symbols)
+
+    return(helper.filter(data, info))
+
+def get_all_stocks_from_market_tag(tag, info=None):
+    """Returns all the stock quote information that matches a tag category.
+
+    :param tag: The category to filter for. Examples include 'biopharmaceutical', 'upcoming-earning/', 'most-popular-under-25', and 'technology'.
+    :type tag: str
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * ask_price
+                      * ask_size
+                      * bid_price
+                      * bid_size
+                      * last_trade_price
+                      * last_extended_hours_trade_price
+                      * previous_close
+                      * adjusted_previous_close
+                      * previous_close_date
+                      * symbol
+                      * trading_halted
+                      * has_traded
+                      * last_trade_price_source
+                      * updated_at
+                      * instrument
+
+    """
+    url = urls.market_category(tag)
     data = helper.request_get(url, 'regular')
     data = helper.filter(data, 'instruments')
 
