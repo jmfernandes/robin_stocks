@@ -66,7 +66,7 @@ def get_top_100(info=None):
     symbols = [stocks.get_symbol_by_url(x) for x in data]
     data = stocks.get_quotes(symbols)
 
-    return(heper.filter(data, info))
+    return(helper.filter(data, info))
 
 def get_top_movers(info=None):
     """Returns a list of the Top 20 movers on Robin Hood.
