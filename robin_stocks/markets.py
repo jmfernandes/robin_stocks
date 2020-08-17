@@ -104,7 +104,7 @@ def get_top_movers(info=None):
 def get_all_stocks_from_market_tag(tag, info=None):
     """Returns all the stock quote information that matches a tag category.
 
-    :param tag: The category to filter for. Examples include 'biopharmaceutical', 'upcoming-earning/', 'most-popular-under-25', and 'technology'.
+    :param tag: The category to filter for. Examples include 'biopharmaceutical', 'upcoming-earnings', 'most-popular-under-25', and 'technology'.
     :type tag: str
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -130,6 +130,10 @@ def get_all_stocks_from_market_tag(tag, info=None):
     url = urls.market_category(tag)
     data = helper.request_get(url, 'regular')
     data = helper.filter(data, 'instruments')
+
+    if not data:
+        print('ERROR: "{}" is not a valid tag'.format(tag))
+        return [None]
 
     symbols = [stocks.get_symbol_by_url(x) for x in data]
     data = stocks.get_quotes(symbols)
