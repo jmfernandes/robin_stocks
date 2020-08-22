@@ -299,7 +299,7 @@ def cancel_all_crypto_orders():
 
 
 @helper.login_required
-def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -309,6 +309,9 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
+    If this parameter is not None, then extendedHours parameter is ignored.
+    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
@@ -322,11 +325,13 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
         print(message)
         return None
 
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
+
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0]),
+        'price': helper.round_price(price),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -334,7 +339,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'buy',
-        "extended_hours": extendedHours
+        'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -344,7 +349,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
 
 
 @helper.login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -352,14 +357,14 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extend
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
-    :type quantity: int or computed to fractions when fractional share based on.
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
+    If this parameter is not None, then extendedHours parameter is ignored.
+    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
-    :param share_type: Fractional Share or None. If 'fractional' share would be bought in fractions by the price supplied
-    :type share_type: Optional[str] 'fractional' share
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -371,12 +376,13 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extend
         print(message)
         return None
 
-    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
+
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stock_price),
+        'price': helper.round_price(price),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -384,7 +390,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extend
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'buy',
-        "extended_hours": extendedHours
+        'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -394,7 +400,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extend
 
 
 @helper.login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', extendedHours=False):
+def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -402,14 +408,14 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', ex
     :type symbol: str
     :param amountInDollars: The amount in dollars of the fractional shares you want to buy.
     :type amountInDollars: float
-    :type quantity: int or computed to fractions when fractional share based on.
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
+    If this parameter is not None, then extendedHours parameter is ignored.
+    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
-    :param share_type: Fractional Share or None. If 'fractional' share would be bought in fractions by the price supplied
-    :type share_type: Optional[str] 'fractional' share
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -425,11 +431,11 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', ex
         print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
-    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
-            amountInDollars/float(stock_price))
+            amountInDollars/float(price))
     except:
         fractional_shares = 0
 
@@ -437,7 +443,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', ex
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stock_price),
+        'price': helper.round_price(price),
         'quantity': fractional_shares,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -445,7 +451,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', ex
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'buy',
-        "extended_hours": extendedHours
+        'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -665,7 +671,7 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
 
 
 @helper.login_required
-def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -675,6 +681,9 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
+    If this parameter is not None, then extendedHours parameter is ignored.
+    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
@@ -688,11 +697,13 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
         print(message)
         return None
 
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
+
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0]),
+        'price': helper.round_price(price),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -710,7 +721,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
 
 
 @helper.login_required
-def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -718,14 +729,11 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', exten
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
-    :type quantity: int or computed to fractions when fractional share based on.
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
-    :param share_type: Fractional Share or None. If 'fractional' share would be bought in fractions by the price supplied
-    :type share_type: Optional[str] 'fractional' share
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -737,12 +745,13 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', exten
         print(message)
         return None
 
-    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
+
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stock_price),
+        'price': helper.round_price(price),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -750,7 +759,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', exten
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'sell',
-        "extended_hours": extendedHours
+        'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -760,7 +769,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', exten
 
 
 @helper.login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', extendedHours=False):
+def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -768,14 +777,11 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', e
     :type symbol: str
     :param amountInDollars: The amount in dollars of the fractional shares you want to buy.
     :type amountInDollars: float
-    :type quantity: int or computed to fractions when fractional share based on.
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
-    :param share_type: Fractional Share or None. If 'fractional' share would be bought in fractions by the price supplied
-    :type share_type: Optional[str] 'fractional' share
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -791,11 +797,11 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', e
         print("ERROR: Fractional share price should meet minimum 1.00.")
         return None
 
-    stock_price = stocks.get_latest_price(symbol, extendedHours)[0]
+    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
     # turn the money amount into decimal number of shares
     try:
         fractional_shares = helper.round_price(
-            amountInDollars/float(stock_price))
+            amountInDollars/float(price))
     except:
         fractional_shares = 0
 
@@ -803,7 +809,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', e
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': helper.round_price(stock_price),
+        'price': helper.round_price(price),
         'quantity': fractional_shares,
         'ref_id': str(uuid4()),
         'type': 'market',
@@ -811,7 +817,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', e
         'time_in_force': timeInForce,
         'trigger': 'immediate',
         'side': 'sell',
-        "extended_hours": extendedHours
+        'extended_hours': extendedHours
     }
 
     url = urls.orders()
@@ -967,7 +973,7 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
 
 
 @helper.login_required
-def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
+def order(symbol, quantity, orderType, trigger, side, priceType=None, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
     """A generic order function. All parameters must be supplied.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -980,6 +986,9 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice
     :type trigger: str
     :param side: Either 'buy' or 'sell'
     :type side: str
+    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
+    If this parameter is not None, then extendedHours parameter is ignored.
+    :type priceType: str
     :param limitPrice: The price to trigger the market order.
     :type limitPrice: float
     :param stopPrice: The price to trigger the limit or market order.
@@ -1004,14 +1013,16 @@ def order(symbol, quantity, orderType, trigger, side, limitPrice=None, stopPrice
         stopPrice = helper.round_price(stopPrice)
 
     if limitPrice:
-        limitPrice = helper.round_price(limitPrice)
+        price = helper.round_price(limitPrice)
     else:
-        limitPrice = helper.round_price(stocks.get_latest_price(symbol, extendedHours)[0])
+        price = helper.round_price(
+            next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00))
+
     payload = {
         'account': profiles.load_account_profile(info='url'),
         'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
-        'price': limitPrice,
+        'price': price,
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': orderType,
@@ -1389,7 +1400,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
 
 
 @helper.login_required
-def order_buy_crypto_by_price(symbol, amountInDollars, priceType='bid_price', timeInForce='gtc'):
+def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1439,7 +1450,7 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='bid_price', ti
 
 
 @helper.login_required
-def order_buy_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeInForce='gtc'):
+def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1532,7 +1543,7 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
 
 
 @helper.login_required
-def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
+def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1583,7 +1594,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='ask_price', t
 
 
 @helper.login_required
-def order_sell_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
+def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeInForce='gtc'):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 

@@ -194,11 +194,13 @@ def get_instrument_by_url(url, info=None):
     return(helper.filter(data, info))
 
 
-def get_latest_price(inputSymbols, includeExtendedHours=True):
+def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
     """Takes any number of stock tickers and returns the latest price of each one as a string.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
+    :param priceType: Can either be 'ask_price' or 'bid_price'. If this parameter is set, then includeExtendedHours is ignored.
+    :type priceType: str
     :param includeExtendedHours: Leave as True if you want to get extendedhours price if available. \
     False if you only want regular hours price, even after hours.
     :type includeExtendedHours: bool
@@ -211,10 +213,17 @@ def get_latest_price(inputSymbols, includeExtendedHours=True):
     prices = []
     for item in quote:
         if item:
-            if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
-                prices.append(item['last_trade_price'])
+            if priceType == 'ask_price':
+                prices.append(item['ask_price'])
+            elif priceType == 'bid_price':
+                prices.append(item['bid_price'])
             else:
-                prices.append(item['last_extended_hours_trade_price'])
+                if priceType:
+                    print('WARNING: priceType should be "ask_price" or "bid_price". You entered "{0}"'.format(priceType))
+                if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
+                    prices.append(item['last_trade_price'])
+                else:
+                    prices.append(item['last_extended_hours_trade_price'])
         else:
             prices.append(None)
     return(prices)
