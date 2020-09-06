@@ -1,7 +1,7 @@
 """Contains functions for getting information about options."""
+import sys
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
-import sys
 
 def spinning_cursor():
     """ This is a generator function to yield a character. """
@@ -13,11 +13,12 @@ spinner = spinning_cursor()
 
 def write_spinner():
     """ Function to create a spinning cursor to tell user that the code is working on getting market data. """
-    marketString = 'Loading Market Data '
-    sys.stdout.write(marketString)
-    sys.stdout.write(next(spinner))
-    sys.stdout.flush()
-    sys.stdout.write('\b'*(len(marketString)+1))
+    if helper.get_output()==sys.stdout:
+        marketString = 'Loading Market Data '
+        sys.stdout.write(marketString)
+        sys.stdout.write(next(spinner))
+        sys.stdout.flush()
+        sys.stdout.write('\b'*(len(marketString)+1))
 
 @helper.login_required
 def get_aggregate_positions(info=None):
@@ -96,7 +97,7 @@ def get_chains(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.chains(symbol)
@@ -125,12 +126,12 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     url = urls.option_instruments()
     if not helper.id_for_chain(symbol):
-        print("Symbol {} is not valid for finding options.".format(symbol))
+        print("Symbol {} is not valid for finding options.".format(symbol), file=helper.get_output())
         return [None]
 
     payload = {'chain_id': helper.id_for_chain(symbol),
@@ -168,7 +169,7 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     data = []
@@ -206,7 +207,7 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     data = []
@@ -245,7 +246,7 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     data = []
@@ -290,7 +291,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
     data = []
 
     if (typeProfit != "chance_of_profit_short" and typeProfit != "chance_of_profit_long"):
-        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.")
+        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.", file=helper.get_output())
         typeProfit = "chance_of_profit_short"
 
     for symbol in symbols:
@@ -386,7 +387,7 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     data = []
@@ -435,7 +436,7 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
         symbol = symbol.upper().strip()
         optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     optionID = helper.id_for_option(symbol, expirationDate, strikePrice, optionType)
@@ -473,7 +474,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         symbol = symbol.upper().strip()
         optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return [None]
 
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
@@ -481,13 +482,13 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
     bounds_check = ['extended', 'regular', 'trading']
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day", "week", "year", or "5year"')
+        print('ERROR: Span must be "day", "week", "year", or "5year"', file=helper.get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "extended","regular",or "trading"')
+        print('ERROR: Bounds must be "extended","regular",or "trading"', file=helper.get_output())
         return([None])
 
     optionID = helper.id_for_option(symbol, expirationDate, strikePrice, optionType)

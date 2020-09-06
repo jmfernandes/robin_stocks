@@ -47,7 +47,9 @@ from .helper import request_get,      \
                     request_post,     \
                     request_delete,   \
                     request_document, \
-                    update_session
+                    update_session,   \
+                    set_output,       \
+                    get_output                       
 
 from .markets import get_currency_pairs,                    \
                      get_markets,                           \

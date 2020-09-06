@@ -22,11 +22,11 @@ def get_top_movers_sp500(direction, info=None):
     try:
         direction = direction.lower().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     if (direction != 'up' and direction != 'down'):
-        print('Error: direction must be "up" or "down"')
+        print('Error: direction must be "up" or "down"', file=helper.get_output())
         return([None])
 
     url = urls.movers_sp500()
@@ -132,7 +132,7 @@ def get_all_stocks_from_market_tag(tag, info=None):
     data = helper.filter(data, 'instruments')
 
     if not data:
-        print('ERROR: "{}" is not a valid tag'.format(tag))
+        print('ERROR: "{}" is not a valid tag'.format(tag), file=helper.get_output())
         return [None]
 
     symbols = [stocks.get_symbol_by_url(x) for x in data]

@@ -7,7 +7,6 @@ import robin_stocks.profiles as profiles
 import robin_stocks.stocks as stocks
 import robin_stocks.urls as urls
 
-
 @helper.login_required
 def get_all_stock_orders(info=None):
     """Returns a list of all the orders that have been processed for the account.
@@ -157,7 +156,7 @@ def find_stock_orders(**arguments):
     :type arguments: str
     :returns: Returns a list of orders.
 
-    """
+    """ 
     url = urls.orders()
     data = helper.request_get(url, 'pagination')
 
@@ -180,7 +179,7 @@ def find_stock_orders(**arguments):
     for item in data:
         for i, (key, value) in enumerate(arguments.items()):
             if key not in item:
-                print(helper.error_argument_not_key_in_dictionary(key))
+                print(helper.error_argument_not_key_in_dictionary(key), file=helper.get_output())
                 return([None])
             if value != item[key]:
                 break
@@ -198,12 +197,12 @@ def cancel_stock_order(orderID):
     :type orderID: str
     :returns: Returns the order information for the order that was cancelled.
 
-    """
+    """ 
     url = urls.cancel(orderID)
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
+        print('Order '+orderID+' cancelled', file=helper.get_output())
     return(data)
 
 
@@ -215,12 +214,12 @@ def cancel_option_order(orderID):
     :type orderID: str
     :returns: Returns the order information for the order that was cancelled.
 
-    """
+    """ 
     url = urls.option_cancel(orderID)
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
+        print('Order '+orderID+' cancelled', file=helper.get_output())
     return(data)
 
 
@@ -232,12 +231,12 @@ def cancel_crypto_order(orderID):
     :type orderID: str
     :returns: Returns the order information for the order that was cancelled.
 
-    """
+    """ 
     url = urls.crypto_cancel(orderID)
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled')
+        print('Order '+orderID+' cancelled', file=helper.get_output())
     return(data)
 
 
@@ -247,7 +246,7 @@ def cancel_all_stock_orders():
 
     :returns: The list of orders that were cancelled.
 
-    """
+    """ 
     url = urls.orders()
     data = helper.request_get(url, 'pagination')
 
@@ -256,7 +255,7 @@ def cancel_all_stock_orders():
     for item in data:
         helper.request_post(item['cancel'])
 
-    print('All Stock Orders Cancelled')
+    print('All Stock Orders Cancelled', file=helper.get_output())
     return(data)
 
 
@@ -266,7 +265,7 @@ def cancel_all_option_orders():
 
     :returns: Returns the order information for the orders that were cancelled.
 
-    """
+    """ 
     url = urls.option_orders()
     data = helper.request_get(url, 'pagination')
 
@@ -275,7 +274,7 @@ def cancel_all_option_orders():
     for item in data:
         helper.request_post(item['cancel_url'])
 
-    print('All Option Orders Cancelled')
+    print('All Option Orders Cancelled', file=helper.get_output())
     return(data)
 
 
@@ -285,7 +284,7 @@ def cancel_all_crypto_orders():
 
     :returns: Returns the order information for the orders that were cancelled.
 
-    """
+    """ 
     url = urls.crypto_orders()
     data = helper.request_get(url, 'pagination')
 
@@ -294,7 +293,7 @@ def cancel_all_crypto_orders():
     for item in data:
         helper.request_post(item['cancel_url'])
 
-    print('All Crypto Orders Cancelled')
+    print('All Crypto Orders Cancelled', file=helper.get_output())
     return(data)
 
 
@@ -318,11 +317,11 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price',
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -369,11 +368,11 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceT
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -420,15 +419,15 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', pr
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     if amountInDollars < 1:
-        print("ERROR: Fractional share price should meet minimum 1.00.")
+        print("ERROR: Fractional share price should meet minimum 1.00.", file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -479,12 +478,12 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHou
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -527,12 +526,12 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extended
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -577,13 +576,13 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -690,11 +689,11 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price'
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -738,11 +737,11 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', price
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -786,15 +785,15 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', p
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     if amountInDollars < 1:
-        print("ERROR: Fractional share price should meet minimum 1.00.")
+        print("ERROR: Fractional share price should meet minimum 1.00.", file=helper.get_output())
         return None
 
     price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
@@ -845,12 +844,12 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHo
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -893,12 +892,12 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         stopPrice = helper.round_price(stopPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -942,13 +941,13 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
         stopPrice = helper.round_price(stopPrice)
         limitPrice = helper.round_price(limitPrice)
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {
@@ -1002,11 +1001,11 @@ def order(symbol, quantity, orderType, trigger, side, priceType=None, limitPrice
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     if stopPrice:
@@ -1121,11 +1120,11 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
     legs = []
     for each in spread:
@@ -1185,11 +1184,11 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
@@ -1246,11 +1245,11 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
@@ -1307,11 +1306,11 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
@@ -1371,7 +1370,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     optionID = helper.id_for_option(symbol, expirationDate, strike, optionType)
@@ -1417,11 +1416,11 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
@@ -1467,11 +1466,11 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
@@ -1513,17 +1512,17 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
 
     if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.", file=helper.get_output())
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
@@ -1560,11 +1559,11 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', t
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
@@ -1611,11 +1610,11 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeI
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
@@ -1661,13 +1660,13 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
 
     if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.")
+        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.", file=helper.get_output())
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),

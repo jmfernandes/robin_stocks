@@ -2,7 +2,6 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
-
 @helper.login_required
 def load_crypto_profile(info=None):
     """Gets the information associated with the crypto account.
@@ -200,16 +199,16 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
 
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"')
+            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"', file=helper.get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"')
+        print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"', file=helper.get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "24_7","extended","regular",or "trading"')
+        print('ERROR: Bounds must be "24_7","extended","regular",or "trading"', file=helper.get_output())
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"')
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
         return([None])
 
 
