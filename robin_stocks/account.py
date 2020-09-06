@@ -55,19 +55,19 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
 
     if interval not in interval_check:
         if interval is None and (bounds != 'regular' and span != 'all'):
-            print ('ERROR: Interval must be None for "all" span "regular" bounds')
+            print ('ERROR: Interval must be None for "all" span "regular" bounds', file=helper.get_output())
             return ([None])
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=helper.get_output())
         return([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"')
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
         return([None])
 
     account = profiles.load_account_profile('account_number')
@@ -282,7 +282,7 @@ def get_margin_calls(symbol=None):
         try:
             symbol = symbol.upper().strip()
         except AttributeError as message:
-            print(message)
+            print(message, file=helper.get_output())
             return None
         payload = {'equity_instrument_id', helper.id_for_stock(symbol)}
         data = helper.request_get(url, 'results', payload)
@@ -479,7 +479,7 @@ def download_document(url, name=None, dirpath=None):
     """
     data = helper.request_document(url)
 
-    print('Writing PDF...')
+    print('Writing PDF...', file=helper.get_output())
     if not name:
         name = url[36:].split('/', 1)[0]
 
@@ -530,7 +530,7 @@ def download_all_documents(doctype=None, dirpath=None):
                 open(filename, 'wb').write(data.content)
                 downloaded_files = True
                 counter += 1
-                print('Writing PDF {}...'.format(counter))
+                print('Writing PDF {}...'.format(counter), file=helper.get_output())
         else:
             if item['type'] == doctype:
                 data = helper.request_document(item['download_url'])
@@ -542,17 +542,17 @@ def download_all_documents(doctype=None, dirpath=None):
                     open(filename, 'wb').write(data.content)
                     downloaded_files = True
                     counter += 1
-                    print('Writing PDF {}...'.format(counter))
+                    print('Writing PDF {}...'.format(counter), file=helper.get_output())
 
     if downloaded_files == False:
-        print('WARNING: Could not find files of that doctype to download')
+        print('WARNING: Could not find files of that doctype to download', file=helper.get_output())
     else:
         if counter == 1:
             print('Done - wrote {} file to {}'.format(counter,
-                                                      os.path.abspath(directory)))
+                                                      os.path.abspath(directory)), file=helper.get_output())
         else:
             print('Done - wrote {} files to {}'.format(counter,
-                                                       os.path.abspath(directory)))
+                                                       os.path.abspath(directory)), file=helper.get_output())
 
     return(documents)
 

@@ -2,7 +2,6 @@
 import robin_stocks.helper as helper
 import robin_stocks.urls as urls
 
-
 def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
 
@@ -39,7 +38,7 @@ def get_quotes(inputSymbols, info=None):
 
     for count, item in enumerate(data):
         if item is None:
-            print(helper.error_ticker_does_not_exist(symbols[count]))
+            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
 
     data = [item for item in data if item is not None]
 
@@ -81,7 +80,7 @@ def get_fundamentals(inputSymbols, info=None):
                       * year_founded
                       * symbol
 
-    """
+    """ 
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.fundamentals()
     payload = {'symbols': ','.join(symbols)}
@@ -92,7 +91,7 @@ def get_fundamentals(inputSymbols, info=None):
 
     for count, item in enumerate(data):
         if item is None:
-            print(helper.error_ticker_does_not_exist(symbols[count]))
+            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
         else:
             item['symbol'] = symbols[count]
 
@@ -136,7 +135,7 @@ def get_instruments_by_symbols(inputSymbols, info=None):
                       * fractional_tradability
                       * default_collar_fraction
 
-    """
+    """ 
     symbols = helper.inputs_to_set(inputSymbols)
     url = urls.instruments()
     data = []
@@ -147,7 +146,7 @@ def get_instruments_by_symbols(inputSymbols, info=None):
         if itemData:
             data.append(itemData)
         else:
-            print(helper.error_ticker_does_not_exist(item))
+            print(helper.error_ticker_does_not_exist(item), file=helper.get_output())
 
     return(helper.filter(data, info))
 
@@ -206,7 +205,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
     :type includeExtendedHours: bool
     :returns: [list] A list of prices as strings.
 
-    """
+    """ 
     symbols = helper.inputs_to_set(inputSymbols)
     quote = get_quotes(symbols)
 
@@ -219,7 +218,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
                 prices.append(item['bid_price'])
             else:
                 if priceType:
-                    print('WARNING: priceType should be "ask_price" or "bid_price". You entered "{0}"'.format(priceType))
+                    print('WARNING: priceType should be "ask_price" or "bid_price". You entered "{0}"'.format(priceType), file=helper.get_output())
                 if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
                     prices.append(item['last_trade_price'])
                 else:
@@ -237,11 +236,11 @@ def get_name_by_symbol(symbol):
     :type symbol: str
     :returns: [str] Returns the simple name of the stock. If the simple name does not exist then returns the full name.
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.instruments()
@@ -305,11 +304,11 @@ def get_ratings(symbol, info=None):
                       * instrument_id - value is a string
                       * ratings_published_at - value is a string
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.ratings(symbol)
@@ -355,11 +354,11 @@ def get_events(symbol, info=None):
                       * underlying_price
                       * updated_at
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     payload = {'equity_instrument_id': helper.id_for_stock(symbol)}
@@ -387,11 +386,11 @@ def get_earnings(symbol, info=None):
                       * report
                       * call
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.earnings()
@@ -427,11 +426,11 @@ def get_news(symbol, info=None):
                       * preview_text
                       * currency_id
 
-    """
+    """ 
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.news(symbol)
@@ -461,7 +460,7 @@ def get_splits(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message)
+        print(message, file=helper.get_output())
         return None
 
     url = urls.splits(symbol)
@@ -500,17 +499,17 @@ def find_instrument_data(query):
                       * fractional_tradability
                       * default_collar_fraction
 
-    """
+    """ 
     url = urls.instruments()
     payload = {'query': query}
 
     data = helper.request_get(url, 'pagination', payload)
 
     if len(data) == 0:
-        print('No results found for that keyword')
+        print('No results found for that keyword', file=helper.get_output())
         return([None])
     else:
-        print('Found ' + str(len(data)) + ' results')
+        print('Found ' + str(len(data)) + ' results', file=helper.get_output())
         return(data)
 
 
@@ -539,23 +538,23 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
                       * interpolated
                       * symbol
 
-    """
+    """    
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'month', '3month', 'year', '5year']
     bounds_check = ['extended', 'regular', 'trading']
 
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"')
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day","week","month","3month","year",or "5year"')
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=helper.get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "extended","regular",or "trading"')
+        print('ERROR: Bounds must be "extended","regular",or "trading"', file=helper.get_output())
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"')
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
         return([None])
 
     symbols = helper.inputs_to_set(inputSymbols)
@@ -572,7 +571,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
     histData = []
     for count, item in enumerate(data):
         if (len(item['historicals']) == 0):
-            print(helper.error_ticker_does_not_exist(symbols[count]))
+            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
             continue
         stockSymbol = item['symbol']
         for subitem in item['historicals']:
