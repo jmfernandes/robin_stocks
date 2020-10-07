@@ -134,10 +134,10 @@ def id_for_option(symbol, expirationDate, strike, optionType):
 
     """ 
     symbol = symbol.upper()
-
+    chain_id = id_for_chain(symbol)
     payload = {
-        'chain_symbol': symbol,
-        'expiration_date': expirationDate,
+        'chain_id': chain_id,
+        'expiration_dates': expirationDate,
         'strike_price': strike,
         'type': optionType,
         'state': 'active'
