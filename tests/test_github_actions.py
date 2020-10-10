@@ -423,7 +423,7 @@ class TestOptions:
 
     def test_find_options_by_strike(self):
         info = r.find_options_by_strike(self.symbol, self.strike)
-        assert (len(info) > 30)
+        assert (len(info) >= 24)
         info = r.find_options_by_strike(self.symbol, self.strike,'call')
         assert (info[0]['type'] == 'call')
         info = r.find_options_by_strike(self.symbol, self.strike, info='expiration_date')
