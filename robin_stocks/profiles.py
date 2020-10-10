@@ -51,7 +51,6 @@ def load_account_profile(info=None):
                       * eligible_for_fractionals
                       * eligible_for_drip
                       * eligible_for_cash_management
-                      * eligible_for_trading_on_expiration
                       * cash_management_enabled
                       * option_trading_on_expiration_enabled
                       * cash_held_for_options_collateral

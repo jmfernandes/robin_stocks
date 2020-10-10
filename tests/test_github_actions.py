@@ -675,7 +675,6 @@ class TestProfiles:
         assert ('eligible_for_fractionals' in profile)
         assert ('eligible_for_drip' in profile)
         assert ('eligible_for_cash_management' in profile)
-        assert ('eligible_for_trading_on_expiration' in profile)
         assert ('cash_management_enabled' in profile)
         assert ('option_trading_on_expiration_enabled' in profile)
         assert ('cash_held_for_options_collateral' in profile)
