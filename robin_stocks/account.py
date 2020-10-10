@@ -559,7 +559,7 @@ def download_all_documents(doctype=None, dirpath=None):
 
 @helper.login_required
 def get_all_watchlists(info=None):
-    """Returns a list of all watchlists that have been created. Everone has a 'default' watchlist.
+    """Returns a list of all watchlists that have been created. Everyone has a 'My First List' watchlist.
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
@@ -572,7 +572,7 @@ def get_all_watchlists(info=None):
 
 
 @helper.login_required
-def get_watchlist_by_name(name='Default', info=None):
+def get_watchlist_by_name(name="My First List", info=None):
     """Returns a list of information related to the stocks in a single watchlist.
 
     :param name: The name of the watchlist to get data from.
@@ -596,7 +596,7 @@ def get_watchlist_by_name(name='Default', info=None):
 
 
 @helper.login_required
-def post_symbols_to_watchlist(inputSymbols, name='Default'):
+def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     """Posts multiple stock tickers to a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -607,17 +607,31 @@ def post_symbols_to_watchlist(inputSymbols, name='Default'):
 
     """
     symbols = helper.inputs_to_set(inputSymbols)
-    payload = {
-        'symbols': ','.join(symbols)
-    }
-    url = urls.watchlists(name, True)
-    data = helper.request_post(url, payload)
+    ids = stocks.get_instruments_by_symbols(symbols, info='id')
+    data = []
+    #Get id of requested watchlist
+    all_watchlists = get_all_watchlists()
+    watchlist_id = ''
+    for wl in all_watchlists['results']:
+        if wl['display_name'] == name:
+            watchlist_id = wl['id']
+
+    for id in ids:
+        payload = {
+            watchlist_id: [{
+                "object_type" : "instrument",
+                "object_id" : id,
+                "operation" : "create"
+            }]
+        }
+        url = urls.watchlists(name, True)
+        data.append(helper.request_post(url, payload, json=True))
 
     return(data)
 
 
 @helper.login_required
-def delete_symbols_from_watchlist(inputSymbols, name='Default'):
+def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     """Deletes multiple stock tickers from a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -631,9 +645,23 @@ def delete_symbols_from_watchlist(inputSymbols, name='Default'):
     ids = stocks.get_instruments_by_symbols(symbols, info='id')
     data = []
 
+    #Get id of requested watchlist
+    all_watchlists = get_all_watchlists()
+    watchlist_id = ''
+    for wl in all_watchlists['results']:
+        if wl['display_name'] == name:
+            watchlist_id = wl['id']
+
     for id in ids:
-        url = urls.watchlist_delete(name, id)
-        data.append(helper.request_delete(url))
+        payload = {
+            watchlist_id: [{
+                "object_type" : "instrument",
+                "object_id" : id,
+                "operation" : "delete"
+            }]
+        }
+        url = urls.watchlists(name, True)
+        data.append(helper.request_post(url, payload, json=True))
 
     return(data)
 

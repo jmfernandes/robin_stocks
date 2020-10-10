@@ -139,7 +139,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
                'state': 'active'}
 
     if expirationDate:
-        payload['expiration_date'] = expirationDate
+        payload['expiration_dates'] = expirationDate
     if strikePrice:
         payload['strike_price'] = strikePrice
     if optionType:
@@ -326,8 +326,12 @@ def get_option_market_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = urls.marketdata_options(id)
-    data = helper.request_get(url)
+    instrument = get_option_instrument_data_by_id(id)
+    url = urls.marketdata_options()
+    payload = {
+        "instruments" : instrument['url']
+    }
+    data = helper.request_get(url, 'results', payload)
 
     if not data:
         data= {

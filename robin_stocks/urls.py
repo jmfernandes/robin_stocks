@@ -148,16 +148,11 @@ def wiretransfers():
 
 
 def watchlists(name=None, add=False):
-    if add:
-        return('https://api.robinhood.com/watchlists/{0}/bulk_add/'.format(name))
-
     if name:
         return('https://api.robinhood.com/midlands/lists/items/')
     else:
         return('https://api.robinhood.com/midlands/lists/default/')
 
-def watchlist_delete(name, instrument):
-    return('https://api.robinhood.com/watchlists/{}/{}/'.format(name,instrument))
 
 # markets
 
@@ -216,8 +211,8 @@ def option_positions():
     return('https://api.robinhood.com/options/positions/')
 
 
-def marketdata_options(id):
-    return('https://api.robinhood.com/marketdata/options/{0}/'.format(id))
+def marketdata_options():
+    return('https://api.robinhood.com/marketdata/options/')
 
 # pricebook
 
