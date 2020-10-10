@@ -572,7 +572,7 @@ def get_all_watchlists(info=None):
 
 
 @helper.login_required
-def get_watchlist_by_name(name='My First List', info=None):
+def get_watchlist_by_name(name="My First List", info=None):
     """Returns a list of information related to the stocks in a single watchlist.
 
     :param name: The name of the watchlist to get data from.
@@ -596,7 +596,7 @@ def get_watchlist_by_name(name='My First List', info=None):
 
 
 @helper.login_required
-def post_symbols_to_watchlist(inputSymbols, name='My First List'):
+def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     """Posts multiple stock tickers to a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -631,7 +631,7 @@ def post_symbols_to_watchlist(inputSymbols, name='My First List'):
 
 
 @helper.login_required
-def delete_symbols_from_watchlist(inputSymbols, name='My First List'):
+def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     """Deletes multiple stock tickers from a watchlist.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
