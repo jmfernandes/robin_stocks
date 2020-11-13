@@ -35,4 +35,5 @@ jobs:
       run: |
         pip install pytest
         pip install pytest-dotenv
+        pip install python-dateutil
         pytest tests/test_github_actions.py
