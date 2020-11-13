@@ -4,6 +4,7 @@ import datetime
 import robin_stocks as r
 import pyotp
 import pytest
+from dateutil.relativedelta import relativedelta
 
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and
@@ -404,10 +405,10 @@ class TestOptions:
     totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
     login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
     #
-    now = datetime.datetime.now()
+    now = datetime.datetime.now() + relativedelta(months=1)
     expiration_date = third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
     symbol = 'AAPL'
-    strike = round_up_price(symbol, 100)
+    strike = round_up_price(symbol, 10)
 
     def test_find_tradable_options(self):
         info = r.find_options_by_expiration(self.symbol, self.expiration_date)

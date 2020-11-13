@@ -301,7 +301,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 continue
 
             market_data = get_option_market_data_by_id(option['id'])
-            option.update(market_data)
+            option.update(market_data[0])
             write_spinner()
 
             try:
