@@ -101,12 +101,14 @@ from .orders import get_all_stock_orders,               \
                     order_buy_limit,                    \
                     order_buy_stop_loss,                \
                     order_buy_stop_limit,               \
+                    order_buy_trailing_stop,            \
                     order_sell_market,                  \
                     order_sell_fractional_by_quantity,  \
                     order_sell_fractional_by_price,     \
                     order_sell_limit,                   \
                     order_sell_stop_loss,               \
                     order_sell_stop_limit,              \
+                    order_sell_trailing_stop,           \
                     order_buy_option_stop_limit,        \
                     order_sell_option_stop_limit,       \
                     order_buy_option_limit,             \
