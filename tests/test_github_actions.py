@@ -229,7 +229,7 @@ class TestStocks:
         event = r.get_events(self.single_stock)
         assert (len(event) == 0)
         event = r.get_events(self.event_stock)
-        assert (len(event) == 1)
+        assert (len(event) != 0)
         event = event[0]
         assert ('account' in event)
         assert ('cash_component' in event)
@@ -409,6 +409,15 @@ class TestOptions:
     expiration_date = third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
     symbol = 'AAPL'
     strike = round_up_price(symbol, 10)
+
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+
+    @classmethod
+    def teardown_class(cls):
+        r.logout()
 
     def test_find_tradable_options(self):
         info = r.find_options_by_expiration(self.symbol, self.expiration_date)

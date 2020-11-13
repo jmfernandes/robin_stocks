@@ -105,7 +105,7 @@ def get_chains(symbol, info=None):
 
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
     """Returns a list of all available options for a stock.
 
@@ -148,7 +148,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
     data = helper.request_get(url, 'pagination', payload)
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -186,7 +186,7 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -223,7 +223,7 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -263,7 +263,7 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
     return helper.filter(data, info)
 
-
+@helper.login_required
 def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
     """Returns a list of option market data for several stock tickers that match a range of profitability.
 
@@ -313,7 +313,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
 
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def get_option_market_data_by_id(id, info=None):
     """Returns the option market data for a stock, including the greeks,
     open interest, change of profit, and adjusted mark price.
@@ -367,7 +367,7 @@ def get_option_market_data_by_id(id, info=None):
 
     return(helper.filter(data, info))
 
-
+@helper.login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
     """Returns the option market data for the stock option, including the greeks,
     open interest, change of profit, and adjusted mark price.
