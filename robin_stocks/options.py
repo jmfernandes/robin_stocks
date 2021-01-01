@@ -301,15 +301,17 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 continue
 
             market_data = get_option_market_data_by_id(option['id'])
-            option.update(market_data[0])
-            write_spinner()
+            
+            if len(market_data):
+                option.update(market_data[0])
+                write_spinner()
 
-            try:
-                floatValue = float(option[typeProfit])
-                if (floatValue >= profitFloor and floatValue <= profitCeiling):
-                    data.append(option)
-            except:
-                pass
+                try:
+                    floatValue = float(option[typeProfit])
+                    if (floatValue >= profitFloor and floatValue <= profitCeiling):
+                        data.append(option)
+                except:
+                    pass
 
     return(helper.filter(data, info))
 
