@@ -423,11 +423,11 @@ class TestOptions:
         info = r.find_options_by_expiration(self.symbol, self.expiration_date)
         first = info[0]
         assert (first['expiration_date'] == self.expiration_date)
-        assert (len(info) > 100)
+        assert (len(info) > 50)
         info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='strike_price')
         first = info[0]
         assert (type(first) == str)
-        assert (len(info) > 100)
+        assert (len(info) > 50)
         info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='expiration_date')
         assert (len(set(info)) == 1)
 
@@ -528,7 +528,7 @@ class TestMarkets:
         assert (float(first['price_movement']['market_hours_last_movement_pct']) < 0)
 
     def test_get_all_stocks_from_market_tag(self):
-        movers = r.get_all_stocks_from_market_tag('upcoming-earnings')
+        movers = r.get_all_stocks_from_market_tag('technology')
         assert (movers)
         first = movers[0]
         assert ('ask_price' in first)
