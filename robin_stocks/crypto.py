@@ -118,18 +118,16 @@ def get_crypto_quote(symbol, info=None):
     :type info: Optional[str]
     :returns: [dict] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
     Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
-    :Dictionary Keys: * asset_currency
-                      * display_only
+    :Dictionary Keys: * ask_price
+                      * bid_price
+                      * high_price
                       * id
-                      * max_order_size
-                      * min_order_size
-                      * min_order_price_increment
-                      * min_order_quantity_increment
-                      * name
-                      * quote_currency
+                      * low_price
+                      * mark_price
+                      * open_price
                       * symbol
-                      * tradability
-
+                      * volume
+ 
     """
     id = get_crypto_info(symbol, info='id')
     url = urls.crypto_quote(id)
@@ -147,17 +145,15 @@ def get_crypto_quote_from_id(id, info=None):
     :type info: Optional[str]
     :returns: [dict] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
     Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
-    :Dictionary Keys: * asset_currency
-                      * display_only
+    :Dictionary Keys: * ask_price
+                      * bid_price
+                      * high_price
                       * id
-                      * max_order_size
-                      * min_order_size
-                      * min_order_price_increment
-                      * min_order_quantity_increment
-                      * name
-                      * quote_currency
+                      * low_price
+                      * mark_price
+                      * open_price
                       * symbol
-                      * tradability
+                      * volume
 
     """
     url = urls.crypto_quote(id)
