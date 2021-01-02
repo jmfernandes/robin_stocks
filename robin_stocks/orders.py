@@ -202,7 +202,7 @@ def cancel_stock_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled', file=helper.get_output())
+        print('Order '+str(orderID)+' cancelled', file=helper.get_output())
     return(data)
 
 
@@ -219,7 +219,7 @@ def cancel_option_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled', file=helper.get_output())
+        print('Order '+str(orderID)+' cancelled', file=helper.get_output())
     return(data)
 
 
@@ -236,7 +236,7 @@ def cancel_crypto_order(orderID):
     data = helper.request_post(url)
 
     if data:
-        print('Order '+orderID+' cancelled', file=helper.get_output())
+        print('Order '+str(orderID)+' cancelled', file=helper.get_output())
     return(data)
 
 

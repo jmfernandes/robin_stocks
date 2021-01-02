@@ -89,8 +89,11 @@ def phoenix():
 def positions():
     return('https://api.robinhood.com/positions/')
 
-def banktransfers():
-    return('https://api.robinhood.com/ach/transfers/')
+def banktransfers(direction=None):
+    if direction == 'received':
+        return('https://api.robinhood.com/ach/received/transfers/')
+    else:
+        return('https://api.robinhood.com/ach/transfers/')
 
 def cardtransactions():
    return('https://minerva.robinhood.com/history/transactions/')

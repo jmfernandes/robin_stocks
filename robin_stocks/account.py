@@ -338,16 +338,20 @@ def unlink_bank_account(id):
 
 
 @helper.login_required
-def get_bank_transfers(info=None):
+def get_bank_transfers(direction=None, info=None):
     """Returns all bank transfers made for the account.
 
+    :param direction: Possible values are 'received'. If left blank, function will return all withdrawls and deposits \
+        that are initiated from Robinhood. If the value is 'received', funciton will return transfers intiated from \
+        your bank rather than Robinhood.
+    :type direction: Optional[str]
     :param info: Will filter the results to get a specific value. 'direction' gives if it was deposit or withdrawl.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.banktransfers()
+    url = urls.banktransfers(direction)
     data = helper.request_get(url, 'pagination')
     return(helper.filter_data(data, info))
 
