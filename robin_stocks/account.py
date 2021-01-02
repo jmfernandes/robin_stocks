@@ -45,7 +45,7 @@ def load_phoenix_account(info=None):
     """
     url = urls.phoenix()
     data = helper.request_get(url, 'regular')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
@@ -79,7 +79,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
     }
     data = helper.request_get(url, 'regular', payload)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_all_positions(info=None):
@@ -111,7 +111,7 @@ def get_all_positions(info=None):
     url = urls.positions()
     data = helper.request_get(url, 'pagination')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -145,7 +145,7 @@ def get_open_stock_positions(info=None):
     payload = {'nonzero': 'true'}
     data = helper.request_get(url, 'pagination', payload)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -176,7 +176,7 @@ def get_dividends(info=None):
     url = urls.dividends()
     data = helper.request_get(url, 'pagination')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -238,7 +238,7 @@ def get_notifications(info=None):
     url = urls.notifications()
     data = helper.request_get(url, 'pagination')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -265,7 +265,7 @@ def get_wire_transfers(info=None):
     """
     url = urls.wiretransfers()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -303,7 +303,7 @@ def get_linked_bank_accounts(info=None):
     """
     url = urls.linked()
     data = helper.request_get(url, 'results')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -320,7 +320,7 @@ def get_bank_account_info(id, info=None):
     """
     url = urls.linked(id)
     data = helper.request_get(url)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -349,7 +349,7 @@ def get_bank_transfers(info=None):
     """
     url = urls.banktransfers()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_card_transactions(cardType=None, info=None):
@@ -369,7 +369,7 @@ def get_card_transactions(cardType=None, info=None):
 
     url = urls.cardtransactions()
     data = helper.request_get(url, 'pagination', payload)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_stock_loan_payments(info=None):
@@ -383,7 +383,7 @@ def get_stock_loan_payments(info=None):
     """
     url = urls.stockloan()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -398,7 +398,7 @@ def get_margin_interest(info=None):
     """
     url = urls.margininterest()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -413,7 +413,7 @@ def get_subscription_fees(info=None):
     """
     url = urls.subscription()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -428,7 +428,7 @@ def get_referrals(info=None):
     """
     url = urls.referral()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -444,7 +444,7 @@ def get_day_trades(info=None):
     account = profiles.load_account_profile('account_number')
     url = urls.daytrades(account)
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -460,7 +460,7 @@ def get_documents(info=None):
     url = urls.documents()
     data = helper.request_get(url, 'pagination')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -568,7 +568,7 @@ def get_all_watchlists(info=None):
     """
     url = urls.watchlists()
     data = helper.request_get(url, 'result')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -592,7 +592,7 @@ def get_watchlist_by_name(name="My First List", info=None):
 
     url = urls.watchlists(name)
     data = helper.request_get(url,'list_id',{'list_id':watchlist_id})
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required

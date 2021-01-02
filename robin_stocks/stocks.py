@@ -42,7 +42,7 @@ def get_quotes(inputSymbols, info=None):
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_fundamentals(inputSymbols, info=None):
@@ -97,7 +97,7 @@ def get_fundamentals(inputSymbols, info=None):
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_instruments_by_symbols(inputSymbols, info=None):
@@ -148,7 +148,7 @@ def get_instruments_by_symbols(inputSymbols, info=None):
         else:
             print(helper.error_ticker_does_not_exist(item), file=helper.get_output())
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_instrument_by_url(url, info=None):
@@ -190,7 +190,7 @@ def get_instrument_by_url(url, info=None):
     """
     data = helper.request_get(url, 'regular')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
@@ -249,9 +249,9 @@ def get_name_by_symbol(symbol):
     if not data:
         return(None)
     # If stock doesn't have a simple name attribute then get the full name.
-    filter = helper.filter(data, info='simple_name')
+    filter = helper.filter_data(data, info='simple_name')
     if not filter or filter == "":
-        filter = helper.filter(data, info='name')
+        filter = helper.filter_data(data, info='name')
     return(filter)
 
 
@@ -269,9 +269,9 @@ def get_name_by_url(url):
     if not data:
         return(None)
     # If stock doesn't have a simple name attribute then get the full name.
-    filter = helper.filter(data, info='simple_name')
+    filter = helper.filter_data(data, info='simple_name')
     if not filter or filter == "":
-        filter = helper.filter(data, info='name')
+        filter = helper.filter_data(data, info='name')
     return(filter)
 
 
@@ -286,7 +286,7 @@ def get_symbol_by_url(url):
 
     """
     data = helper.request_get(url)
-    return helper.filter(data, info='symbol')
+    return helper.filter_data(data, info='symbol')
 
 @helper.convert_none_to_string
 def get_ratings(symbol, info=None):
@@ -323,7 +323,7 @@ def get_ratings(symbol, info=None):
             oldText = item['text']
             item['text'] = oldText.encode('UTF-8')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
     
 
 def get_events(symbol, info=None):
@@ -365,7 +365,7 @@ def get_events(symbol, info=None):
     url = urls.events()
     data = helper.request_get(url, 'results', payload)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_earnings(symbol, info=None):
@@ -397,7 +397,7 @@ def get_earnings(symbol, info=None):
     payload = {'symbol': symbol}
     data = helper.request_get(url, 'results', payload)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_news(symbol, info=None):
@@ -436,7 +436,7 @@ def get_news(symbol, info=None):
     url = urls.news(symbol)
     data = helper.request_get(url, 'results')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_splits(symbol, info=None):
@@ -465,7 +465,7 @@ def get_splits(symbol, info=None):
 
     url = urls.splits(symbol)
     data = helper.request_get(url, 'results')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def find_instrument_data(query):
@@ -578,7 +578,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
             subitem['symbol'] = stockSymbol
             histData.append(subitem)
 
-    return(helper.filter(histData, info))
+    return(helper.filter_data(histData, info))
 
 
 def get_stock_quote_by_id(stock_id, info=None):
@@ -611,7 +611,7 @@ def get_stock_quote_by_id(stock_id, info=None):
     url = urls.marketdata_quotes(stock_id)
     data = helper.request_get(url)
 
-    return (helper.filter(data, info))
+    return (helper.filter_data(data, info))
 
 
 def get_stock_quote_by_symbol(symbol, info=None):
@@ -660,7 +660,7 @@ def get_pricebook_by_id(stock_id, info=None):
     url = urls.marketdata_pricebook(stock_id)
     data = helper.request_get(url)
 
-    return (helper.filter(data, info))
+    return (helper.filter_data(data, info))
 
 
 def get_pricebook_by_symbol(symbol, info=None):

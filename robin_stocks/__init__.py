@@ -49,7 +49,8 @@ from .helper import request_get,      \
                     request_document, \
                     update_session,   \
                     set_output,       \
-                    get_output                       
+                    get_output,       \
+                    filter_data                       
 
 from .markets import get_currency_pairs,                    \
                      get_markets,                           \

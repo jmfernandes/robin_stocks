@@ -23,7 +23,7 @@ def load_crypto_profile(info=None):
     """
     url = urls.crypto_account()
     data = helper.request_get(url, 'indexzero')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -48,7 +48,7 @@ def get_crypto_positions(info=None):
     """
     url = urls.crypto_holdings()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_crypto_currency_pairs(info=None):
@@ -73,7 +73,7 @@ def get_crypto_currency_pairs(info=None):
     """
     url = urls.crypto_currency_pairs()
     data = helper.request_get(url, 'results')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_crypto_info(symbol, info=None):
@@ -105,7 +105,7 @@ def get_crypto_info(symbol, info=None):
         data = data[0]
     else:
         data = None
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -132,7 +132,7 @@ def get_crypto_quote(symbol, info=None):
     id = get_crypto_info(symbol, info='id')
     url = urls.crypto_quote(id)
     data = helper.request_get(url)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -158,7 +158,7 @@ def get_crypto_quote_from_id(id, info=None):
     """
     url = urls.crypto_quote(id)
     data = helper.request_get(url)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -222,4 +222,4 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
         subitem['symbol'] = cryptoSymbol
         histData.append(subitem)
 
-    return(helper.filter(histData, info))
+    return(helper.filter_data(histData, info))

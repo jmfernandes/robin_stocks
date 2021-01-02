@@ -19,7 +19,7 @@ def get_all_stock_orders(info=None):
     """
     url = urls.orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -34,7 +34,7 @@ def get_all_option_orders(info=None):
     """
     url = urls.option_orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -49,7 +49,7 @@ def get_all_crypto_orders(info=None):
     """
     url = urls.crypto_orders()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -67,7 +67,7 @@ def get_all_open_stock_orders(info=None):
 
     data = [item for item in data if item['cancel'] is not None]
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -85,7 +85,7 @@ def get_all_open_option_orders(info=None):
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -103,7 +103,7 @@ def get_all_open_crypto_orders(info=None):
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required

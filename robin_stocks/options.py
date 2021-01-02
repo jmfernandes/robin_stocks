@@ -32,7 +32,7 @@ def get_aggregate_positions(info=None):
     """
     url = urls.aggregate()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -48,7 +48,7 @@ def get_market_options(info=None):
     url = urls.option_orders()
     data = helper.request_get(url, 'pagination')
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -63,7 +63,7 @@ def get_all_option_positions(info=None):
     """
     url = urls.option_positions()
     data = helper.request_get(url, 'pagination')
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 @helper.login_required
@@ -80,7 +80,7 @@ def get_open_option_positions(info=None):
     payload = {'nonzero': 'True'}
     data = helper.request_get(url, 'pagination', payload)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_chains(symbol, info=None):
@@ -103,7 +103,7 @@ def get_chains(symbol, info=None):
     url = urls.chains(symbol)
     data = helper.request_get(url)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
@@ -146,7 +146,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         payload['type'] = optionType
 
     data = helper.request_get(url, 'pagination', payload)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
@@ -184,7 +184,7 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
         data.extend(filteredOptions)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
@@ -221,7 +221,7 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
         data.extend(filteredOptions)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
@@ -261,7 +261,7 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
         data.extend(filteredOptions)
 
-    return helper.filter(data, info)
+    return helper.filter_data(data, info)
 
 @helper.login_required
 def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
@@ -313,7 +313,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 except:
                     pass
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_option_market_data_by_id(id, info=None):
@@ -367,7 +367,7 @@ def get_option_market_data_by_id(id, info=None):
         'low_fill_rate_sell_price':''
         }
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
@@ -402,7 +402,7 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
         marketData = get_option_market_data_by_id(optionID)
         data.append(marketData)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_option_instrument_data_by_id(id, info=None):
@@ -418,7 +418,7 @@ def get_option_instrument_data_by_id(id, info=None):
     """
     url = urls.option_instruments(id)
     data = helper.request_get(url)
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None):
@@ -449,7 +449,7 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
     url = urls.option_instruments(optionID)
     data = helper.request_get(url)
 
-    return(helper.filter(data, info))
+    return(helper.filter_data(data, info))
 
 
 def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None):
@@ -512,4 +512,4 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         subitem['symbol'] = symbol
         histData.append(subitem)
 
-    return(helper.filter(histData, info))
+    return(helper.filter_data(histData, info))

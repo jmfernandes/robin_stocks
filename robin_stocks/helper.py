@@ -71,7 +71,7 @@ def id_for_stock(symbol):
     payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
 
-    return(filter(data, 'id'))
+    return(filter_data(data, 'id'))
 
 
 def id_for_chain(symbol):
@@ -172,7 +172,7 @@ def round_price(price):
     return returnPrice
 
 
-def filter(data, info):
+def filter_data(data, info):
     """Takes the data and extracts the value for the keyword that matches info.
 
     :param data: The data returned by request_get.
