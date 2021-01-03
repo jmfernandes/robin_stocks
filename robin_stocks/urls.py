@@ -109,6 +109,8 @@ def dividends():
 def documents():
     return('https://api.robinhood.com/documents/')
 
+def withdrawl(bank_id):
+    return("https://api.robinhood.com/ach/relationships/{}/".format(bank_id))
 
 def linked(id=None, unlink=False):
     if unlink:

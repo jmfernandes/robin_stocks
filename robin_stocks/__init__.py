@@ -27,7 +27,8 @@ from .account import get_historical_portfolio,      \
                      delete_symbols_from_watchlist, \
                      build_holdings,                \
                      build_user_profile,            \
-                     load_phoenix_account
+                     load_phoenix_account,          \
+                     withdrawl_funds_to_bank_account
 
 from .authentication import login, \
                             logout

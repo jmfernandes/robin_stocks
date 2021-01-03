@@ -1,10 +1,12 @@
 """Contains functions for getting information related to the user account."""
 import os
+from uuid import uuid4
 
 import robin_stocks.helper as helper
 import robin_stocks.profiles as profiles
 import robin_stocks.stocks as stocks
 import robin_stocks.urls as urls
+
 
 @helper.login_required
 def load_phoenix_account(info=None):
@@ -291,6 +293,29 @@ def get_margin_calls(symbol=None):
 
     return(data)
 
+
+@helper.login_required
+def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
+    """Submits a post request to withdraw a certain amount of money to a bank account.
+
+    :param ach_relationship: The url of the bank account you want to withdrawl the money to.
+    :type ach_relationship: str
+    :param amount: The amount of money you wish to withdrawl.
+    :type amount: float
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for the transaction.
+
+    """
+    url = urls.banktransfers()
+    payload = {
+        "amount": amount,
+        "direction": "withdraw",
+        "ach_relationship": ach_relationship,
+        "ref_id": str(uuid4())
+    }
+    data = helper.request_post(url, payload)
+    return(helper.filter_data(data, info))
 
 @helper.login_required
 def get_linked_bank_accounts(info=None):
