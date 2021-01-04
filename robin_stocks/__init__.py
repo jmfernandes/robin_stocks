@@ -28,7 +28,8 @@ from .account import get_historical_portfolio,      \
                      build_holdings,                \
                      build_user_profile,            \
                      load_phoenix_account,          \
-                     withdrawl_funds_to_bank_account
+                     withdrawl_funds_to_bank_account, \
+                     deposit_funds_to_robinhood_account
 
 from .authentication import login, \
                             logout

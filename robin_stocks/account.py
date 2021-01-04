@@ -317,6 +317,30 @@ def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
     data = helper.request_post(url, payload)
     return(helper.filter_data(data, info))
 
+
+@helper.login_required
+def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
+    """Submits a post request to deposit a certain amount of money from a bank account to Robinhood.
+
+    :param ach_relationship: The url of the bank account you want to deposit the money from.
+    :type ach_relationship: str
+    :param amount: The amount of money you wish to deposit.
+    :type amount: float
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for the transaction.
+
+    """
+    url = urls.banktransfers()
+    payload = {
+        "amount": amount,
+        "direction": "deposit",
+        "ach_relationship": ach_relationship,
+        "ref_id": str(uuid4())
+    }
+    data = helper.request_post(url, payload)
+    return(helper.filter_data(data, info))
+
 @helper.login_required
 def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
