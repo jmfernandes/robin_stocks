@@ -81,7 +81,7 @@ def export_completed_crypto_orders(dir_path, file_name=None):
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
     :type dir_path: str
-    :param file_name: An optional argument for the name of the file. If not defined, filename will be stock_orders_{current date}
+    :param file_name: An optional argument for the name of the file. If not defined, filename will be crypto_orders_{current date}
     :type file_name: Optional[str]
 
     """
