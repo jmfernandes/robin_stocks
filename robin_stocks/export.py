@@ -74,6 +74,47 @@ def export_completed_stock_orders(dir_path, file_name=None):
                     order['average_price']
                 ])
         f.close()
+    
+@helper.login_required
+def export_completed_crypto_orders(dir_path, file_name=None):
+    """Write all completed crypto orders to a csv file
+
+    :param dir_path: Absolute or relative path to the directory the file will be written.
+    :type dir_path: str
+    :param file_name: An optional argument for the name of the file. If not defined, filename will be crypto_orders_{current date}
+    :type file_name: Optional[str]
+
+    """
+    file_path = create_absolute_csv(dir_path, file_name, 'crypto')
+    all_orders = orders.get_all_crypto_orders()
+    
+    with open(file_path, 'w', newline='') as f:
+        csv_writer = writer(f)
+        csv_writer.writerow([
+            'symbol',
+            'date',
+            'order_type',
+            'side',
+            'fees',
+            'quantity',
+            'average_price'
+        ])
+        for order in all_orders:
+            if order['state'] == 'filled' and order['cancel_url'] is None:
+                try:
+                    fees = order['fees']
+                except KeyError:
+                    fees = 0.0
+                csv_writer.writerow([
+                    crypto.get_crypto_quote_from_id(order['currency_pair_id'], 'symbol'),
+                    order['last_transaction_at'],
+                    order['type'],
+                    order['side'],
+                    fees,
+                    order['quantity'],
+                    order['average_price']
+                ])
+        f.close()
 
 
 @helper.login_required
