@@ -350,7 +350,8 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price',
 @helper.login_required
 def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
-    Good for share fractions up to 6 decimal places.
+    Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
+    for fractional trades.
 
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
@@ -400,7 +401,8 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceT
 @helper.login_required
 def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
-    Good for share fractions up to 6 decimal places.
+    Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
+    for fractional trades.
 
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
@@ -660,7 +662,8 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price'
 @helper.login_required
 def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
-    Good for share fractions up to 6 decimal places.
+    Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
+    for fractional trades.
 
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
@@ -707,7 +710,8 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', price
 @helper.login_required
 def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
-    Good for share fractions up to 6 decimal places.
+    Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
+    for fractional trades.
 
     :param symbol: The stock ticker of the stock to purchase.
     :type symbol: str
