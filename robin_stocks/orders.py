@@ -1433,8 +1433,7 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
     :type amountInDollars: float
     :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
     :type priceType: str
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
@@ -1483,8 +1482,7 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     :type quantity: float
     :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
     :type priceType: str
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
@@ -1529,8 +1527,7 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     :type quantity: float
     :param price: The limit price to set for the crypto.
     :type price: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
@@ -1576,8 +1573,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', t
     :type amountInDollars: float
     :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
     :type priceType: str
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
@@ -1627,8 +1623,7 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeI
     :type quantity: float
     :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
     :type priceType: str
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
@@ -1673,8 +1668,7 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     :type quantity: float
     :param price: The limit price to set for the crypto.
     :type price: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
