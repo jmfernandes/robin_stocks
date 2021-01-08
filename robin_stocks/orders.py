@@ -348,7 +348,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price',
 
 
 @helper.login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceType='ask_price', extendedHours=False):
+def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -356,8 +356,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceT
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
     If this parameter is not None, then extendedHours parameter is ignored.
@@ -399,7 +398,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceT
 
 
 @helper.login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', priceType='ask_price', extendedHours=False):
+def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='ask_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -407,8 +406,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', pr
     :type symbol: str
     :param amountInDollars: The amount in dollars of the fractional shares you want to buy.
     :type amountInDollars: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
     If this parameter is not None, then extendedHours parameter is ignored.
@@ -660,7 +658,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price'
 
 
 @helper.login_required
-def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', priceType='bid_price', extendedHours=False):
+def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -668,8 +666,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', price
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -708,7 +705,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gtc', price
 
 
 @helper.login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', priceType='bid_price', extendedHours=False):
+def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='bid_price', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places.
 
@@ -716,8 +713,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gtc', p
     :type symbol: str
     :param amountInDollars: The amount in dollars of the fractional shares you want to buy.
     :type amountInDollars: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
