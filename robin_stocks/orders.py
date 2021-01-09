@@ -298,7 +298,7 @@ def cancel_all_crypto_orders():
 
 
 @helper.login_required
-def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price', extendedHours=False):
+def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -306,11 +306,8 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price',
     :param quantity: The number of stocks to buy.
     :type quantity: int
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
-    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
-    If this parameter is not None, then extendedHours parameter is ignored.
-    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
@@ -318,37 +315,11 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', priceType='ask_price',
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
+    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='ask_price', extendedHours=False):
+def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -359,9 +330,6 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceT
     :type quantity: float
     :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
-    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
-    If this parameter is not None, then extendedHours parameter is ignored.
-    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
@@ -369,37 +337,11 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceT
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return (data)
+    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='ask_price', extendedHours=False):
+def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -410,9 +352,6 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', pr
     :type amountInDollars: float
     :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
-    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
-    If this parameter is not None, then extendedHours parameter is ignored.
-    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
@@ -420,43 +359,15 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', pr
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
     if amountInDollars < 1:
         print("ERROR: Fractional share price should meet minimum 1.00.", file=helper.get_output())
         return None
 
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
     # turn the money amount into decimal number of shares
-    try:
-        fractional_shares = helper.round_price(
-            amountInDollars/float(price))
-    except:
-        fractional_shares = 0
+    price = next(iter(stocks.get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
+    fractional_shares = 0 if (price == 0.00) else helper.round_price(amountInDollars/float(price))
 
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': fractional_shares,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return (data)
+    return order(symbol, fractional_shares, "buy", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -470,7 +381,7 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHou
     :param limitPrice: The price to trigger the buy order.
     :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -479,32 +390,7 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHou
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-        limitPrice = helper.round_price(limitPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': limitPrice,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'limit',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
+    return order(symbol, quantity, "buy", limitPrice, None, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -518,7 +404,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extended
     :param stopPrice: The price to trigger the market order.
     :type stopPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -527,32 +413,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extended
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-        stopPrice = helper.round_price(stopPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': stopPrice,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': 'stop',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
+    return order(symbol, quantity, "buy", None, stopPrice, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -568,7 +429,7 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
     :param stopPrice: The price to trigger the limit order.
     :type stopPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -577,40 +438,39 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-        stopPrice = helper.round_price(stopPrice)
-        limitPrice = helper.round_price(limitPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
+    return order(symbol, quantity, "buy", limitPrice, stopPrice, timeInForce, extendedHours)
 
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': limitPrice,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'limit',
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': 'stop',
-        'side': 'buy',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
 
 @helper.login_required
 def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+    """Submits a trailing stop buy order to be turned into a market order when traling stop price reached.
+
+    :param symbol: The stock ticker of the stock to buy.
+    :type symbol: str
+    :param quantity: The number of stocks to buy.
+    :type quantity: int
+    :param trailAmount: how much to trail by; could be percentage or dollar value depending on trailType
+    :type trailAmount: float
+    :param trailType: could be "amount" or "percentage"
+    :type trailType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day.
+    :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of stocks, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    :returns: Dictionary that contains information regarding the purchase of stocks, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+    """
     return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, timeInForce, extendedHours)
 
+
 @helper.login_required
-def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price', extendedHours=False):
+def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -618,11 +478,8 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price'
     :param quantity: The number of stocks to sell.
     :type quantity: int
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
-    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
-    If this parameter is not None, then extendedHours parameter is ignored.
-    :type priceType: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
@@ -630,33 +487,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', priceType='bid_price'
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
+    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -678,37 +509,11 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', price
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return (data)
+    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', priceType='bid_price', extendedHours=False):
+def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -726,43 +531,14 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', p
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
     if amountInDollars < 1:
         print("ERROR: Fractional share price should meet minimum 1.00.", file=helper.get_output())
         return None
-
-    price = next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00)
     # turn the money amount into decimal number of shares
-    try:
-        fractional_shares = helper.round_price(
-            amountInDollars/float(price))
-    except:
-        fractional_shares = 0
+    price = next(iter(stocks.get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
+    fractional_shares = 0 if (price == 0.00) else helper.round_price(amountInDollars/float(price))
 
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': helper.round_price(price),
-        'quantity': fractional_shares,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return (data)
+    return order(symbol, fractional_shares, "sell", None, None, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -776,7 +552,7 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHo
     :param limitPrice: The price to trigger the sell order.
     :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -785,32 +561,7 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHo
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-        limitPrice = helper.round_price(limitPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': limitPrice,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'limit',
-        'stop_price': None,
-        'time_in_force': timeInForce,
-        'trigger': 'immediate',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
+    return order(symbol, quantity, "sell", limitPrice, None, timeInForce, extendedHours)
 
 
 @helper.login_required
@@ -824,7 +575,7 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     :param stopPrice: The price to trigger the market order.
     :type stopPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -833,44 +584,69 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-        stopPrice = helper.round_price(stopPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
+    return order(symbol, quantity, "sell", None, stopPrice, timeInForce, extendedHours)
 
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': 'stop',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
 
-    url = urls.orders()
-    data = helper.request_post(url, payload)
+@helper.login_required
+def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False):
+    """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
-    return(data)
+    :param symbol: The stock ticker of the stock to sell.
+    :type symbol: str
+    :param quantity: The number of stocks to sell.
+    :type quantity: int
+    :param limitPrice: The price to trigger the market order.
+    :type limitPrice: float
+    :param stopPrice: The price to trigger the limit order.
+    :type stopPrice: float
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day.
+    :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of stocks, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """ 
+    return order(symbol, quantity, "sell", limitPrice, stopPrice, timeInForce, extendedHours)
+
 
 @helper.login_required
 def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
-    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, timeInForce, extendedHours)
-
-@helper.login_required
-def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', timeInForce='gtc',
-                        extendedHours=False):
     """Submits a trailing stop sell order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to sell.
     :type symbol: str
     :param quantity: The number of stocks to sell.
+    :type quantity: int
+    :param trailAmount: how much to trail by; could be percentage or dollar value depending on trailType
+    :type trailAmount: float
+    :param trailType: could be "amount" or "percentage"
+    :type trailType: str
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day.
+    :type timeInForce: Optional[str]
+    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
+    :type extendedHours: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of stocks, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    :returns: Dictionary that contains information regarding the purchase of stocks, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+    """
+    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, timeInForce, extendedHours)
+
+
+@helper.login_required
+def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+    """Submits a trailing stop order to be turned into a market order when traling stop price reached.
+
+    :param symbol: The stock ticker of the stock to trade.
+    :type symbol: str
+    :param quantity: The number of stocks to trade.
     :type quantity: int
     :param side: buy or sell
     :type side: str
@@ -879,7 +655,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
     :param trailType: could be "amount" or "percentage"
     :type trailType: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -944,80 +720,23 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
 
     return (data)
 
+
 @helper.login_required
-def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False):
-    """Submits a stop order to be turned into a limit order once a certain stop price is reached.
+def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
+    """A generic order function.
 
     :param symbol: The stock ticker of the stock to sell.
     :type symbol: str
     :param quantity: The number of stocks to sell.
     :type quantity: int
-    :param limitPrice: The price to trigger the market order.
-    :type limitPrice: float
-    :param stopPrice: The price to trigger the limit order.
-    :type stopPrice: float
-    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
-    :type timeInForce: Optional[str]
-    :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
-    :type extendedHours: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
-    the price, and the quantity.
-
-    """ 
-    try:
-        symbol = symbol.upper().strip()
-        stopPrice = helper.round_price(stopPrice)
-        limitPrice = helper.round_price(limitPrice)
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    payload = {
-        'account': profiles.load_account_profile(info='url'),
-        'instrument': stocks.get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': limitPrice,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'limit',
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': 'stop',
-        'side': 'sell',
-        'extended_hours': extendedHours
-    }
-
-    url = urls.orders()
-    data = helper.request_post(url, payload)
-
-    return(data)
-
-
-@helper.login_required
-def order(symbol, quantity, orderType, trigger, side, priceType=None, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
-    """A generic order function. All parameters must be supplied.
-
-    :param symbol: The stock ticker of the stock to sell.
-    :type symbol: str
-    :param quantity: The number of stocks to sell.
-    :type quantity: int
-    :param orderType: Either 'market' or 'limit'
-    :type orderType: str
-    :param trigger: Either 'immediate' or 'stop'
-    :type trigger: str
     :param side: Either 'buy' or 'sell'
     :type side: str
-    :param priceType: Can either be 'ask_price', 'bid_price', or 'None' for last_trade_price. \
-    If this parameter is not None, then extendedHours parameter is ignored.
-    :type priceType: str
     :param limitPrice: The price to trigger the market order.
     :type limitPrice: float
     :param stopPrice: The price to trigger the limit or market order.
     :type stopPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
-    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    'gfd' = good for the day.
     :type timeInForce: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
@@ -1032,14 +751,28 @@ def order(symbol, quantity, orderType, trigger, side, priceType=None, limitPrice
         print(message, file=helper.get_output())
         return None
 
-    if stopPrice:
-        stopPrice = helper.round_price(stopPrice)
+    orderType = "market"
+    trigger = "immediate"
 
-    if limitPrice:
-        price = helper.round_price(limitPrice)
+    if side == "buy":
+        priceType = "ask_price"
     else:
-        price = helper.round_price(
-            next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00))
+        priceType = "bid_price"
+
+    if limitPrice and stopPrice:
+        price = helper.round_price(limitPrice)
+        stopPrice = helper.round_price(stopPrice)
+        orderType = "limit"
+        trigger = "stop"
+    elif limitPrice:
+        price = helper.round_price(limitPrice)
+        orderType = "limit"
+    elif stopPrice:
+        stopPrice = helper.round_price(stopPrice)
+        price = stopPrice
+        trigger = "stop"
+    else:
+        price = helper.round_price(next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00))
 
     payload = {
         'account': profiles.load_account_profile(info='url'),
@@ -1447,8 +1180,7 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(
-        crypto_info['id'], info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
         shares = helper.round_price(amountInDollars/price)
@@ -1496,8 +1228,7 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(
-        crypto_info['id'], info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
@@ -1587,8 +1318,7 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', t
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(
-        crypto_info['id'], info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
     # turn the money amount into decimal number of shares
     try:
         shares = helper.round_price(amountInDollars/price)
@@ -1637,8 +1367,7 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeI
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(
-        crypto_info['id'], info=priceType))
+    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
