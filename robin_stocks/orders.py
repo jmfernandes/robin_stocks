@@ -1240,7 +1240,7 @@ def order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=Tr
 
 
 @helper.login_required
-def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1248,8 +1248,8 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=T
     :type symbol: str
     :param quantity: The decimal amount of shares to buy.
     :type quantity: float
-    :param price: The limit price to set for the crypto.
-    :type price: float
+    :param limitPrice: The limit price to set for the crypto.
+    :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
@@ -1259,11 +1259,11 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=T
     the price, and the quantity.
 
     """ 
-    return order_crypto(symbol, "buy", quantity, "quantity", price, timeInForce, jsonify)
+    return order_crypto(symbol, "buy", quantity, "quantity", limitPrice, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_buy_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal price to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1271,8 +1271,8 @@ def order_buy_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce=
     :type symbol: str
     :param amountInDollars: The amount in dollars of the crypto you want to buy.
     :type amountInDollars: float
-    :param price: The limit price to set for the crypto.
-    :type price: float
+    :param limitPrice: The limit price to set for the crypto.
+    :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
@@ -1282,7 +1282,7 @@ def order_buy_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce=
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "buy", amountInDollars, "price", price, timeInForce, jsonify)
+    return order_crypto(symbol, "buy", amountInDollars, "price", limitPrice, timeInForce, jsonify)
 
 
 @helper.login_required
@@ -1328,7 +1328,7 @@ def order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=T
 
 
 @helper.login_required
-def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to sell.
     Good for share fractions up to 8 decimal places.
 
@@ -1336,8 +1336,8 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=
     :type symbol: str
     :param quantity: The decimal amount of shares to sell.
     :type quantity: float
-    :param price: The limit price to set for the crypto.
-    :type price: float
+    :param limitPrice: The limit price to set for the crypto.
+    :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
@@ -1347,11 +1347,11 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", quantity, "quantity", price, timeInForce, jsonify)
+    return order_crypto(symbol, "sell", quantity, "quantity", limitPrice, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_sell_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal price to sell.
     Good for share fractions up to 8 decimal places.
 
@@ -1359,8 +1359,8 @@ def order_sell_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce
     :type symbol: str
     :param amountInDollars: The amount in dollars of the crypto you want to sell.
     :type amountInDollars: float
-    :param price: The limit price to set for the crypto.
-    :type price: float
+    :param limitPrice: The limit price to set for the crypto.
+    :type limitPrice: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
@@ -1370,7 +1370,7 @@ def order_sell_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", amountInDollars, "price", price, timeInForce, jsonify)
+    return order_crypto(symbol, "sell", amountInDollars, "price", limitPrice, timeInForce, jsonify)
 
 
 @helper.login_required
