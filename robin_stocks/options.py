@@ -179,7 +179,8 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
         for item in filteredOptions:
             marketData = get_option_market_data_by_id(item['id'])
-            item.update(marketData[0])
+            if marketData:
+                item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)
@@ -216,7 +217,8 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
         for item in filteredOptions:
             marketData = get_option_market_data_by_id(item['id'])
-            item.update(marketData[0])
+            if marketData:
+                item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)
@@ -256,7 +258,8 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
         for item in filteredOptions:
             marketData = get_option_market_data_by_id(item['id'])
-            item.update(marketData[0])
+            if marketData:
+                item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)

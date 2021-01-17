@@ -298,7 +298,7 @@ def cancel_all_crypto_orders():
 
 
 @helper.login_required
-def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -310,16 +310,18 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False):
+def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -332,16 +334,18 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
+def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -354,6 +358,8 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -367,11 +373,11 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
     price = next(iter(stocks.get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else helper.round_price(amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "buy", None, None, timeInForce, extendedHours)
+    return order(symbol, fractional_shares, "buy", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHours=False):
+def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -385,16 +391,18 @@ def order_buy_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHou
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", limitPrice, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "buy", limitPrice, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extendedHours=False):
+def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -408,16 +416,18 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extended
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, stopPrice, timeInForce, extendedHours)
+    return order(symbol, quantity, "buy", None, stopPrice, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False):
+def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -433,16 +443,18 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='g
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", limitPrice, stopPrice, timeInForce, extendedHours)
+    return order(symbol, quantity, "buy", limitPrice, stopPrice, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a trailing stop buy order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to buy.
@@ -458,6 +470,8 @@ def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -466,11 +480,11 @@ def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, timeInForce, extendedHours)
+    return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
+def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -482,16 +496,18 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False):
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='bid_price', extendedHours=False):
+def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -504,16 +520,18 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', price
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False):
+def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -526,6 +544,8 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', e
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -538,11 +558,11 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', e
     price = next(iter(stocks.get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else helper.round_price(amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "sell", None, None, timeInForce, extendedHours)
+    return order(symbol, fractional_shares, "sell", None, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHours=False):
+def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -556,16 +576,18 @@ def order_sell_limit(symbol, quantity, limitPrice, timeInForce='gtc', extendedHo
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", limitPrice, None, timeInForce, extendedHours)
+    return order(symbol, quantity, "sell", limitPrice, None, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extendedHours=False):
+def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -579,16 +601,18 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, timeInForce='gtc', extende
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, stopPrice, timeInForce, extendedHours)
+    return order(symbol, quantity, "sell", None, stopPrice, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False):
+def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -604,16 +628,18 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, timeInForce='
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", limitPrice, stopPrice, timeInForce, extendedHours)
+    return order(symbol, quantity, "sell", limitPrice, stopPrice, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a trailing stop sell order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -629,6 +655,8 @@ def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentag
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -637,11 +665,11 @@ def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentag
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, timeInForce, extendedHours)
+    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, timeInForce, extendedHours, jsonify)
 
 
 @helper.login_required
-def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False):
+def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False, jsonify=True):
     """Submits a trailing stop order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to trade.
@@ -659,10 +687,8 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
-    :returns: Dictionary that contains information regarding the selling of stocks, \
-    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
-    the price, and the quantity.
-
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -716,13 +742,13 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
         payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage)}
 
     url = urls.orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return (data)
 
 
 @helper.login_required
-def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False):
+def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False, jsonify=True):
     """A generic order function.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -740,6 +766,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
     :type timeInForce: str
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
     :type extendedHours: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the purchase or selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -790,13 +818,13 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
     }
 
     url = urls.orders()
-    data = helper.request_post(url, payload)
+    data = helper.request_post(url, payload, jsonify_data=jsonify)
 
     return(data)
 
 
 @helper.login_required
-def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc'):
+def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option credit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -816,15 +844,17 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' = execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce))
+    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce, jsonify))
 
 
 @helper.login_required
-def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'):
+def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option debit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -844,15 +874,17 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce))
+    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce, jsonify))
 
 
 @helper.login_required
-def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc'):
+def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
     :param direction: Can be "credit" or "debit".
@@ -874,6 +906,8 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -909,13 +943,13 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
 
 @helper.login_required
-def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -937,6 +971,8 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -968,13 +1004,13 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
 
 @helper.login_required
-def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -998,6 +1034,8 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -1030,12 +1068,12 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
 
-def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1059,6 +1097,8 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -1091,13 +1131,13 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
 
 @helper.login_required
-def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc'):
+def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
@@ -1119,6 +1159,8 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -1150,13 +1192,13 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     }
 
     url = urls.option_orders()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
 
 @helper.login_required
-def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', timeInForce='gtc'):
+def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1164,47 +1206,20 @@ def order_buy_crypto_by_price(symbol, amountInDollars, priceType='ask_price', ti
     :type symbol: str
     :param amountInDollars: The amount in dollars of the crypto you want to buy.
     :type amountInDollars: float
-    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
-    :type priceType: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
-    # turn the money amount into decimal number of shares
-    try:
-        shares = helper.round_price(amountInDollars/price)
-    except:
-        shares = 0
-
-    payload = {
-        'account_id': crypto.load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
-        'price': price,
-        'quantity': shares,
-        'ref_id': str(uuid4()),
-        'side': 'buy',
-        'time_in_force': timeInForce,
-        'type': 'market'
-    }
-
-    url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
-    return(data)
+    return order_crypto(symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeInForce='gtc'):
+def order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1212,43 +1227,20 @@ def order_buy_crypto_by_quantity(symbol, quantity, priceType='ask_price', timeIn
     :type symbol: str
     :param quantity: The decimal amount of shares to buy.
     :type quantity: float
-    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
-    :type priceType: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
-
-    payload = {
-        'account_id': crypto.load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
-        'price': price,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'side': 'buy',
-        'time_in_force': timeInForce,
-        'type': 'market'
-    }
-
-    url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
-
-    return(data)
+    return order_crypto(symbol, "buy", quantity, "quantity", None, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
+def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1260,41 +1252,41 @@ def order_buy_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     :type price: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    crypto_info = crypto.get_crypto_info(symbol)
-
-    if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.", file=helper.get_output())
-
-    payload = {
-        'account_id': crypto.load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
-        'price': price,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'side': 'buy',
-        'time_in_force': timeInForce,
-        'type': 'limit'
-    }
-
-    url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
-
-    return(data)
+    return order_crypto(symbol, "buy", quantity, "quantity", price, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', timeInForce='gtc'):
+def order_buy_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce='gtc', jsonify=True):
+    """Submits a limit order for a crypto by specifying the decimal price to buy.
+    Good for share fractions up to 8 decimal places.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param amountInDollars: The amount in dollars of the crypto you want to buy.
+    :type amountInDollars: float
+    :param price: The limit price to set for the crypto.
+    :type price: float
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
+    :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
+    :returns: Dictionary that contains information regarding the buying of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    return order_crypto(symbol, "buy", amountInDollars, "price", price, timeInForce, jsonify)
+
+
+@helper.login_required
+def order_sell_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1302,48 +1294,20 @@ def order_sell_crypto_by_price(symbol, amountInDollars, priceType='bid_price', t
     :type symbol: str
     :param amountInDollars: The amount in dollars of the crypto you want to sell.
     :type amountInDollars: float
-    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
-    :type priceType: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
-    # turn the money amount into decimal number of shares
-    try:
-        shares = helper.round_price(amountInDollars/price)
-    except:
-        shares = 0
-
-    payload = {
-        'account_id': crypto.load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
-        'price': price,
-        'quantity': shares,
-        'ref_id': str(uuid4()),
-        'side': 'sell',
-        'time_in_force': timeInForce,
-        'type': 'market'
-    }
-
-    url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
-
-    return(data)
+    return order_crypto(symbol, "sell", amountInDollars, "price", None, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeInForce='gtc'):
+def order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1351,43 +1315,20 @@ def order_sell_crypto_by_quantity(symbol, quantity, priceType='bid_price', timeI
     :type symbol: str
     :param quantity: The decimal amount of shares to sell.
     :type quantity: float
-    :param priceType: The type of price to get. Can be 'ask_price', 'bid_price', or 'mark_price'
-    :type priceType: str
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    try:
-        symbol = symbol.upper().strip()
-    except AttributeError as message:
-        print(message, file=helper.get_output())
-        return None
-
-    crypto_info = crypto.get_crypto_info(symbol)
-    price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
-
-    payload = {
-        'account_id': crypto.load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
-        'price': price,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'side': 'sell',
-        'time_in_force': timeInForce,
-        'type': 'market'
-    }
-
-    url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
-
-    return(data)
+    return order_crypto(symbol, "sell", quantity, "quantity", None, timeInForce, jsonify)
 
 
 @helper.login_required
-def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
+def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc', jsonify=True):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to sell.
     Good for share fractions up to 8 decimal places.
 
@@ -1399,6 +1340,58 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
     :type price: float
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
     :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    return order_crypto(symbol, "sell", quantity, "quantity", price, timeInForce, jsonify)
+
+
+@helper.login_required
+def order_sell_crypto_limit_by_price(symbol, amountInDollars, price, timeInForce='gtc', jsonify=True):
+    """Submits a limit order for a crypto by specifying the decimal price to sell.
+    Good for share fractions up to 8 decimal places.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param amountInDollars: The amount in dollars of the crypto you want to sell.
+    :type amountInDollars: float
+    :param price: The limit price to set for the crypto.
+    :type price: float
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
+    :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
+    :returns: Dictionary that contains information regarding the buying of crypto, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    return order_crypto(symbol, "sell", amountInDollars, "price", price, timeInForce, jsonify)
+
+
+@helper.login_required
+def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=None, timeInForce="gtc", jsonify=True):
+    """Submits an order for a crypto.
+
+    :param symbol: The crypto ticker of the crypto to trade.
+    :type symbol: str
+    :param side: Either 'buy' or 'sell'
+    :type side: str
+    :param quantityOrPrice: Either the decimal price of shares to trade or the decimal quantity of shares.
+    :type quantityOrPrice: float
+    :param amountIn: If left default value of 'quantity', order will attempt to trade cryptos by the amount of crypto \
+        you want to trade. If changed to 'price', order will attempt to trade cryptos by the price you want to buy or sell.
+    :type amountIn: Optional[str]
+    :param limitPrice: The price to trigger the market order.
+    :type limitPrice: Optional[float]
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled.
+    :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -1411,9 +1404,26 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
         return None
 
     crypto_info = crypto.get_crypto_info(symbol)
-
     if crypto_info['display_only']:
         print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.", file=helper.get_output())
+
+    orderType = "market"
+
+    if side == "buy":
+        priceType = "ask_price"
+    else:
+        priceType = "bid_price"
+
+    if limitPrice:
+        price = limitPrice
+        orderType = "limit"
+    else:
+        price = helper.round_price(crypto.get_crypto_quote_from_id(crypto_info['id'], info=priceType))
+
+    if amountIn == "quantity":
+        quantity = quantityOrPrice
+    else:
+        quantity = helper.round_price(quantityOrPrice/price)
 
     payload = {
         'account_id': crypto.load_crypto_profile(info="id"),
@@ -1421,12 +1431,12 @@ def order_sell_crypto_limit(symbol, quantity, price, timeInForce='gtc'):
         'price': price,
         'quantity': quantity,
         'ref_id': str(uuid4()),
-        'side': 'sell',
+        'side': side,
         'time_in_force': timeInForce,
-        'type': 'limit'
+        'type': orderType
     }
 
     url = urls.order_crypto()
-    data = helper.request_post(url, payload, json=True)
+    data = helper.request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
