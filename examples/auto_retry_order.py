@@ -6,18 +6,17 @@ import robin_stocks as r
 from dotenv import load_dotenv
 
 '''
-This is an example script that will automatically retry and order if
-it does not go through.
+This is an example script that will automatically retry an order 
+up to a maximum number of retries if the order does not go through.
 
 NOTE: View the two_factor_log_in.py script to see how automatic
 two-factor loggin in works.
 '''
-### REPLACE ME
-stock = "BA"
-quantity = 1
+### REPLACE ME - order is to buy 1000 shares of BRK.A which should fail for most people
+stock = "BRK.A"
+quantity = 1000
 max_attempts = 10
 sleep_time = 1 # in seconds
-order = {}
 ###
 # Load environment variables
 load_dotenv()
