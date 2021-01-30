@@ -1,6 +1,6 @@
 """Contains information in regards to stocks."""
-import robin_stocks.helper as helper
-import robin_stocks.urls as urls
+import robin_stocks.robinhood.helper as helper
+import robin_stocks.robinhood.urls as urls
 
 def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.

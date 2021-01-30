@@ -1,4 +1,4 @@
-import robin_stocks as r
+import robin_stocks.robinhood as r
 
 '''
 Robinhood includes dividends as part of your net gain. This script removes

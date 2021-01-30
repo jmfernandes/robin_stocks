@@ -1,7 +1,7 @@
 # Used by git Actions
 import os
 import datetime
-import robin_stocks as r
+import robin_stocks.robinhood as r
 import pyotp
 import pytest
 from dateutil.relativedelta import relativedelta

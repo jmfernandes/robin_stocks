@@ -1,7 +1,7 @@
 import os
 
 import pyotp
-import robin_stocks as r
+import robin_stocks.robinhood as r
 from dotenv import load_dotenv
 '''
 This is an example script that will get all stocks that are part 

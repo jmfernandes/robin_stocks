@@ -4,8 +4,8 @@ import os
 import pickle
 import random
 
-import robin_stocks.helper as helper
-import robin_stocks.urls as urls
+import robin_stocks.robinhood.helper as helper
+import robin_stocks.robinhood.urls as urls
 
 def generate_device_token():
     """This function will generate a token used when loggin on.

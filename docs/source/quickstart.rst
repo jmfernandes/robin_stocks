@@ -27,7 +27,7 @@ Once you have imported Robin Stocks, you will need to login in order to store an
 Basic
 ^^^^^
 
->>> import robin_stocks as r
+>>> import robin_stocks.robinhood as r
 >>> login = r.login(<username>,<password>)
 
 You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
@@ -52,7 +52,7 @@ as well as your python code. This is important to do if you plan on being away f
 Now you should be able to login with the following code,
 
 >>> import pyotp
->>> import robin_stocks as r
+>>> import robin_stocks.robinhood as r
 >>> totp  = pyotp.TOTP("My2factorAppHere").now()
 >>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
 

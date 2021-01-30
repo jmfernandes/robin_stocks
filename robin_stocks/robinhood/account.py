@@ -2,10 +2,10 @@
 import os
 from uuid import uuid4
 
-import robin_stocks.helper as helper
-import robin_stocks.profiles as profiles
-import robin_stocks.stocks as stocks
-import robin_stocks.urls as urls
+import robin_stocks.robinhood.helper as helper
+import robin_stocks.robinhood.profiles as profiles
+import robin_stocks.robinhood.stocks as stocks
+import robin_stocks.robinhood.urls as urls
 
 
 @helper.login_required

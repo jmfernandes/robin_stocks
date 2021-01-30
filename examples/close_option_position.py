@@ -1,4 +1,4 @@
-import robin_stocks as r
+import robin_stocks.robinhood as r
 
 '''
 This is an example script that will show you how to close option positions.
