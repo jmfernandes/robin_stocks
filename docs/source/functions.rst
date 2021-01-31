@@ -14,7 +14,7 @@ Sending Requests to API
 
 ----
 
-.. automodule:: robin_stocks.helper
+.. automodule:: robin_stocks.robinhood.helper
    :members: request_get,request_post,request_delete,request_document
 
 Logging In and Out
@@ -22,7 +22,7 @@ Logging In and Out
 
 ----
 
-.. automodule:: robin_stocks.authentication
+.. automodule:: robin_stocks.robinhood.authentication
    :members: login, logout, get_new_device_token
 
 Loading Profiles
@@ -30,7 +30,7 @@ Loading Profiles
 
 ----
 
-.. automodule:: robin_stocks.profiles
+.. automodule:: robin_stocks.robinhood.profiles
    :members:
 
 Getting Stock Information
@@ -38,7 +38,7 @@ Getting Stock Information
 
 ----
 
-.. automodule:: robin_stocks.stocks
+.. automodule:: robin_stocks.robinhood.stocks
    :members:
 
 Getting Option Information
@@ -46,7 +46,7 @@ Getting Option Information
 
 ----
 
-.. automodule:: robin_stocks.options
+.. automodule:: robin_stocks.robinhood.options
    :members:
 
 Getting Market Information
@@ -54,7 +54,7 @@ Getting Market Information
 
 ----
 
-.. automodule:: robin_stocks.markets
+.. automodule:: robin_stocks.robinhood.markets
    :members:
 
 Getting Positions and Account Information
@@ -62,7 +62,7 @@ Getting Positions and Account Information
 
 ----
 
-.. automodule:: robin_stocks.account
+.. automodule:: robin_stocks.robinhood.account
    :members:
 
 Placing and Cancelling Orders
@@ -70,7 +70,7 @@ Placing and Cancelling Orders
 
 ----
 
-.. automodule:: robin_stocks.orders
+.. automodule:: robin_stocks.robinhood.orders
    :members:
 
 Getting Crypto Information
@@ -78,7 +78,7 @@ Getting Crypto Information
 
 ----
 
-.. automodule:: robin_stocks.crypto
+.. automodule:: robin_stocks.robinhood.crypto
    :members:
 
 Export Information
@@ -86,5 +86,5 @@ Export Information
 
 ----
 
-.. automodule:: robin_stocks.export
+.. automodule:: robin_stocks.robinhood.export
    :members:

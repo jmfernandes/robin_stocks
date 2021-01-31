@@ -27,20 +27,20 @@ Robinhood returns the data in a different format. To compensate for this, I adde
 the **dataType** parameter which defaults to return the entire dictionary listed above.
 There are four possible values for **dataType** and their uses are:
 
->>> robin_stocks.request_get(url,'regular')    # For when you want
+>>> robin_stocks.robinhood.request_get(url,'regular')    # For when you want
 >>>                                            # the whole dictionary
 >>>                                            # to view 'next' or
 >>>                                            # 'previous' values.
 >>>
->>> robin_stocks.request_get(url,'results')    # For when results contains a
+>>> robin_stocks.robinhood.request_get(url,'results')    # For when results contains a
 >>>                                            # list or single dictionary.
 >>>
->>> robin_stocks.request_get(url,'pagination') # For when results contains a
+>>> robin_stocks.robinhood.request_get(url,'pagination') # For when results contains a
 >>>                                            # list, but you also want to
 >>>                                            # append any information in
 >>>                                            # 'next' to the list.
 >>>
->>> robin_stocks.request_get(url,'indexzero')  # For when results is a list
+>>> robin_stocks.robinhood.request_get(url,'indexzero')  # For when results is a list
 >>>                                            # of only one entry.
 
 Also keep in mind that the results from the Robinhood API have been decoded using ``.json()``.

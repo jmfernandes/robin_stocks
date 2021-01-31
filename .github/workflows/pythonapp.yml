@@ -36,4 +36,5 @@ jobs:
         pip install pytest
         pip install pytest-dotenv
         pip install python-dateutil
-        pytest tests/test_github_actions.py
+        pytest tests/test_robinhood.py
+        pytest tests/test_gemini.py
