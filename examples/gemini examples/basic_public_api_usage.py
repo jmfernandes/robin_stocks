@@ -26,3 +26,10 @@ response, error = g.get_pubticker("btcusd")
 
 print("reponse is the json format now!")
 print(response)
+
+print("you can also set whether you want the json format directly for each function by passing in jsonify")
+
+response, error = g.get_pubticker("btcusd", jsonify=False)
+
+print("this function is back to raw response")
+print(response)

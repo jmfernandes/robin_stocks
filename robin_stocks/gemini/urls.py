@@ -41,3 +41,11 @@ class URLS:
     @classmethod
     def pubticker(cls, ticker):
         return cls.get_base_url(Version.v1) + "pubticker/{0}".format(ticker)
+
+    @classmethod
+    def symbols(cls):
+        return cls.get_base_url(Version.v1) + "symbols"
+
+    @classmethod
+    def symbol_details(cls, ticker):
+        return cls.get_base_url(Version.v1) + "symbols/details/{0}".format(ticker)

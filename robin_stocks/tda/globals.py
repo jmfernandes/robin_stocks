@@ -2,6 +2,8 @@
 import mechanize
 from requests import Session
 
+LOGGED_IN = False  # Flag on whether or not the user is logged in.
+
 # The session object for making get and post requests.
 SESSION = Session()
 SESSION.headers = {

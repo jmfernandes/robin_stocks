@@ -1,6 +1,21 @@
+from functools import wraps
+
 from robin_stocks.gemini.globals import (LOGGED_IN,
                                          RETURN_PARSED_JSON_RESPONSE, SESSION,
                                          USE_SANDBOX_URLS)
+
+
+def format_inputs(func):
+    """ A decorator for formatting inputs. For any function decorated by this,
+        the value of jsonify=None will be replaced with the global value stored at 
+        RETURN_PARSED_JSON_RESPONSE.
+    """
+    @wraps(func)
+    def login_wrapper(*args, **kwargs):
+        if "jsonify" not in kwargs:
+            kwargs["jsonify"] = get_default_json_flag()
+        return(func(*args, **kwargs))
+    return(login_wrapper)
 
 
 def set_default_json_flag(parse_json):
@@ -33,6 +48,18 @@ def use_sand_box_urls(use_sandbox):
     """
     global USE_SANDBOX_URLS
     USE_SANDBOX_URLS = use_sandbox
+
+
+def update_session(key, value):
+    """Updates the session header used by the requests library.
+
+    :param key: The key value to update or add to session header.
+    :type key: str
+    :param value: The value that corresponds to the key.
+    :type value: str
+
+    """
+    SESSION.headers[key] = value
 
 
 def set_login_state(logged_in):

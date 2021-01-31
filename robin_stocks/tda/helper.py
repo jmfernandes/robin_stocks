@@ -1,4 +1,39 @@
-from robin_stocks.tda.globals import SESSION
+from robin_stocks.tda.globals import LOGGED_IN, SESSION
+
+
+def update_session(key, value):
+    """Updates the session header used by the requests library.
+
+    :param key: The key value to update or add to session header.
+    :type key: str
+    :param value: The value that corresponds to the key.
+    :type value: str
+
+    """
+    SESSION.headers[key] = value
+
+
+def set_login_state(logged_in):
+    """ Sets the login state
+
+    :param logged_in: Set to change value of global variable.
+    :type logged_in: bool
+    """
+    global LOGGED_IN
+    LOGGED_IN = logged_in
+
+
+def login_required(func):
+    """ A decorator for indicating which methods require the user to be logged in.
+    """
+    @wraps(func)
+    def login_wrapper(*args, **kwargs):
+        global LOGGED_IN
+        if not LOGGED_IN:
+            raise Exception('{} can only be called when logged in'.format(
+                func.__name__))
+        return(func(*args, **kwargs))
+    return(login_wrapper)
 
 
 def request_get(url, payload, parse_json):
