@@ -1,5 +1,5 @@
 from robin_stocks.tda.globals import LOGGED_IN, SESSION
-
+from functools import wraps
 
 def update_session(key, value):
     """Updates the session header used by the requests library.
