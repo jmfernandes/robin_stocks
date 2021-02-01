@@ -78,4 +78,4 @@ For detailed instructions on how to generate API keys for Gemini and how to use 
 public API, go to the `Gemini Documentation`_.
 
 .. _Robinhood Documentation: Robinhood.rst
-.. _Gemini Documentation: Gemini.rst
+.. _Gemini Documentation: gemini.rst
