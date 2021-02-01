@@ -7,7 +7,7 @@ import json
 import time
 
 from robin_stocks.gemini.helper import (get_api_key, set_api_key,
-                                        set_login_state, update_session)
+                                        set_login_state, update_session, get_nonce, increment_nonce)
 
 
 def login(api_key, secret_key):
@@ -27,9 +27,10 @@ def generate_signature(payload):
     """
     gemini_api_secret = get_api_key()
     t = datetime.datetime.now()
-    payload["nonce"] = str(int(time.mktime(t.timetuple())*1000))
+    payload["nonce"] = str(int(time.mktime(t.timetuple())*1000) + get_nonce())
     encoded_payload = json.dumps(payload).encode()
     b64 = base64.b64encode(encoded_payload)
     signature = hmac.new(gemini_api_secret, b64, hashlib.sha384).hexdigest()
     update_session("X-GEMINI-PAYLOAD", b64)
     update_session("X-GEMINI-SIGNATURE", signature)
+    increment_nonce()

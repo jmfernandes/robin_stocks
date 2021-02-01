@@ -3,10 +3,23 @@ from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
 from functools import wraps
 
-from robin_stocks.gemini.globals import (LOGGED_IN,
+from robin_stocks.gemini.globals import (LOGGED_IN, NONCE,
                                          RETURN_PARSED_JSON_RESPONSE,
                                          SECRET_API_KEY, SESSION,
                                          USE_SANDBOX_URLS)
+
+
+def increment_nonce():
+    """ Increase nonce by one.
+    """
+    global NONCE
+    NONCE += 1
+
+
+def get_nonce():
+    """ return the nonce.
+    """
+    return NONCE
 
 
 def set_api_key(data):
@@ -32,7 +45,7 @@ def format_inputs(func):
         if "jsonify" not in kwargs:
             kwargs["jsonify"] = get_default_json_flag()
         # If the try fails that means that jsonify was passed in as a positional arugment
-        # instead of a keyword argument. Removed last entry from postional args and move it 
+        # instead of a keyword argument. Removed last entry from postional args and move it
         # to kwargs.
         try:
             return(func(*args, **kwargs))
