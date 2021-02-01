@@ -9,6 +9,18 @@ create your own robo-investor or trading algorithm, and improve your programming
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
 
+Supported APIs
+==============
+The supported APIs are Robinhood, Gemini, and TD Ameritrade. Below are examples on how to call each of those modules.
+
+>>> import robin_stocks.robinhood as r
+>>> import robin_stocks.gemini as g
+>>> import robin_stocks.tda as t
+>>> # Here are some example calls
+>>> g.get_pubticker("btcusd") # gets ticker information for Bitcoin from Gemini
+>>> r.get_all_open_crypto_orders() # gets all cypto orders from Robinhood
+>>> t.get_price_history("tsla") # get price history from TD Ameritrade 
+
 Contributing
 ============
 If you would like to contribute to this project, follow our contributing guidelines `Here <https://github.com/jmfernandes/robin_stocks/blob/master/contributing.md>`_.
@@ -27,8 +39,8 @@ You will also need to fill out all the fields in .test.env. I recommend that you
 
 to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
 
->>> pytest tests/test_github_actions.py -k test_name_apple # runs only the 1 test
->>> pytest tests/test_github_actions.py -k TestStocks # runs every test in TestStocks but nothing else
+>>> pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
+>>> pytest tests/test_gemini.py -k TestTrades # runs every test in TestTrades but nothing else
 
 Finally, if you would like the API calls to print out to terminal, then add the -s flag to any of the above pytest calls.
 
@@ -54,13 +66,12 @@ Now that you have cd into the repository you can type
 
 and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
 
-Functions Contained
-===================
+List of Functions and Example Usage
+===================================
 
-For a complete list of functions and how to use them, go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/functions.html>`_.
-
-Example Usage
-=============
-For a detailed explanation of how to use the Robinhood API go to `Robinhood Documentation`_.
+For a complete list of all Robinhood API functions and what the different parameters mean, 
+go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/functions.html>`_. If you would like to
+see some example code and instructions on how to set up two-factor authorization,
+go to the `Robinhood Documentation`_.
 
 .. _Robinhood Documentation: Robinhood.rst

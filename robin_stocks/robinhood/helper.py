@@ -1,11 +1,4 @@
 """Contains decorator functions and functions for interacting with global data.
-
-Functions
----------
-    - request_document
-    - request_get
-    - request_post
-    - update_session
 """
 from functools import wraps
 
