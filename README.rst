@@ -61,6 +61,6 @@ For a complete list of functions and how to use them, go to `robin-stocks.com <h
 
 Example Usage
 =============
-For a detailed explanation of how to use the Robinhood API go to :doc:`Robinhood Documentation <Robinhood.rst>` 
+For a detailed explanation of how to use the Robinhood API go to `Robinhood Documentation`_.
 
-.. _relative link: Robinhood.rst
+.. _Robinhood Documentation: Robinhood.rst
