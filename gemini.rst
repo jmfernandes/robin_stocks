@@ -20,3 +20,13 @@ API keys will raise an exception.
 .. image:: docs/source/_static/pics/gemini/primary.png
 
 .. image:: docs/source/_static/pics/gemini/final.png
+
+Logging in
+^^^^^^^^^^
+Loggin in is very simple. Just type
+
+>>> import robin_stocks.gemini as g
+>>> g.login("account-apigoeshere", "secret-api-goes-here")
+
+Be aware that only functions that are decorated with @login_required need you to be logged in.
+The rest can be called without you having to login.
