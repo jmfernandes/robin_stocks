@@ -49,3 +49,7 @@ class URLS:
     @classmethod
     def symbol_details(cls, ticker):
         return cls.get_base_url(Version.v1) + "symbols/details/{0}".format(ticker)
+
+    @classmethod
+    def mytrades(cls):
+        return cls.get_base_url(Version.v1) + "mytrades"

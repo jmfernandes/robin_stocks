@@ -1,8 +1,25 @@
+import zlib
+from base64 import urlsafe_b64decode as b64d
+from base64 import urlsafe_b64encode as b64e
 from functools import wraps
 
 from robin_stocks.gemini.globals import (LOGGED_IN,
-                                         RETURN_PARSED_JSON_RESPONSE, SESSION,
+                                         RETURN_PARSED_JSON_RESPONSE,
+                                         SECRET_API_KEY, SESSION,
                                          USE_SANDBOX_URLS)
+
+
+def set_api_key(data):
+    """ Encodes the secret api key before storing it as a global variable.
+    """
+    global SECRET_API_KEY
+    SECRET_API_KEY = b64e(zlib.compress(data, 9))
+
+
+def get_api_key():
+    """ Decodes the secret api key from the global variable.
+    """
+    return zlib.decompress(b64d(SECRET_API_KEY))
 
 
 def format_inputs(func):
@@ -14,7 +31,15 @@ def format_inputs(func):
     def login_wrapper(*args, **kwargs):
         if "jsonify" not in kwargs:
             kwargs["jsonify"] = get_default_json_flag()
-        return(func(*args, **kwargs))
+        # If the try fails that means that jsonify was passed in as a positional arugment
+        # instead of a keyword argument. Removed last entry from postional args and move it 
+        # to kwargs.
+        try:
+            return(func(*args, **kwargs))
+        except:
+            kwargs["jsonify"] = args[-1]
+            args = args[:-1]
+            return(func(*args, **kwargs))
     return(login_wrapper)
 
 
@@ -102,6 +127,34 @@ def request_get(url, payload, parse_json):
     response_error = None
     try:
         response = SESSION.get(url, params=payload)
+        response.raise_for_status()
+    except Exception as e:
+        response_error = e
+    # Return either the raw request object so you can call response.text, response.status_code, response.headers, or response.json()
+    # or return the JSON parsed information if you don't care to check the status codes.
+    if parse_json:
+        return response.json(), response_error
+    else:
+        return response, response_error
+
+
+def request_post(url, payload, parse_json):
+    """ Generic function for sending a post request.
+
+    :param url: The url to send a post request to.
+    :type url: str
+    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as url/?key1=value1&key2=value2.
+    :type payload: dict
+    :param parse_json: Requests serializes data in the JSON format. Set this parameter true to parse the data to a dictionary \
+        using the JSON format.
+    :type parse_json: bool
+    :returns: Returns a tuple where the first entry is the response and the second entry will be an error message from the \
+        get request. If there was no error then the second entry in the tuple will be None. The first entry will either be \
+        the raw request response or the parsed JSON response based on whether parse_json is True or not.
+    """
+    response_error = None
+    try:
+        response = SESSION.post(url, params=payload)
         response.raise_for_status()
     except Exception as e:
         response_error = e
