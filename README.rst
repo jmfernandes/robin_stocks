@@ -1,4 +1,6 @@
-Robinhood API Library
+.. image:: docs/source/_static/pics/title.PNG
+
+Robin-Stocks API Library
 ========================
 
 Introduction
