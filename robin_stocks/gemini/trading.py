@@ -1,8 +1,9 @@
-from robin_stocks.gemini.helper import request_get, format_inputs
+from robin_stocks.gemini.helper import format_inputs, request_get
 from robin_stocks.gemini.urls import URLS
 
+
 @format_inputs
-def get_pubticker(ticker, jsonify=None):
+def get_pubticker(ticker, *, jsonify=None):
     """ gets the pubticker information for a crypto.
 
     :param ticker: The ticker of the crypto.
@@ -22,8 +23,16 @@ def get_pubticker(ticker, jsonify=None):
     data, error = request_get(url, None, jsonify)
     return data, error
 
+
 @format_inputs
-def get_symbols(jsonify=None):
+def get_ticker(ticker, *, jsonify=None):
+    url = URLS.ticker(ticker)
+    data, error = request_get(url, None, jsonify)
+    return data, error
+
+
+@format_inputs
+def get_symbols(*, jsonify=None):
     """ gets a list of all available crypto tickers.
 
     :param jsonify: If set to false, will return the raw response object. \
@@ -35,3 +44,11 @@ def get_symbols(jsonify=None):
     url = URLS.symbols()
     data, error = request_get(url, None, jsonify)
     return data, error
+
+
+def get_price(ticker, side):
+    data, _ = get_pubticker(ticker, jsonify=True)
+    if side == "buy":
+        return data["ask"]
+    else:
+        return data["bid"]

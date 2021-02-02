@@ -16,6 +16,7 @@ tests/app_tests.py
 .vscode/
 .DS_Store
 .pypirc
+.idea/*
 .cache/v/cache/
 *.egg-info/
 *.egg

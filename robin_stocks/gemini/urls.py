@@ -19,8 +19,7 @@ class Version(AutoName):
 
 class URLS:
     """ Static class for holding all urls."""
-    __base_url_v1 = "https://api.gemini.com/v1/"
-    __base_url_v2 = "https://api.gemini.com/v2/"
+    __base_url = "https://api.gemini.com/"
     __base_sandbox_url = "https://api.sandbox.gemini.com/"
 
     def __init__(self):
@@ -30,17 +29,19 @@ class URLS:
     @classmethod
     def get_base_url(cls, version):
         if get_sandbox_flag():
-            return cls.__base_sandbox_url
-        elif version == Version.v1:
-            return cls.__base_url_v1
-        elif version == Version.v2:
-            return cls.__base_url_v2
+            url = cls.__base_sandbox_url
         else:
-            raise TypeError("invalid url Enum type")
+            url = cls.__base_url
+
+        return url + version.value + "/"
 
     @classmethod
     def pubticker(cls, ticker):
         return cls.get_base_url(Version.v1) + "pubticker/{0}".format(ticker)
+
+    @classmethod
+    def ticker(cls, ticker):
+        return cls.get_base_url(Version.v2) + "ticker/{0}".format(ticker)
 
     @classmethod
     def symbols(cls):
@@ -53,3 +54,7 @@ class URLS:
     @classmethod
     def mytrades(cls):
         return cls.get_base_url(Version.v1) + "mytrades"
+
+    @classmethod
+    def order_new(cls):
+        return cls.get_base_url(Version.v1) + "order/new"

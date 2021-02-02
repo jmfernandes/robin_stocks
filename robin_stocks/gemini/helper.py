@@ -44,15 +44,7 @@ def format_inputs(func):
     def login_wrapper(*args, **kwargs):
         if "jsonify" not in kwargs:
             kwargs["jsonify"] = get_default_json_flag()
-        # If the try fails that means that jsonify was passed in as a positional arugment
-        # instead of a keyword argument. Removed last entry from postional args and move it
-        # to kwargs.
-        try:
-            return(func(*args, **kwargs))
-        except:
-            kwargs["jsonify"] = args[-1]
-            args = args[:-1]
-            return(func(*args, **kwargs))
+        return(func(*args, **kwargs))
     return(login_wrapper)
 
 
