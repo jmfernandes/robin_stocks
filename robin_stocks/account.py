@@ -496,7 +496,7 @@ def get_day_trades(info=None):
     """
     account = profiles.load_account_profile('account_number')
     url = urls.daytrades(account)
-    data = helper.request_get(url, 'pagination')
+    data = helper.request_get(url, 'regular')
     return(helper.filter_data(data, info))
 
 
