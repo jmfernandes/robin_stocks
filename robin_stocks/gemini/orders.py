@@ -45,6 +45,9 @@ def get_trades_for_crypto(ticker, jsonify=None):
 @login_required
 @format_inputs
 def order_market(ticker, quantity, side, jsonify=None):
+    """ Gemini does not directly support market orders. This function will try to immediately
+    place an order or it will cancel it.
+    """
     if side == "buy":
         far_limit_price = float(get_price(ticker, side)) * 10
     else:

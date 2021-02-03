@@ -66,6 +66,7 @@ def generate_order_id():
     return(id)
 
 
+@login_required
 @format_inputs
 def heartbeat(jsonify=None):
     """ Generate a heartbeat response to keep a session alive.
