@@ -1,5 +1,6 @@
 """ Module contains all the API endpoints """
 from enum import Enum, auto
+from re import IGNORECASE, match, split
 
 from robin_stocks.gemini.helper import get_sandbox_flag
 
@@ -19,8 +20,8 @@ class Version(AutoName):
 
 class URLS:
     """ Static class for holding all urls."""
-    __base_url = "https://api.gemini.com/"
-    __base_sandbox_url = "https://api.sandbox.gemini.com/"
+    __base_url = "https://api.gemini.com"
+    __base_sandbox_url = "https://api.sandbox.gemini.com"
 
     def __init__(self):
         raise NotImplementedError(
@@ -33,7 +34,18 @@ class URLS:
         else:
             url = cls.__base_url
 
-        return url + version.value + "/"
+        return url + "/" + version.value + "/"
+
+    @classmethod
+    def get_endpoint(cls, url):
+        if match(cls.__base_sandbox_url, url, IGNORECASE):
+            _, end = split(cls.__base_sandbox_url, url, IGNORECASE)
+        elif match(cls.__base_url, url, IGNORECASE):
+            _, end = split(cls.__base_url, url, IGNORECASE)
+        else:
+            raise ValueError("The URL has the wrong base.")
+        
+        return end
 
     # authentication.py
     @classmethod
@@ -61,6 +73,22 @@ class URLS:
     @classmethod
     def mytrades(cls):
         return cls.get_base_url(Version.v1) + "mytrades"
+
+    @classmethod
+    def cancel_session_orders(cls):
+        return cls.get_base_url(Version.v1) + "order/cancel/session"
+
+    @classmethod
+    def order_status(cls):
+        return cls.get_base_url(Version.v1) + "order/status"
+
+    @classmethod
+    def active_orders(cls):
+        return cls.get_base_url(Version.v1) + "orders"
+
+    @classmethod
+    def cancel_active_orders(cls):
+        return cls.get_base_url(Version.v1) + "order/cancel/all"
 
     @classmethod
     def order_new(cls):

@@ -1,11 +1,11 @@
 
-import base64
-import datetime
-import hashlib
-import hmac
-import json
-import time
+from base64 import b64encode
+from datetime import datetime
+from hashlib import sha384
+from hmac import new
+from json import dumps
 from random import random
+from time import mktime
 
 from robin_stocks.gemini.helper import (format_inputs, get_api_key, get_nonce,
                                         increment_nonce, login_required,
@@ -30,11 +30,11 @@ def generate_signature(payload):
 
     """
     gemini_api_secret = get_api_key()
-    t = datetime.datetime.now()
-    payload["nonce"] = str(int(time.mktime(t.timetuple())*1000) + get_nonce())
-    encoded_payload = json.dumps(payload).encode()
-    b64 = base64.b64encode(encoded_payload)
-    signature = hmac.new(gemini_api_secret, b64, hashlib.sha384).hexdigest()
+    t = datetime.now()
+    payload["nonce"] = str(int(mktime(t.timetuple())*1000) + get_nonce())
+    encoded_payload = dumps(payload).encode()
+    b64 = b64encode(encoded_payload)
+    signature = new(gemini_api_secret, b64, sha384).hexdigest()
     update_session("X-GEMINI-PAYLOAD", b64)
     update_session("X-GEMINI-SIGNATURE", signature)
     increment_nonce()
@@ -76,7 +76,7 @@ def heartbeat(jsonify=None):
     """
     url = URLS.heartbeat()
     payload = {
-        "request": "/v1/heartbeat"
+        "request": URLS.get_endpoint(url)
     }
     generate_signature(payload)
     data, err = request_post(url, payload, jsonify)

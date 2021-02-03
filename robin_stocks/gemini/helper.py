@@ -1,8 +1,8 @@
-import inspect
-import zlib
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
 from functools import wraps
+from inspect import signature
+from zlib import compress, decompress
 
 from robin_stocks.gemini.globals import (LOGGED_IN, NONCE,
                                          RETURN_PARSED_JSON_RESPONSE,
@@ -27,13 +27,13 @@ def set_api_key(data):
     """ Encodes the secret api key before storing it as a global variable.
     """
     global SECRET_API_KEY
-    SECRET_API_KEY = b64e(zlib.compress(data, 9))
+    SECRET_API_KEY = b64e(compress(data, 9))
 
 
 def get_api_key():
     """ Decodes the secret api key from the global variable.
     """
-    return zlib.decompress(b64d(SECRET_API_KEY))
+    return decompress(b64d(SECRET_API_KEY))
 
 
 def format_inputs(func):
@@ -43,7 +43,7 @@ def format_inputs(func):
     """
     @wraps(func)
     def format_wrapper(*args, **kwargs):
-        bound_args = inspect.signature(func).bind(*args, **kwargs)
+        bound_args = signature(func).bind(*args, **kwargs)
         bound_args.apply_defaults()
         target_args = dict(bound_args.arguments)
         if target_args['jsonify'] is None:
