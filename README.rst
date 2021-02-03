@@ -70,12 +70,13 @@ List of Functions and Example Usage
 ===================================
 
 For a complete list of all Robinhood API functions and what the different parameters mean, 
-go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/robinhood.html>`_. If you would like to
+go to `robin-stocks.com Robinhood Page <http://www.robin-stocks.com/en/latest/robinhood.html>`_. If you would like to
 see some example code and instructions on how to set up two-factor authorization for Robinhood,
 go to the `Robinhood Documentation`_.
 
-For detailed instructions on how to generate API keys for Gemini and how to use both the private and 
-public API, go to the `Gemini Documentation`_.
+For a complete list of all Gemini API functions and what the different parameters mean, 
+go to `robin-stocks.com Gemeni Page <http://www.robin-stocks.com/en/latest/gemini.html>`_. For detailed instructions on 
+how to generate API keys for Gemini and how to use both the private and public API, go to the `Gemini Documentation`_.
 
 .. _Robinhood Documentation: Robinhood.rst
 .. _Gemini Documentation: gemini.rst

@@ -16,10 +16,26 @@ Sending Requests to API
 .. automodule:: robin_stocks.gemini.helper
    :members: request_get,request_post
 
-Logging In and Out
-------------------
+Logging In and Authentication
+-----------------------------
 
 ----
 
 .. automodule:: robin_stocks.gemini.authentication
-   :members: login
+   :members: login,heartbeat
+
+Getting Crypto Information
+--------------------------
+
+----
+
+.. automodule:: robin_stocks.gemini.crypto
+   :members:
+
+Placing and Cancelling Orders
+-----------------------------
+
+----
+
+.. automodule:: robin_stocks.gemini.orders
+   :members:
