@@ -1,8 +1,8 @@
 from robin_stocks.gemini.authentication import (generate_order_id,
                                                 generate_signature)
+from robin_stocks.gemini.crypto import get_price
 from robin_stocks.gemini.helper import (format_inputs, login_required,
                                         request_post)
-from robin_stocks.gemini.crypto import get_price
 from robin_stocks.gemini.urls import URLS
 
 
@@ -91,6 +91,49 @@ def cancel_all_active_orders(jsonify=None):
     url = URLS.cancel_active_orders()
     payload = {
         "request": URLS.get_endpoint(url)
+    }
+    generate_signature(payload)
+    data, err = request_post(url, payload, jsonify)
+    return data, err
+
+
+@login_required
+@format_inputs
+def cancel_order(order_id, jsonify=None):
+    """ Cancel a specific order based on ID.
+
+    :param order_id: The id of the order. This is not the same as the client order ID.
+    :type order_id: str
+    :param jsonify: If set to false, will return the raw response object. \
+        If set to True, will return a dictionary parsed using the JSON format.
+    :type jsonify: Optional[str]
+    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+        The keys for the dictionary are listed below.
+    :Dictionary Keys: * order_id - The order id
+                      * client_order_id - An optional client-specified order id
+                      * symbol - The symbol of the order
+                      * exchange - Will always be "gemini"
+                      * price - The price the order was issued at
+                      * avg_execution_price - The average price at which this order as been executed so far. 0 if the order has not been executed at all.
+                      * side - Either "buy" or "sell".
+                      * type - Description of the order.
+                      * options - An array containing at most one supported order execution option.
+                      * timestamp - The timestamp the order was submitted. Note that for compatibility reasons, this is returned as a string. We recommend using the timestampms field instead.
+                      * timestampms - The timestamp the order was submitted in milliseconds.
+                      * is_live - true if the order is active on the book (has remaining quantity and has not been canceled)
+                      * is_cancelled - true if the order has been canceled. Note the spelling, "cancelled" instead of "canceled". This is for compatibility reasons.
+                      * reason - Populated with the reason your order was canceled, if available.
+                      * was_forced - Will always be false.
+                      * executed_amount - The amount of the order that has been filled.
+                      * remaining_amount - The amount of the order that has not been filled.
+                      * original_amount - The originally submitted amount of the order.
+                      * is_hidden - Will always return false unless the order was placed with the indication-of-interest execution option.
+
+    """
+    url = URLS.cancel_order()
+    payload = {
+        "request": URLS.get_endpoint(url),
+        "order_id": order_id
     }
     generate_signature(payload)
     data, err = request_post(url, payload, jsonify)

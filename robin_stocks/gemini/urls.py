@@ -47,6 +47,15 @@ class URLS:
         
         return end
 
+    # account.py
+    @classmethod
+    def available_balances(cls):
+        return cls.get_base_url(Version.v1) + "balances"
+
+    @classmethod
+    def notional_balances(cls):
+        return cls.get_base_url(Version.v1) + "notionalbalances/usd"
+
     # authentication.py
     @classmethod
     def heartbeat(cls):
@@ -69,6 +78,14 @@ class URLS:
     def symbol_details(cls, ticker):
         return cls.get_base_url(Version.v1) + "symbols/details/{0}".format(ticker)
 
+    @classmethod
+    def notional_volume(cls):
+        return cls.get_base_url(Version.v1) + "notionalvolume"
+
+    @classmethod
+    def trade_volume(cls):
+        return cls.get_base_url(Version.v1) + "tradevolume"
+
     # orders.py
     @classmethod
     def mytrades(cls):
@@ -77,6 +94,10 @@ class URLS:
     @classmethod
     def cancel_session_orders(cls):
         return cls.get_base_url(Version.v1) + "order/cancel/session"
+
+    @classmethod
+    def cancel_order(cls):
+        return cls.get_base_url(Version.v1) + "order/cancel"
 
     @classmethod
     def order_status(cls):

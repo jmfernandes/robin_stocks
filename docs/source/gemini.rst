@@ -39,3 +39,12 @@ Placing and Cancelling Orders
 
 .. automodule:: robin_stocks.gemini.orders
    :members:
+
+
+Getting Account Information
+---------------------------
+
+----
+
+.. automodule:: robin_stocks.gemini.account
+   :members:
