@@ -35,6 +35,12 @@ class URLS:
 
         return url + version.value + "/"
 
+    # authentication.py
+    @classmethod
+    def heartbeat(cls):
+        return cls.get_base_url(Version.v1) + "heartbeat"
+
+    # crypto.py
     @classmethod
     def pubticker(cls, ticker):
         return cls.get_base_url(Version.v1) + "pubticker/{0}".format(ticker)
@@ -51,6 +57,7 @@ class URLS:
     def symbol_details(cls, ticker):
         return cls.get_base_url(Version.v1) + "symbols/details/{0}".format(ticker)
 
+    # orders.py
     @classmethod
     def mytrades(cls):
         return cls.get_base_url(Version.v1) + "mytrades"

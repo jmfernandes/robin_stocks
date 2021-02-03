@@ -2,13 +2,13 @@ from robin_stocks.gemini.authentication import (generate_order_id,
                                                 generate_signature)
 from robin_stocks.gemini.helper import (format_inputs, login_required,
                                         request_post)
-from robin_stocks.gemini.trading import get_price
+from robin_stocks.gemini.crypto import get_price
 from robin_stocks.gemini.urls import URLS
 
 
 @login_required
 @format_inputs
-def get_trades_for_crypto(ticker, *, jsonify=None):
+def get_trades_for_crypto(ticker, jsonify=None):
     """ gets a list of all transactions for a certain crypto.
 
     :param ticker: The ticker of the crypto.
@@ -44,7 +44,7 @@ def get_trades_for_crypto(ticker, *, jsonify=None):
 
 @login_required
 @format_inputs
-def order_market(ticker, quantity, side, *, jsonify=None):
+def order_market(ticker, quantity, side, jsonify=None):
     if side == "buy":
         far_limit_price = float(get_price(ticker, side)) * 10
     else:
@@ -55,7 +55,7 @@ def order_market(ticker, quantity, side, *, jsonify=None):
 
 @login_required
 @format_inputs
-def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=None, options=None, *, jsonify=None):
+def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=None, options=None, jsonify=None):
     url = URLS.order_new()
     payload = {
         "client_order_id": generate_order_id(),

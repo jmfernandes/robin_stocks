@@ -7,9 +7,11 @@ import json
 import time
 from random import random
 
-from robin_stocks.gemini.helper import (get_api_key, get_nonce,
-                                        increment_nonce, set_api_key,
+from robin_stocks.gemini.helper import (format_inputs, get_api_key, get_nonce,
+                                        increment_nonce, login_required,
+                                        request_post, set_api_key,
                                         set_login_state, update_session)
+from robin_stocks.gemini.urls import URLS
 
 
 def login(api_key, secret_key):
@@ -39,7 +41,7 @@ def generate_signature(payload):
 
 
 def generate_order_id():
-    """This function will generate a token used when placing orders.
+    """ This function will generate a token used when placing orders.
 
     :returns: A string representing the token.
 
@@ -62,3 +64,19 @@ def generate_order_id():
             id += "-"
 
     return(id)
+
+
+@format_inputs
+def heartbeat(jsonify=None):
+    """ Generate a heartbeat response to keep a session alive.
+
+    :returns: {"result": "ok"}
+
+    """
+    url = URLS.heartbeat()
+    payload = {
+        "request": "/v1/heartbeat"
+    }
+    generate_signature(payload)
+    data, err = request_post(url, payload, jsonify)
+    return data, err

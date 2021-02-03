@@ -1,3 +1,4 @@
+import inspect
 import zlib
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
@@ -41,11 +42,14 @@ def format_inputs(func):
         RETURN_PARSED_JSON_RESPONSE.
     """
     @wraps(func)
-    def login_wrapper(*args, **kwargs):
-        if "jsonify" not in kwargs:
+    def format_wrapper(*args, **kwargs):
+        bound_args = inspect.signature(func).bind(*args, **kwargs)
+        bound_args.apply_defaults()
+        target_args = dict(bound_args.arguments)
+        if target_args['jsonify'] is None:
             kwargs["jsonify"] = get_default_json_flag()
         return(func(*args, **kwargs))
-    return(login_wrapper)
+    return(format_wrapper)
 
 
 def set_default_json_flag(parse_json):

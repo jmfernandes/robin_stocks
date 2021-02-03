@@ -3,7 +3,7 @@ from robin_stocks.gemini.urls import URLS
 
 
 @format_inputs
-def get_pubticker(ticker, *, jsonify=None):
+def get_pubticker(ticker, jsonify=None):
     """ gets the pubticker information for a crypto.
 
     :param ticker: The ticker of the crypto.
@@ -25,14 +25,14 @@ def get_pubticker(ticker, *, jsonify=None):
 
 
 @format_inputs
-def get_ticker(ticker, *, jsonify=None):
+def get_ticker(ticker, jsonify=None):
     url = URLS.ticker(ticker)
     data, error = request_get(url, None, jsonify)
     return data, error
 
 
 @format_inputs
-def get_symbols(*, jsonify=None):
+def get_symbols(jsonify=None):
     """ gets a list of all available crypto tickers.
 
     :param jsonify: If set to false, will return the raw response object. \
