@@ -1,4 +1,7 @@
-from .account import check_available_balances, check_notional_balances
+from .account import (check_available_balances, check_notional_balances,
+                      check_transfers, get_account_detail,
+                      get_approved_addresses, get_deposit_addresses,
+                      withdraw_crypto_funds)
 from .authentication import heartbeat, login
 from .crypto import (get_notional_volume, get_price, get_pubticker,
                      get_symbol_details, get_symbols, get_ticker,

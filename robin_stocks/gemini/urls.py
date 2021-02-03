@@ -49,12 +49,32 @@ class URLS:
 
     # account.py
     @classmethod
+    def account_detail(cls):
+        return cls.get_base_url(Version.v1) + "account"
+
+    @classmethod
     def available_balances(cls):
         return cls.get_base_url(Version.v1) + "balances"
 
     @classmethod
     def notional_balances(cls):
         return cls.get_base_url(Version.v1) + "notionalbalances/usd"
+
+    @classmethod
+    def transfers(cls):
+        return cls.get_base_url(Version.v1) + "transfers"
+
+    @classmethod
+    def deposit_addresses(cls, network):
+        return cls.get_base_url(Version.v1) + "addresses/{0}".format(network)
+
+    @classmethod
+    def approved_addresses(cls, network):
+        return cls.get_base_url(Version.v1) + "approvedAddresses/account/{0}".format(network)
+
+    @classmethod
+    def withdrawl_crypto(cls, currency_code):
+        return cls.get_base_url(Version.v1) + "withdraw/{0}".format(currency_code)
 
     # authentication.py
     @classmethod
