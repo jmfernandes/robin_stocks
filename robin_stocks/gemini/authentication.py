@@ -7,9 +7,9 @@ from json import dumps
 from random import random
 from time import mktime
 
-from robin_stocks.gemini.helper import (format_inputs, get_api_key, get_nonce,
+from robin_stocks.gemini.helper import (format_inputs, get_secret_key, get_nonce,
                                         increment_nonce, login_required,
-                                        request_post, set_api_key,
+                                        request_post, set_secret_key,
                                         set_login_state, update_session)
 from robin_stocks.gemini.urls import URLS
 
@@ -18,8 +18,16 @@ def login(api_key, secret_key):
     """ Set the authorization token so the API can be used.
     """
     update_session("X-GEMINI-APIKEY", api_key)
-    set_api_key(secret_key.encode())
+    set_secret_key(secret_key.encode())
     set_login_state(True)
+
+
+def logout():
+    """ Removes the API and Secret key from session and global variables.
+    """
+    update_session("X-GEMINI-APIKEY", "")
+    set_secret_key("".encode())
+    set_login_state(False)
 
 
 def generate_signature(payload):
@@ -29,7 +37,7 @@ def generate_signature(payload):
     :type payload: dict
 
     """
-    gemini_api_secret = get_api_key()
+    gemini_api_secret = get_secret_key()
     t = datetime.now()
     payload["nonce"] = str(int(mktime(t.timetuple())*1000) + get_nonce())
     encoded_payload = dumps(payload).encode()

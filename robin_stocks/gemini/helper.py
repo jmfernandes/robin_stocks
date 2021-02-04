@@ -23,14 +23,14 @@ def get_nonce():
     return NONCE
 
 
-def set_api_key(data):
+def set_secret_key(data):
     """ Encodes the secret api key before storing it as a global variable.
     """
     global SECRET_API_KEY
     SECRET_API_KEY = b64e(compress(data, 9))
 
 
-def get_api_key():
+def get_secret_key():
     """ Decodes the secret api key from the global variable.
     """
     return decompress(b64d(SECRET_API_KEY))
@@ -104,6 +104,12 @@ def set_login_state(logged_in):
     """
     global LOGGED_IN
     LOGGED_IN = logged_in
+
+
+def get_login_state():
+    """ Gets the login state
+    """
+    return LOGGED_IN
 
 
 def login_required(func):

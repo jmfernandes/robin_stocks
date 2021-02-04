@@ -6,7 +6,30 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class TestTrades:
+class TestAuthentication:
+
+    def test_login(self):
+        g.login(os.environ['gemini_account_key'],
+                os.environ['gemini_account_secret'])
+        assert g.get_login_state()
+
+    def test_logout(self):
+        g.login(os.environ['gemini_account_key'],
+                os.environ['gemini_account_secret'])
+        g.logout()
+        assert not g.get_login_state()
+
+    def test_heartbeat(self):
+        g.login(os.environ['gemini_account_key'],
+                os.environ['gemini_account_secret'])
+        response, err = g.heartbeat()
+        data = response.json()
+        assert err == None
+        assert response.status_code == 200
+        assert data["result"] == "ok"
+
+
+class TestCrypto:
 
     ticker = "btcusd"
 
@@ -45,5 +68,18 @@ class TestOrders:
 
     def test_mytrades(self):
         response, err = g.get_trades_for_crypto("btcusd")
+        assert err == None
+        assert response.status_code == 200
+
+
+class TestAccount:
+
+    @classmethod
+    def setup_class(cls):
+        g.login(os.environ['gemini_account_key'],
+                os.environ['gemini_account_secret'])
+
+    def test_account_detail(self):
+        response, err = g.get_account_detail()
         assert err == None
         assert response.status_code == 200
