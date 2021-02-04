@@ -7,6 +7,7 @@ Create account API keys
 ^^^^^^^^^^^^^^^^^^^^^^^
 Gemini uses two API keys, one called the API key and one called the secret key. In order to use the Gemini
 private API to place orders, view account activity, etc. You will need to generate these keys on their website.
+Make sure you generate an account key and not a master key. This library does not currently support master keys.
 Below are pictures on how to do that. You will also need to call the login function before you can call
 any of the functions that use the private API. If you are not logged in, any function that requires your
 API keys will raise an exception telling you to login.
