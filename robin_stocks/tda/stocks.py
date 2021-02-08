@@ -1,4 +1,4 @@
-from robin_stocks.tda.helper import request_get, format_inputs, login_required
+from robin_stocks.tda.helper import format_inputs, login_required, request_get
 from robin_stocks.tda.urls import URLS
 
 

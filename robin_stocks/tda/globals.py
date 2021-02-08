@@ -1,5 +1,4 @@
 """Holds the session header and other global variables."""
-import mechanize
 from requests import Session
 
 DATA_DIR_NAME = ".tokens"

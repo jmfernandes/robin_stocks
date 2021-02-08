@@ -1,5 +1,6 @@
 from functools import wraps
 from inspect import signature
+import requests
 
 from robin_stocks.tda.globals import (LOGGED_IN, RETURN_PARSED_JSON_RESPONSE,
                                       SESSION)
@@ -117,6 +118,34 @@ def request_post(url, payload, parse_json):
     response_error = None
     try:
         response = SESSION.post(url, params=payload)
+        response.raise_for_status()
+    except Exception as e:
+        response_error = e
+    # Return either the raw request object so you can call response.text, response.status_code, response.headers, or response.json()
+    # or return the JSON parsed information if you don't care to check the status codes.
+    if parse_json:
+        return response.json(), response_error
+    else:
+        return response, response_error
+
+
+def request_data(url, payload, parse_json):
+    """ Generic function for sending a post request. Does not use any Session information. Encodes the data as x-www-form-urlencoded form data.
+
+    :param url: The url to send a post request to.
+    :type url: str
+    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as url/?key1=value1&key2=value2.
+    :type payload: dict
+    :param parse_json: Requests serializes data in the JSON format. Set this parameter true to parse the data to a dictionary \
+        using the JSON format.
+    :type parse_json: bool
+    :returns: Returns a tuple where the first entry is the response and the second entry will be an error message from the \
+        get request. If there was no error then the second entry in the tuple will be None. The first entry will either be \
+        the raw request response or the parsed JSON response based on whether parse_json is True or not.
+    """
+    response_error = None
+    try:
+        response = requests.post(url, data=payload)
         response.raise_for_status()
     except Exception as e:
         response_error = e
