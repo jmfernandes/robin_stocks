@@ -9,6 +9,18 @@ from robin_stocks.tda.urls import URLS
 
 
 def login_first_time(client_id, authorization_token, refresh_token):
+    """ Stores log in information in a pickle file on the computer. After being used once,
+    user can call login() to automatically read in information from pickle file and refresh
+    authorization tokens when needed.
+
+    :param client_id: The Consumer Key for the API account.
+    :type client_id: str
+    :param authorization_token: The authorization code returned from post request to https://developer.tdameritrade.com/authentication/apis/post/token-0
+    :type authorization_token: str
+    :param refresh_token: The refresh code returned from post request to https://developer.tdameritrade.com/authentication/apis/post/token-0
+    :type refresh_token: str
+
+    """
     # Create necessary folders and paths for pickle file as defined in globals.
     data_dir = Path.home().joinpath(DATA_DIR_NAME)
     if not data_dir.exists():
