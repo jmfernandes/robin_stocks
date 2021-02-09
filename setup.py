@@ -18,10 +18,11 @@ setup(name='robin_stocks',
       license='MIT',
       python_requires='>=3',
       packages=find_packages(),
-      requires=['requests', 'pyotp'],
+      requires=['requests', 'pyotp', 'cryptography'],
       install_requires=[
           'requests',
           'pyotp',
           'python-dotenv',
+          'cryptography'
       ],
       zip_safe=False)
