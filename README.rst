@@ -9,8 +9,6 @@ create your own robo-investor or trading algorithm, and improve your programming
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
 
-You can also join our Discord Server! https://discord.gg/CfXgGcFA2q
-
 Supported APIs
 ==============
 The supported APIs are Robinhood, Gemini, and TD Ameritrade. Below are examples on how to call each of those modules.
