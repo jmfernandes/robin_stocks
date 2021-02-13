@@ -39,7 +39,7 @@ and the refresh token is used by robin_stocks to get you a new authentication to
 So, as the start of every TD Ameritrade script or program you write, you should execute the following code.
 
 >>> import robin_stocks.tda as tda
->>> tda.login("my-encryption-passcode") # make usre you have called login_first_time as some point.
+>>> tda.login("my-encryption-passcode") # make sure you have called login_first_time as some point.
 
 The login function will use your encryption passcode to decrypt your pickle file, generate a new authorization token 
 if it needs to, and then save your authorization to the session information. 
