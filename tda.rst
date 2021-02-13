@@ -23,12 +23,14 @@ wanted to get the value in your personal scripts you would execute the following
 >>> my_secret_passcode = os.environ["tda_encryption_passcode"]
 
 Now you are free to use my_secret_passcode variable to log in to the TD Ameritrade API. To log in to
-the API, you will need three things: your encryption passcode, an authentication token that is generated
-on the TD Ameritrade API website, and a refresh token that is also generated on the TD Ameritrade API website.
+the API, you will need four things: your encryption passcode, the user ID of your API key, 
+an authentication token that is generated on the TD Ameritrade API website, 
+and a refresh token that is also generated on the TD Ameritrade API website.
 To log in for the first time execute the following code.
 
 >>> import robin_stocks.tda as tda
->>> tda.login_first_time("my-encryption-passcode", "my-authroization-token", "my-refresh-token") # ONLY CALL ME ONCE. EVER.
+>>> tda.login_first_time("my-encryption-passcode", "my-application-id",
+>>>     "my-authroization-token", "my-refresh-token") # ONLY CALL ME ONCE. EVER.
 
 Please be sure to note, that you do not use login_first_time every time you run a script. You run it only once, 
 and then you should delete the code from your python file. A better solution would be to enter the python interpreter 
