@@ -39,10 +39,24 @@ class URLS:
 
         return end
 
+    # accounts.py
+    @classmethod
+    def account(cls, id):
+        return cls.get_base_url(Version.v1) + "accounts/{0}".format(id)
+    
+    @classmethod
+    def accounts(cls):
+        return cls.get_base_url(Version.v1) + "accounts"
+
     # authentication.py
     @classmethod
     def oauth(cls):
         return cls.get_base_url(Version.v1) + "oauth2/token"
+
+    # orders.py
+    @classmethod
+    def place_order(cls, account_id):
+        return cls.get_base_url(Version.v1) + "accounts/{0}/orders".format(account_id)
 
     # stocks.py
     @classmethod

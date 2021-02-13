@@ -35,6 +35,7 @@ to scroll through the list of all the callable functions.
    quickstart
    advanced
    robinhood
+   tda
    gemini
    example
 
