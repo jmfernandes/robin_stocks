@@ -41,3 +41,4 @@ jobs:
         pip install python-dateutil
         pytest tests/test_robinhood.py
         pytest tests/test_gemini.py
+        pytest tests/test_tda.py

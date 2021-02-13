@@ -48,3 +48,11 @@ class URLS:
     @classmethod
     def quote(cls, ticker):
         return cls.get_base_url(Version.v1) + "marketdata/{0}/quotes".format(ticker)
+
+    @classmethod
+    def quotes(cls):
+        return cls.get_base_url(Version.v1) + "marketdata/quotes"
+
+    @classmethod
+    def price_history(cls, ticker):
+        return cls.get_base_url(Version.v1) + "marketdata/{0}/pricehistory".format(ticker)

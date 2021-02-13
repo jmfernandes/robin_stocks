@@ -60,6 +60,12 @@ def set_login_state(logged_in):
     LOGGED_IN = logged_in
 
 
+def get_login_state():
+    """ Gets the login state
+    """
+    return LOGGED_IN
+
+
 def login_required(func):
     """ A decorator for indicating which methods require the user to be logged in.
     """

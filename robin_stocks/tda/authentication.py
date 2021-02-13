@@ -126,6 +126,7 @@ def login(encryption_passcode):
     update_session("Authorization", auth_token)
     update_session("apikey", client_id)
     set_login_state(True)
+    return auth_token
 
 
 def generate_encryption_passcode():
