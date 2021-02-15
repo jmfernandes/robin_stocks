@@ -84,4 +84,4 @@ If you filled everything out correctly, then you will see the following response
 
 .. image:: docs/source/_static/pics/tda/response.png
 
-.. _Here: examples/basic_authentication.py
+.. _Here: examples/tda examples/basic_authentication.py
