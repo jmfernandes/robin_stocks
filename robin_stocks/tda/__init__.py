@@ -9,3 +9,4 @@ from .orders import (cancel_order, get_order, get_orders_for_account,
                      place_order)
 from .stocks import (get_instrument, get_price_history, get_quote, get_quotes,
                      search_instruments)
+from .markets import get_hours_for_markets, get_hours_for_market

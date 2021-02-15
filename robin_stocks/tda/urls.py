@@ -61,6 +61,15 @@ class URLS:
     def oauth(cls):
         return cls.get_base_url(Version.v1) + "oauth2/token"
 
+    # markets.py
+    @classmethod
+    def markets(cls):
+        return cls.get_base_url(Version.v1) + "marketdata/hours"
+
+    @classmethod
+    def market(cls, market):
+        return cls.get_base_url(Version.v1) + "marketdata/{0}/hours".format(market)
+
     # orders.py
     @classmethod
     def orders(cls, account_id):

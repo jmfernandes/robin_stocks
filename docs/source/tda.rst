@@ -48,3 +48,12 @@ Getting Account Information
 
 .. automodule:: robin_stocks.tda.accounts
    :members:
+
+
+Getting Market Information
+--------------------------
+
+----
+
+.. automodule:: robin_stocks.tda.markets
+   :members:
