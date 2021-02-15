@@ -64,7 +64,7 @@ should see the name of the app you just created. Click on it and you should see 
 
 Take special note of the Consumer Key. This is sometimes referred to as the "client id" or "api key", but this is one of 
 the key pieces of information you need when logging in for the first time. Now that you have your consumer key, copy and paste 
-the following url into a new web broswer window.
+the following url into a new web broswer window, and substitute your consumer key for CONSUMER-KEY-GOES-HERE.
 
 >>> https://auth.tdameritrade.com/oauth?client_id=CONSUMER-KEY-GOES-HERE%40AMER.OAUTHAP&response_type=code&redirect_uri=https%3A%2F%2F127.0.0.1%3A8080
 
