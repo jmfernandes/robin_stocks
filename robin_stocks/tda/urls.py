@@ -64,6 +64,14 @@ class URLS:
 
     # stocks.py
     @classmethod
+    def instruments(cls):
+        return cls.get_base_url(Version.v1) + "instruments"
+
+    @classmethod
+    def instrument(cls, cusip):
+        return cls.get_base_url(Version.v1) + "instruments/{0}".format(cusip)
+
+    @classmethod
     def quote(cls, ticker):
         return cls.get_base_url(Version.v1) + "marketdata/{0}/quotes".format(ticker)
 

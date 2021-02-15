@@ -107,3 +107,54 @@ def get_price_history(ticker, period_type, frequency_type, frequency,
         payload["endDate"] = end_date
     data, error = request_get(url, payload, jsonify)
     return data, error
+
+
+@login_required
+@format_inputs
+def search_instruments(ticker_string, projection, jsonify=None):
+    """ Gets a list of all the instruments data for tickers that match a search string.
+
+    :param ticker_string: Value to pass to the search. See projection description for more information.
+    :type ticker_string: str
+    :param projection: The type of request:\n
+        * symbol-search: Retrieve instrument data of a specific symbol or cusip
+        * symbol-regex: Retrieve instrument data for all symbols matching regex. Example: symbol=XYZ.* will return all symbols beginning with XYZ
+        * desc-search: Retrieve instrument data for instruments whose description contains the word supplied. Example: symbol=FakeCompany will return all instruments with FakeCompany in the description.
+        * desc-regex: Search description with full regex support. Example: symbol=XYZ.[A-C] returns all instruments whose descriptions contain a word beginning with XYZ followed by a character A through C.
+        * fundamental: Returns fundamental data for a single instrument specified by exact symbol.
+    :type projection: str
+    :param jsonify: If set to false, will return the raw response object. \
+        If set to True, will return a dictionary parsed using the JSON format.
+    :type jsonify: Optional[str]
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error.
+
+    """
+    url = URLS.instruments()
+    payload = {
+        "symbol": ticker_string,
+        "projection": projection
+    }
+    data, error = request_get(url, payload, jsonify)
+    return data, error
+
+
+@login_required
+@format_inputs
+def get_instrument(cusip, jsonify=None):
+    """ Gets instrument data for a specific stock.
+
+    :param cusip: The CUSIP for a stock.
+    :type cusip: str
+    :param jsonify: If set to false, will return the raw response object. \
+        If set to True, will return a dictionary parsed using the JSON format.
+    :type jsonify: Optional[str]
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error.
+
+    """
+    url = URLS.instrument(cusip)
+    data, error = request_get(url, None, jsonify)
+    return data, error
