@@ -48,6 +48,14 @@ class URLS:
     def accounts(cls):
         return cls.get_base_url(Version.v1) + "accounts"
 
+    @classmethod
+    def transaction(cls, id, transaction):
+        return cls.get_base_url(Version.v1) + "accounts/{0}/transactions/{1}".format(id, transaction)
+
+    @classmethod
+    def transactions(cls, id):
+        return cls.get_base_url(Version.v1) + "accounts/{0}/transactions".format(id)
+
     # authentication.py
     @classmethod
     def oauth(cls):
