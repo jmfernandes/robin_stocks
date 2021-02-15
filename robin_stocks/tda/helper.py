@@ -1,9 +1,28 @@
 from functools import wraps
 from inspect import signature
-import requests
+from json import dumps
+from re import IGNORECASE, split
 
+import requests
 from robin_stocks.tda.globals import (LOGGED_IN, RETURN_PARSED_JSON_RESPONSE,
                                       SESSION)
+
+
+def get_order_number(data):
+    """ Gets the 
+    """
+    try:
+        if type(data) is requests.models.Response:
+            parse_string = data.headers["Location"]
+        elif type(data) is dict or type(data) is requests.structures.CaseInsensitiveDict:
+            parse_string = data["Location"]
+        else:
+            parse_string = data
+    except Exception as e:
+        raise ValueError("{0} is not a value in the dictionary".format(e))
+
+    _, order_id = split("orders/", parse_string, IGNORECASE)
+    return(order_id)
 
 
 def format_inputs(func):
@@ -140,7 +159,7 @@ def request_data(url, payload, parse_json):
 
     :param url: The url to send a post request to.
     :type url: str
-    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as url/?key1=value1&key2=value2.
+    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as data in the session headers.
     :type payload: dict
     :param parse_json: Requests serializes data in the JSON format. Set this parameter true to parse the data to a dictionary \
         using the JSON format.
@@ -159,5 +178,59 @@ def request_data(url, payload, parse_json):
     # or return the JSON parsed information if you don't care to check the status codes.
     if parse_json:
         return response.json(), response_error
+    else:
+        return response, response_error
+
+
+def request_headers(url, payload, parse_json):
+    """ Generic function for sending a post request. Encodes the data as x-www-form-urlencoded form data and appends to Session data.
+
+    :param url: The url to send a post request to.
+    :type url: str
+    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as data in the session headers.
+    :type payload: dict
+    :param parse_json: Requests serializes data in the JSON format. Set this parameter true to parse the data to a dictionary \
+        using the JSON format.
+    :type parse_json: bool
+    :returns: Returns a tuple where the first entry is the response and the second entry will be an error message from the \
+        get request. If there was no error then the second entry in the tuple will be None. The first entry will either be \
+        the raw request response or the parsed JSON response based on whether parse_json is True or not.
+    """
+    response_error = None
+    try:
+        response = SESSION.post(url, data=dumps(payload))
+        response.raise_for_status()
+    except Exception as e:
+        response_error = e
+    # Return either the raw request object so you can call response.text, response.status_code, response.headers, or response.json()
+    # or return the JSON parsed information if you don't care to check the status codes.
+    if parse_json:
+        return response.headers, response_error
+    else:
+        return response, response_error
+
+
+def request_delete(url, parse_json):
+    """ Generic function for sending a delete request.
+
+    :param url: The url to send a post request to.
+    :type url: str
+    :param parse_json: Requests serializes data in the JSON format. Set this parameter true to parse the data to a dictionary \
+        using the JSON format.
+    :type parse_json: bool
+    :returns: Returns a tuple where the first entry is the response and the second entry will be an error message from the \
+        get request. If there was no error then the second entry in the tuple will be None. The first entry will either be \
+        the raw request response or the parsed JSON response based on whether parse_json is True or not.
+    """
+    response_error = None
+    try:
+        response = SESSION.delete(url)
+        response.raise_for_status()
+    except Exception as e:
+        response_error = e
+    # Return either the raw request object so you can call response.text, response.status_code, response.headers, or response.json()
+    # or return the JSON parsed information if you don't care to check the status codes.
+    if parse_json:
+        return response.headers, response_error
     else:
         return response, response_error
