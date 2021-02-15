@@ -487,14 +487,14 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         return [None]
 
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
-    span_check = ['day', 'week', 'year', '5year']
+    span_check = ['day', 'week', 'month', '3month']
     bounds_check = ['extended', 'regular', 'trading']
     if interval not in interval_check:
         print(
             'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day", "week", "year", or "5year"', file=helper.get_output())
+        print('ERROR: Span must be "day", "week", "month", "3month", "year"', file=helper.get_output())
         return([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"', file=helper.get_output())
