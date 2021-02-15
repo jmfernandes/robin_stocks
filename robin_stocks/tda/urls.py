@@ -55,11 +55,11 @@ class URLS:
 
     # orders.py
     @classmethod
-    def place_order(cls, account_id):
+    def orders(cls, account_id):
         return cls.get_base_url(Version.v1) + "accounts/{0}/orders".format(account_id)
 
     @classmethod
-    def cancel_order(cls, account_id, order_id):
+    def order(cls, account_id, order_id):
         return cls.get_base_url(Version.v1) + "accounts/{0}/orders/{1}".format(account_id, order_id)
 
     # stocks.py
