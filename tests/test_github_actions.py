@@ -6,6 +6,7 @@ import pyotp
 import pytest
 from dateutil.relativedelta import relativedelta
 
+
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and
     month
@@ -34,8 +35,8 @@ def round_up_price(ticker, multiplier):
     num = price + (multiplier - 1)
     return num - (num % multiplier)
 
-class TestStocks:
 
+class TestStocks:
     # Set up variables for class
     single_stock = 'AAPL'
     event_stock = 'USO1'
@@ -48,7 +49,7 @@ class TestStocks:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        totp = pyotp.TOTP(os.environ['robin_mfa']).now()
         login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
@@ -81,7 +82,7 @@ class TestStocks:
         assert ('instrument' in quote)
         #
         more_quotes = r.get_quotes(self.list_stocks, info=None)
-        assert (len(more_quotes) ==  len(self.list_stocks))
+        assert (len(more_quotes) == len(self.list_stocks))
         #
         fake_quotes = r.get_quotes(self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
@@ -287,15 +288,18 @@ class TestStocks:
         assert (len(fake_split) == 0)
 
     def test_stock_historicals(self):
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='regular', info=None)
-        assert (len(historicals) <= 6) # 6 regular hours in a day
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='trading', info=None)
-        assert (len(historicals) <= 9) # 9 trading hours total in a day
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='extended', info=None)
-        assert (len(historicals) <= 16) # 16 extended hours total in a day
+        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='regular',
+                                              info=None)
+        assert (len(historicals) <= 6)  # 6 regular hours in a day
+        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='trading',
+                                              info=None)
+        assert (len(historicals) <= 9)  # 9 trading hours total in a day
+        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='extended',
+                                              info=None)
+        assert (len(historicals) <= 16)  # 16 extended hours total in a day
+
 
 class TestCrypto:
-
     stock = 'AAPL'
     bitcoin = 'BTC'
     bitcoin_currency = 'BTC-USD'
@@ -305,7 +309,7 @@ class TestCrypto:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        totp = pyotp.TOTP(os.environ['robin_mfa']).now()
         login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
@@ -391,18 +395,18 @@ class TestCrypto:
         assert ('interpolated' in first_point)
         #
         crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'regular', info=None)
-        assert (len(crypto) <= 6) # 6 regular hours in a day
+        assert (len(crypto) <= 6)  # 6 regular hours in a day
         crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'trading', info=None)
-        assert (len(crypto) <= 9) # 9 trading hours in a day
+        assert (len(crypto) <= 9)  # 9 trading hours in a day
         crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'extended', info=None)
-        assert (len(crypto) <= 16) # 16 extended hours in a day
+        assert (len(crypto) <= 16)  # 16 extended hours in a day
         crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', '24_7', info=None)
-        assert (len(crypto) <= 24) # 24 24_7 hours in a day
+        assert (len(crypto) <= 24)  # 24 24_7 hours in a day
+
 
 class TestOptions:
-
     # have to login to use round_up_price
-    totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+    totp = pyotp.TOTP(os.environ['robin_mfa']).now()
     login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
     #
     now = datetime.datetime.now() + relativedelta(months=1)
@@ -412,7 +416,7 @@ class TestOptions:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        totp = pyotp.TOTP(os.environ['robin_mfa']).now()
         login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
@@ -434,7 +438,7 @@ class TestOptions:
     def test_find_options_by_strike(self):
         info = r.find_options_by_strike(self.symbol, self.strike)
         assert (len(info) >= 24)
-        info = r.find_options_by_strike(self.symbol, self.strike,'call')
+        info = r.find_options_by_strike(self.symbol, self.strike, 'call')
         assert (info[0]['type'] == 'call')
         info = r.find_options_by_strike(self.symbol, self.strike, info='expiration_date')
         assert (len(set(info)) > 1)
@@ -450,8 +454,8 @@ class TestOptions:
         assert (len(info) == 1)
         assert (info[0]['type'] == 'call')
 
-class TestMarkets:
 
+class TestMarkets:
     today = datetime.datetime.today().strftime('%Y-%m-%d')
     american_time = datetime.datetime.today().strftime('%m-%d-%Y')
     nyse = 'XNYS'
@@ -461,7 +465,7 @@ class TestMarkets:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        totp = pyotp.TOTP(os.environ['robin_mfa']).now()
         login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
@@ -634,10 +638,11 @@ class TestMarkets:
         market = r.get_market_hours(self.nasdaq, self.american_time)
         assert market
 
+
 class TestProfiles:
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        totp = pyotp.TOTP(os.environ['robin_mfa']).now()
         login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
