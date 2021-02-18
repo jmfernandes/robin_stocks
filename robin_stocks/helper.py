@@ -191,9 +191,14 @@ def convert_dtypes(data):
                 "high_fill_rate_buy_price", "high_fill_rate_sell_price", "low_fill_rate_buy_price",
                 "low_fill_rate_sell_price", "last_extended_hours_trade_price", "previous_close",
                 "adjusted_previous_close", "below_tick", "above_tick", "estimate", "actual", "cutoff_price",
+                "open", "high", "low", "average_volume_2_weeks", "average_volume", "high_52_weeks",
+                "dividend_yield", "low_52_weeks", "market_cap", "pb_ratio", "pe_ratio", "shares_outstanding",
+                "margin_initial_ratio", "maintenance_ratio", "day_trade_ratio", "default_collar_fraction",
+                "underlying_price", "total_cash_amount", "quantity", "actual", "estimate",
     Converts to int:
                 "trade_value_multiplier", "year", "quarter", "ask_size", "bid_size",
-                "last_trade_size", "open_interest", "volume",
+                "last_trade_size", "open_interest", "volume",  "float", "num_employees"
+                "year_founded", "num_buy_ratings", "num_sell_ratings", "num_hold_ratings",
 
     :param data: The data passed into filter_data.
     :returns:  The dict with numerical types for the data from certain keys
@@ -210,10 +215,17 @@ def convert_dtypes(data):
                 "high_fill_rate_buy_price", "high_fill_rate_sell_price", "low_fill_rate_buy_price",
                 "low_fill_rate_sell_price", "last_extended_hours_trade_price", "previous_close",
                 "adjusted_previous_close", "below_tick", "above_tick", "estimate", "actual", "cutoff_price",
+                "open", "high", "low", "average_volume_2_weeks", "average_volume", "high_52_weeks",
+                "dividend_yield", "low_52_weeks", "market_cap", "pb_ratio", "pe_ratio", "shares_outstanding",
+                "margin_initial_ratio", "maintenance_ratio", "day_trade_ratio", "default_collar_fraction",
+                "underlying_price", "total_cash_amount", "quantity", "actual", "estimate",
             } and isinstance(data[key], str):
                 data[key] = float(data[key])
-            elif key in {"trade_value_multiplier", "year", "quarter", "ask_size", "bid_size",
-                         "last_trade_size", "open_interest", "volume", } and isinstance(data[key], str):
+            elif key in {
+                "trade_value_multiplier", "year", "quarter", "ask_size", "bid_size",
+                "last_trade_size", "open_interest", "volume", "float", "num_employees",
+                "year_founded", "num_buy_ratings", "num_sell_ratings", "num_hold_ratings",
+            } and isinstance(data[key], str):
                 data[key] = int(float(data[key]))
         return data
     elif isinstance(data, list):
