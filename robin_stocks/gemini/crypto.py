@@ -13,7 +13,9 @@ def get_pubticker(ticker, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * bid - The highest bid currently available
                       * ask - The lowest ask currently available
@@ -35,7 +37,9 @@ def get_ticker(ticker, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * symbol - BTCUSD etc.
                       * open - Open price from 24 hours ago
@@ -60,7 +64,9 @@ def get_symbols(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of strings of crypto tickers.
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of strings and the second entry is an error string or \
+        None if there was not an error.
 
     """
     url = URLS.symbols()
@@ -77,7 +83,9 @@ def get_symbol_details(ticker, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * symbol - BTCUSD etc.
                       * base_currency - CCY1 or the top currency. (ie BTC in BTCUSD)
@@ -102,7 +110,9 @@ def get_notional_volume(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.               
     :Dictionary Keys: * date - UTC date in yyyy-MM-dd format
                       * last_updated_ms - Unix timestamp in millisecond of the last update
@@ -137,7 +147,9 @@ def get_trade_volume(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.               
     :Dictionary Keys: * symbol - The symbol.
                       * base_currency - quantity is denominated in this currency.

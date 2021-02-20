@@ -12,7 +12,9 @@ def get_account_detail(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * account - Contains information on the requested account
                         -- accountName - The name of the account provided upon creation. Will default to Primary
@@ -45,7 +47,9 @@ def check_available_balances(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * currency - The currency code.
                       * amount - The current balance
@@ -71,7 +75,9 @@ def check_notional_balances(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error.\
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * currency - The currency code.
                       * amount - The current balance
@@ -105,7 +111,9 @@ def check_transfers(timestamp=None, limit_transfers=10, show_completed_deposit_a
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * type - Transfer type. Deposit or Withdrawal.
                       * status - Transfer status. Advanced or Complete.
@@ -144,7 +152,9 @@ def get_deposit_addresses(network, timestamp=None,  jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * address - String representation of the new cryptocurrency address.
                       * timestamp - Creation date of the address.
@@ -172,7 +182,9 @@ def get_approved_addresses(network, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * approvedAddresses - Array of approved addresses on both the account and group level.
                         -- network - The network of the approved address. Network can be bitcoin, ethereum, bitcoincash, litecoin, zcash, or filecoin
@@ -210,7 +222,9 @@ def withdraw_crypto_funds(currency_code, address, amount, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * address - Standard string format of the withdrawal destination address.
                       * amount - The withdrawal amount.

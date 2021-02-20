@@ -20,7 +20,9 @@ def get_trades_for_crypto(ticker, limit_trades=50, timestamp=None, jsonify=None)
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * price
                       * amount
@@ -59,7 +61,9 @@ def cancel_all_session_orders(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * result
                       * details
@@ -82,7 +86,9 @@ def cancel_all_active_orders(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * result
                       * details
@@ -107,7 +113,9 @@ def cancel_order(order_id, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * order_id - The order id
                       * client_order_id - An optional client-specified order id
@@ -150,7 +158,9 @@ def order_status(order_id, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * order_id - The order id
                       * client_order_id - An optional client-specified order id
@@ -191,7 +201,9 @@ def active_orders(jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a list of dictionaries parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a list of dictionaries parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionaries are listed below.
     :Dictionary Keys: * order_id - The order id
                       * client_order_id - An optional client-specified order id
@@ -237,7 +249,9 @@ def order_market(ticker, quantity, side, jsonify=None):
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * order_id - The order id
                       * client_order_id - An optional client-specified order id
@@ -289,7 +303,9 @@ def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=
     :param jsonify: If set to false, will return the raw response object. \
         If set to True, will return a dictionary parsed using the JSON format.
     :type jsonify: Optional[str]
-    :returns: Returns a requests reponse object or a dictionary parsed using the JSON format. \
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error. \
         The keys for the dictionary are listed below.
     :Dictionary Keys: * order_id - The order id
                       * client_order_id - An optional client-specified order id
