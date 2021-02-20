@@ -55,3 +55,32 @@ def get_hours_for_market(market, date, jsonify=None):
     }
     data, error = request_get(url, payload, jsonify)
     return data, error
+
+
+@login_required
+@format_inputs
+def get_movers(market, direction, change, jsonify=None):
+    """ Gets market hours for a specific market.
+
+    :param market: The market for which you're requesting market hours, comma-separated. \
+        Valid markets are $DJI, $COMPX, or $SPX.X.
+    :type market: str
+    :param direction: To return movers with the specified directions of "up" or "down".
+    :type direction: str
+    :param change: To return movers with the specified change types of "percent" or "value".
+    :type change: str
+    :param jsonify: If set to false, will return the raw response object. \
+        If set to True, will return a dictionary parsed using the JSON format.
+    :type jsonify: Optional[str]
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error.
+
+    """
+    url = URLS.movers(market)
+    payload = {
+        "direction": direction,
+        "change": change
+    }
+    data, error = request_get(url, payload, jsonify)
+    return data, error

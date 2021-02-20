@@ -158,3 +158,95 @@ def get_instrument(cusip, jsonify=None):
     url = URLS.instrument(cusip)
     data, error = request_get(url, None, jsonify)
     return data, error
+
+
+@login_required
+@format_inputs
+def get_option_chains(ticker, contract_type="ALL", strike_count="10", include_quotes="FALSE", strategy="SINGLE", interval=None, strike_price=None,
+                      range_value="ALL", from_date=None, to_date=None, volatility=None, underlying_price=None, interest_rate=None, 
+                      days_to_expiration=None, exp_month="ALL", option_type="ALL", jsonify=None):
+    """ Gets instrument data for a specific stock.
+
+    :param ticker: The stock ticker.
+    :type ticker: str
+    :param contract_type: Type of contracts to return in the chain. Can be CALL, PUT, or ALL. Default is ALL.
+    :type contract_type: Optional[str]
+    :param strike_count: The number of strikes to return above and below the at-the-money price.
+    :type strike_count: Optional[str]
+    :param include_quotes: Include quotes for options in the option chain. Can be TRUE or FALSE. Default is FALSE.
+    :type include_quotes: Optional[str]
+    :param strategy: Passing a value returns a Strategy Chain. Possible values are SINGLE, ANALYTICAL (allows use of the volatility, \
+        underlyingPrice, interestRate, and daysToExpiration params to calculate theoretical values), COVERED, VERTICAL, CALENDAR, \
+        STRANGLE, STRADDLE, BUTTERFLY, CONDOR, DIAGONAL, COLLAR, or ROLL. Default is SINGLE.
+    :type strategy: Optional[str]
+    :param interval: Strike interval for spread strategy chains (see strategy param).
+    :type interval: Optional[str]
+    :param strike_price: Provide a strike price to return options only at that strike price.
+    :type strike_price: Optional[str]
+    :param range_value: Returns options for the given range. Default is ALL. Possible values are:\n
+        * ITM: In-the-money
+        * NTM: Near-the-money
+        * OTM: Out-of-the-money
+        * SAK: Strikes Above Market
+        * SBK: Strikes Below Market
+        * SNK: Strikes Near Market
+        * ALL: All Strikes
+    :type range_value: Optional[str]
+    :param from_date: Only return expirations after this date. For strategies, expiration refers to the \
+        nearest term expiration in the strategy. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
+    :type from_date: Optional[str]
+    :param to_date: Only return expirations before this date. For strategies, expiration refers to the \
+        nearest term expiration in the strategy. Valid ISO-8601 formats are: yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ssz.
+    :type to_date: Optional[str]
+    :param volatility: Volatility to use in calculations. Applies only to ANALYTICAL strategy chains (see strategy param).
+    :type volatility: Optional[str]
+    :param underlying_price: Underlying price to use in calculations. Applies only to ANALYTICAL strategy chains (see strategy param).
+    :type underlying_price: Optional[str]
+    :param interest_rate: Interest rate to use in calculations. Applies only to ANALYTICAL strategy chains (see strategy param).
+    :type interest_rate: Optional[str]
+    :param days_to_expiration: Days to expiration to use in calculations. Applies only to ANALYTICAL strategy chains (see strategy param).
+    :type days_to_expiration: Optional[str]
+    :param exp_month: Return only options expiring in the specified month. Month is given in the three character format. Example: JAN. Default is ALL.
+    :type exp_month: Optional[str]
+    :param option_type: Type of contracts to return. Default is ALL. Possible values are:\n
+        * S: Standard contracts
+        * NS: Non-standard contracts
+        * ALL: All contracts
+    :type option_type: Optional[str]
+    :param jsonify: If set to false, will return the raw response object. \
+        If set to True, will return a dictionary parsed using the JSON format.
+    :type jsonify: Optional[str]
+    :returns: Returns a tuple where the first entry in the tuple is a requests reponse object  \
+        or a dictionary parsed using the JSON format and the second entry is an error string or \
+        None if there was not an error.
+
+    """
+    url = URLS.option_chains()
+    payload = {
+        "symbol": ticker,
+        "contractType": contract_type,
+        "strikeCount": strike_count,
+        "includeQuotes": include_quotes,
+        "strategy": strategy,
+        "range": range_value,
+        "expMonth": exp_month,
+        "optionType": option_type
+    }
+    if interval:
+        payload["interval"] = interval
+    if strike_price:
+        payload["strike"] = strike_price
+    if from_date:
+        payload["fromDate"] = from_date
+    if to_date: 
+        payload["toDate"] = to_date
+    if volatility:
+        payload["volatility"] = volatility
+    if underlying_price:
+        payload["underlyingPrice"] = underlying_price
+    if interest_rate:
+        payload["interestRate"] = interest_rate
+    if days_to_expiration:
+        pyaload["daysToExpiration"] = days_to_expiration
+    data, error = request_get(url, payload, jsonify)
+    return data, error

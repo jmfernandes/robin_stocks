@@ -43,7 +43,7 @@ class URLS:
     @classmethod
     def account(cls, id):
         return cls.get_base_url(Version.v1) + "accounts/{0}".format(id)
-    
+
     @classmethod
     def accounts(cls):
         return cls.get_base_url(Version.v1) + "accounts"
@@ -69,6 +69,10 @@ class URLS:
     @classmethod
     def market(cls, market):
         return cls.get_base_url(Version.v1) + "marketdata/{0}/hours".format(market)
+
+    @classmethod
+    def movers(cls, index):
+        return cls.get_base_url(Version.v1) + "marketdata/{0}/movers".format(index)
 
     # orders.py
     @classmethod
@@ -99,3 +103,7 @@ class URLS:
     @classmethod
     def price_history(cls, ticker):
         return cls.get_base_url(Version.v1) + "marketdata/{0}/pricehistory".format(ticker)
+
+    @classmethod
+    def option_chains(cls):
+        return cls.get_base_url(Version.v1) + "marketdata/chains"

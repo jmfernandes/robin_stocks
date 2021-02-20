@@ -5,8 +5,8 @@ from .authentication import (generate_encryption_passcode, login,
 from .helper import (get_login_state, get_order_number, request_data,
                      request_delete, request_get, request_headers,
                      request_post)
+from .markets import get_hours_for_market, get_hours_for_markets, get_movers
 from .orders import (cancel_order, get_order, get_orders_for_account,
                      place_order)
-from .stocks import (get_instrument, get_price_history, get_quote, get_quotes,
-                     search_instruments)
-from .markets import get_hours_for_markets, get_hours_for_market
+from .stocks import (get_instrument, get_option_chains, get_price_history,
+                     get_quote, get_quotes, search_instruments)
