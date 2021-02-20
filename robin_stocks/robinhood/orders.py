@@ -797,7 +797,10 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
         orderType = "limit"
     elif stopPrice:
         stopPrice = helper.round_price(stopPrice)
-        price = stopPrice
+        if side == "buy":
+            price = stopPrice
+        else:
+            price = None
         trigger = "stop"
     else:
         price = helper.round_price(next(iter(stocks.get_latest_price(symbol, priceType, extendedHours)), 0.00))
