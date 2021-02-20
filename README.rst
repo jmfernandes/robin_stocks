@@ -1,15 +1,28 @@
-Robinhood API Library
-========================
+.. image:: docs/source/_static/pics/title.PNG
 
-Introduction
+Robin-Stocks API Library
 ========================
-This library aims to create functions to interact with the
-Robinhood API, which are simple to use, easy to understand, and easy to modify the source code.
-This is a pure python interface and it requires Python3. The purpose
-of this library is to allow people to make their own robo-investors or to view information on
-stocks, options, and crypto-currencies in real time.
+This library provides a pure python interface to interact with the Robinhood API, Gemini API,
+and TD Ameritrade API. The code is simple to use, easy to understand, and easy to modify.
+With this library you can view information on stocks, options, and crypto-currencies in real time, 
+create your own robo-investor or trading algorithm, and improve your programming skills.
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
+
+Supported APIs
+==============
+The supported APIs are Robinhood, Gemini, and TD Ameritrade. For more information about how to use the different APIs, visit the README
+documents for `Robinhood Documentation`_, `Gemini Documentation`_, and `TDA Documentation`_.
+
+Below are examples on how to call each of those modules.
+
+>>> import robin_stocks.robinhood as rh
+>>> import robin_stocks.gemini as gem
+>>> import robin_stocks.tda as tda
+>>> # Here are some example calls
+>>> gem.get_pubticker("btcusd") # gets ticker information for Bitcoin from Gemini
+>>> rh.get_all_open_crypto_orders() # gets all cypto orders from Robinhood
+>>> tda.get_price_history("tsla") # get price history from TD Ameritrade 
 
 Contributing
 ============
@@ -29,8 +42,8 @@ You will also need to fill out all the fields in .test.env. I recommend that you
 
 to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
 
->>> pytest tests/test_github_actions.py -k test_name_apple # runs only the 1 test
->>> pytest tests/test_github_actions.py -k TestStocks # runs every test in TestStocks but nothing else
+>>> pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
+>>> pytest tests/test_gemini.py -k TestTrades # runs every test in TestTrades but nothing else
 
 Finally, if you would like the API calls to print out to terminal, then add the -s flag to any of the above pytest calls.
 
@@ -56,165 +69,22 @@ Now that you have cd into the repository you can type
 
 and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
 
-Functions Contained
-========================
+List of Functions and Example Usage
+===================================
 
-For a complete list of functions and how to use them, go to `robin-stocks.com <http://www.robin-stocks.com/en/latest/functions.html>`_.
+For a complete list of all Robinhood API functions and what the different parameters mean, 
+go to `robin-stocks.com Robinhood Page <http://www.robin-stocks.com/en/latest/robinhood.html>`_. If you would like to
+see some example code and instructions on how to set up two-factor authorization for Robinhood,
+go to the `Robinhood Documentation`_.
 
-Example Usage
-========================
+For a complete list of all TD Ameritrade API functions and what the different parameters mean, 
+go to `robin-stocks.com TDA Page <http://www.robin-stocks.com/en/latest/tda.html>`_. For detailed instructions on 
+how to generate API keys for TD Ameritrade and how to use the API, go to the `TDA Documentation`_.
 
-When you write a new python script, you'll have to load the module and login to Robinhood. This is
-accomplished by typing
+For a complete list of all Gemini API functions and what the different parameters mean, 
+go to `robin-stocks.com Gemeni Page <http://www.robin-stocks.com/en/latest/gemini.html>`_. For detailed instructions on 
+how to generate API keys for Gemini and how to use both the private and public API, go to the `Gemini Documentation`_.
 
-Basic
-^^^^^
-
->>> import robin_stocks as r
->>> login = r.login('joshsmith@email.com','password')
-
-You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
-
-With MFA entered programmatically from Time-based One-Time Password (TOTP)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-NOTE: to use this feature, you will have to sign into your robinhood account and turn on two factor authentication.
-Robinhood will ask you which two factor authorization app you want to use. Select "other". Robinhood will present you with
-an alphanumeric code. This code is what you will use for "My2factorAppHere" in the code below. Run the following code and put
-the resulting MFA code into the prompt on your robinhood app.
-
->>> import pyotp
->>> totp  = pyotp.TOTP("My2factorAppHere").now()
->>> print("Current OTP:", totp)
-
-Once you have entered the above MFA code (the totp variable that is printed out) into your Robinhood account, it will give you a backup code.
-Make sure you do not lose this code or you may be locked out of your account!!! You can also take the exact same "My2factorAppHere" from above
-and enter it into your phone's authentication app, such as Google Authenticator. This will cause the exact same MFA code to be generated on your phone
-as well as your python code. This is important to do if you plan on being away from your computer and need to access your Robinhood account from your phone.
-
-Now you should be able to login with the following code,
-
->>> import pyotp
->>> import robin_stocks as r
->>> totp  = pyotp.TOTP("My2factorAppHere").now()
->>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
-
-Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
-contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
-to log into Robinhood at the start of each script.
-
-Placing Orders
---------------
-
-There is the ability to buy and sell stocks, options, and crypto-currencies.
-There is also the ability to submit market orders, limit orders, and stop orders as long as
-Robinhood supports it. Here is a list of possible trades you can make
-
->>> #Buy 10 shares of Apple at market price
->>> r.order_buy_market('AAPL',10)
->>> #Sell half a Bitcoin is price reaches 10,000
->>> r.order_sell_crypto_limit('BTC',0.5,10000)
->>> #Buy $500 worth of Bitcoin
->>> r.order_buy_crypto_by_price('BTC',500)
->>> #Buy 5 $150 May 1st, 2020 SPY puts if the price per contract is $1.00. Good until cancelled.
->>> r.order_buy_option_limit('open','debit',1.00,'SPY',5,'2020-05-01',150,'put','gtc')
-
-Now let's try a slightly more complex example. Let's say you wanted to sell half your Tesla stock if it fell to 200.00.
-To do this you would type
-
->>> positions_data = r.get_open_stock_positions()
->>> ## Note: This for loop adds the stock ticker to every order, since Robinhood
->>> ## does not provide that information in the stock orders.
->>> ## This process is very slow since it is making a GET request for each order.
->>> for item in positions_data:
->>>     item['symbol'] = r.get_symbol_by_url(item['instrument'])
->>> TSLAData = [item for item in positions_data if item['symbol'] == 'TSLA']
->>> sellQuantity = float(TSLAData['quantity'])//2.0
->>> r.order_sell_limit('TSLA',sellQuantity,200.00)
-
-Viewing Orders
---------------
-
-You can also view all orders you have made. This includes filled orders, cancelled orders, and open orders.
-Stocks, options, and cryptocurrencies are separated into three different locations.
-For example, let's say that you have some limit orders to buy and sell Bitcoin and those orders have yet to be filled.
-If you want to cancel all your limit sells, you would type
-
->>> positions_data = r.get_all_open_crypto_orders()
->>> ## Note: Again we are adding symbol to our list of orders because Robinhood
->>> ## does not include this with the order information.
->>> for item in positions_data:
->>>    item['symbol'] = r.get_crypto_quote_from_id(item['currency_pair_id'], 'symbol')
->>> btcOrders = [item for item in positions_data if item['symbol'] == 'BTCUSD' and item['side'] == 'sell']
->>> for item in btcOrders:
->>>    r.cancel_crypto_order(item['id'])
-
-If you want to view all the call options for a list of stocks you could type
-
->>> optionData = r.find_options_by_expiration(['fb','aapl','tsla','nflx'],
->>>              expirationDate='2018-11-16',optionType='call')
->>> for item in optionData:
->>>     print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
->>>           item['chain_symbol'],' delta - ',item['delta'],' theta - ',item['theta'])
-
-Retrieving/Sending Data Directly to API
----------------------------------------
-
-There is a lot more that you can do with this API. Be sure to check out the examples folder to
-see even more examples. This folder will get updated periodically to demonstrate new functionality
-and best practices.
-
-Keep in mind that the functions contained in the library are just wrappers around a functional API,
-and you are free to write your own functions that interact with the Robinhood API. I've
-exposed the get and post methods so any call to the Robinhood API could be made. The syntax is
-
->>> url = 'https://api.robinhood.com/'
->>> payload = { 'key1' : 'value1', 'key2' : 'value2'}
->>> r.request_get(url,'regular',payload)
-
-The above code would results in a get request to ``https://api.robinhood.com/?key1=value1&key2=value2`` (which is a
-meaningless request). RobinHood returns most data as { 'previous' : None, 'results' : [], 'next' : None},
-where ‘results’ is either a dictionary or a list of dictionaries. If a particular query returns more entries than can be stored
-in 'results', then those will be stored in 'next', which is simply a url link to the next set of data.
-Keep in mind that RobinHood will sometimes return the data in a different format.
-To compensate for this, request_get takes either 'regular', 'results', 'pagination', or 'indexzero' as the second parameter.
-In most cases, you want to use 'pagination' to get all the results.
-
-Saving to CSV File
-------------------
-Users can also export a list of all orders to a CSV file. There is a function for stocks and options. Each function
-takes a directory path and an optional filename. If no filename is provided, a date stamped filename will be generated. The directory path
-can be either absolute or relative. To save the file in the current directory, simply pass in "." as the directory. Note that ".csv" is the only valid
-file extension. If it is missing it will be added, and any other file extension will be automatically changed. Below are example calls.
-
->>> # let's say that I am running code from C:/Users/josh/documents/
->>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
->>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
-
-Getting Quote Information For Stocks In A Specific Category
------------------------------------------------------------
-When you are on Robinhood, there are these green tags you can click on to get all the stocks for that category.
-You can now get the quote information for those categories by calling
-
->>> r.get_all_stocks_from_market_tag('upcoming-earnings') # get upcoming earnings
->>> r.get_all_stocks_from_market_tag('technology') # get all tech tags
-
-These functions do some processing to get the quote data so they may run a little slow.
-The Robinhood API only returns a list of instrument urls.
-
-Using Option Spreads
-====================
-When viewing a spread in the robinhood app, it incorrectly identifies both legs as either "buy" or "sell" when closing a position.
-The "direction" has to reverse when you try to close a spread position.
-
-I.e.
-direction="credit"
-when
-"action":"sell","effect":"close"
-
-in the case of a long call or put spread.
-
-New Features In The Works
-=========================
-
-- Trading using TD Ameritrade
+.. _Robinhood Documentation: Robinhood.rst
+.. _Gemini Documentation: gemini.rst
+.. _TDA Documentation: tda.rst

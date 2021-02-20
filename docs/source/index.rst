@@ -34,7 +34,9 @@ to scroll through the list of all the callable functions.
    install
    quickstart
    advanced
-   functions
+   robinhood
+   tda
+   gemini
    example
 
 Indices and tables

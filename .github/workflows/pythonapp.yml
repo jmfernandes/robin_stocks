@@ -1,6 +1,9 @@
 name: Python application
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -36,4 +39,6 @@ jobs:
         pip install pytest
         pip install pytest-dotenv
         pip install python-dateutil
-        pytest tests/test_github_actions.py
+        pytest tests/test_robinhood.py
+        pytest tests/test_gemini.py
+        pytest tests/test_tda.py
