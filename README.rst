@@ -11,15 +11,18 @@ To join our Slack channel where you can discuss trading and coding, click the li
 
 Supported APIs
 ==============
-The supported APIs are Robinhood, Gemini, and TD Ameritrade. Below are examples on how to call each of those modules.
+The supported APIs are Robinhood, Gemini, and TD Ameritrade. For more information about how to use the different APIs, visit the README
+documents for `Robinhood Documentation`_, `Gemini Documentation`_, and `TDA Documentation`_.
 
->>> import robin_stocks.robinhood as r
->>> import robin_stocks.gemini as g
->>> import robin_stocks.tda as t
+Below are examples on how to call each of those modules.
+
+>>> import robin_stocks.robinhood as rh
+>>> import robin_stocks.gemini as gem
+>>> import robin_stocks.tda as tda
 >>> # Here are some example calls
->>> g.get_pubticker("btcusd") # gets ticker information for Bitcoin from Gemini
->>> r.get_all_open_crypto_orders() # gets all cypto orders from Robinhood
->>> t.get_price_history("tsla") # get price history from TD Ameritrade 
+>>> gem.get_pubticker("btcusd") # gets ticker information for Bitcoin from Gemini
+>>> rh.get_all_open_crypto_orders() # gets all cypto orders from Robinhood
+>>> tda.get_price_history("tsla") # get price history from TD Ameritrade 
 
 Contributing
 ============
