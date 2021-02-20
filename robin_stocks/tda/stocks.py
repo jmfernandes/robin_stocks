@@ -247,6 +247,6 @@ def get_option_chains(ticker, contract_type="ALL", strike_count="10", include_qu
     if interest_rate:
         payload["interestRate"] = interest_rate
     if days_to_expiration:
-        pyaload["daysToExpiration"] = days_to_expiration
+        payload["daysToExpiration"] = days_to_expiration
     data, error = request_get(url, payload, jsonify)
     return data, error
