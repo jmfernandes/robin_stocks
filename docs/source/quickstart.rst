@@ -89,7 +89,7 @@ Robinhood supports it. Here is a list of possible trades you can make
 Now let's try a slightly more complex example. Let's say you wanted to sell half your Tesla stock if it fell to 200.00.
 To do this you would type
 
->>> positions_data = robin_stocks.get_current_positions()
+>>> positions_data = robin_stocks.get_open_stock_positions()
 >>> ## Note: This for loop adds the stock ticker to every order, since Robinhood
 >>> ## does not provide that information in the stock orders.
 >>> ## This process is very slow since it is making a GET request for each order.
