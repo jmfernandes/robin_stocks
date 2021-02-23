@@ -28,21 +28,21 @@ def get_quotes(inputSymbols, info=None):
                       * instrument
 
     """
-    symbols = helper.inputs_to_set(inputSymbols)
-    url = urls.quotes()
+    symbols = inputs_to_set(inputSymbols)
+    url = quotes()
     payload = {'symbols': ','.join(symbols)}
-    data = helper.request_get(url, 'results', payload)
+    data = request_get(url, 'results', payload)
 
     if (data == None or data == [None]):
         return data
 
     for count, item in enumerate(data):
         if item is None:
-            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
+            print(error_ticker_does_not_exist(symbols[count]), file=get_output())
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_fundamentals(inputSymbols, info=None):
@@ -81,23 +81,23 @@ def get_fundamentals(inputSymbols, info=None):
                       * symbol
 
     """ 
-    symbols = helper.inputs_to_set(inputSymbols)
-    url = urls.fundamentals()
+    symbols = inputs_to_set(inputSymbols)
+    url = fundamentals()
     payload = {'symbols': ','.join(symbols)}
-    data = helper.request_get(url, 'results', payload)
+    data = request_get(url, 'results', payload)
 
     if (data == None or data == [None]):
         return data
 
     for count, item in enumerate(data):
         if item is None:
-            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
+            print(error_ticker_does_not_exist(symbols[count]), file=get_output())
         else:
             item['symbol'] = symbols[count]
 
     data = [item for item in data if item is not None]
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_instruments_by_symbols(inputSymbols, info=None):
@@ -136,19 +136,19 @@ def get_instruments_by_symbols(inputSymbols, info=None):
                       * default_collar_fraction
 
     """ 
-    symbols = helper.inputs_to_set(inputSymbols)
-    url = urls.instruments()
+    symbols = inputs_to_set(inputSymbols)
+    url = instruments()
     data = []
     for item in symbols:
         payload = {'symbol': item}
-        itemData = helper.request_get(url, 'indexzero', payload)
+        itemData = request_get(url, 'indexzero', payload)
 
         if itemData:
             data.append(itemData)
         else:
-            print(helper.error_ticker_does_not_exist(item), file=helper.get_output())
+            print(error_ticker_does_not_exist(item), file=get_output())
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_instrument_by_url(url, info=None):
@@ -188,9 +188,9 @@ def get_instrument_by_url(url, info=None):
                       * default_collar_fraction
 
     """
-    data = helper.request_get(url, 'regular')
+    data = request_get(url, 'regular')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
@@ -206,7 +206,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
     :returns: [list] A list of prices as strings.
 
     """ 
-    symbols = helper.inputs_to_set(inputSymbols)
+    symbols = inputs_to_set(inputSymbols)
     quote = get_quotes(symbols)
 
     prices = []
@@ -218,7 +218,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
                 prices.append(item['bid_price'])
             else:
                 if priceType:
-                    print('WARNING: priceType should be "ask_price" or "bid_price". You entered "{0}"'.format(priceType), file=helper.get_output())
+                    print('WARNING: priceType should be "ask_price" or "bid_price". You entered "{0}"'.format(priceType), file=get_output())
                 if item['last_extended_hours_trade_price'] is None or not includeExtendedHours:
                     prices.append(item['last_trade_price'])
                 else:
@@ -228,7 +228,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
     return(prices)
 
 
-@helper.convert_none_to_string
+@convert_none_to_string
 def get_name_by_symbol(symbol):
     """Returns the name of a stock from the stock ticker.
 
@@ -240,22 +240,22 @@ def get_name_by_symbol(symbol):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.instruments()
+    url = instruments()
     payload = {'symbol': symbol}
-    data = helper.request_get(url, 'indexzero', payload)
+    data = request_get(url, 'indexzero', payload)
     if not data:
         return(None)
     # If stock doesn't have a simple name attribute then get the full name.
-    filter = helper.filter_data(data, info='simple_name')
+    filter = filter_data(data, info='simple_name')
     if not filter or filter == "":
-        filter = helper.filter_data(data, info='name')
+        filter = filter_data(data, info='name')
     return(filter)
 
 
-@helper.convert_none_to_string
+@convert_none_to_string
 def get_name_by_url(url):
     """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
@@ -265,17 +265,17 @@ def get_name_by_url(url):
     :returns: [str] Returns the simple name of the stock. If the simple name does not exist then returns the full name.
 
     """
-    data = helper.request_get(url)
+    data = request_get(url)
     if not data:
         return(None)
     # If stock doesn't have a simple name attribute then get the full name.
-    filter = helper.filter_data(data, info='simple_name')
+    filter = filter_data(data, info='simple_name')
     if not filter or filter == "":
-        filter = helper.filter_data(data, info='name')
+        filter = filter_data(data, info='name')
     return(filter)
 
 
-@helper.convert_none_to_string
+@convert_none_to_string
 def get_symbol_by_url(url):
     """Returns the symbol of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
     where <id> is the id of the stock.
@@ -285,10 +285,10 @@ def get_symbol_by_url(url):
     :returns: [str] Returns the ticker symbol of the stock.
 
     """
-    data = helper.request_get(url)
-    return helper.filter_data(data, info='symbol')
+    data = request_get(url)
+    return filter_data(data, info='symbol')
 
-@helper.convert_none_to_string
+@convert_none_to_string
 def get_ratings(symbol, info=None):
     """Returns the ratings for a stock, including the number of buy, hold, and sell ratings.
 
@@ -308,11 +308,11 @@ def get_ratings(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.ratings(symbol)
-    data = helper.request_get(url)
+    url = ratings(symbol)
+    data = request_get(url)
     if not data:
         return(data)
 
@@ -323,7 +323,7 @@ def get_ratings(symbol, info=None):
             oldText = item['text']
             item['text'] = oldText.encode('UTF-8')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
     
 
 def get_events(symbol, info=None):
@@ -358,14 +358,14 @@ def get_events(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    payload = {'equity_instrument_id': helper.id_for_stock(symbol)}
-    url = urls.events()
-    data = helper.request_get(url, 'results', payload)
+    payload = {'equity_instrument_id': id_for_stock(symbol)}
+    url = events()
+    data = request_get(url, 'results', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_earnings(symbol, info=None):
@@ -390,14 +390,14 @@ def get_earnings(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.earnings()
+    url = earnings()
     payload = {'symbol': symbol}
-    data = helper.request_get(url, 'results', payload)
+    data = request_get(url, 'results', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_news(symbol, info=None):
@@ -430,13 +430,13 @@ def get_news(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.news(symbol)
-    data = helper.request_get(url, 'results')
+    url = news(symbol)
+    data = request_get(url, 'results')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_splits(symbol, info=None):
@@ -460,12 +460,12 @@ def get_splits(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.splits(symbol)
-    data = helper.request_get(url, 'results')
-    return(helper.filter_data(data, info))
+    url = splits(symbol)
+    data = request_get(url, 'results')
+    return(filter_data(data, info))
 
 
 def find_instrument_data(query):
@@ -500,16 +500,16 @@ def find_instrument_data(query):
                       * default_collar_fraction
 
     """ 
-    url = urls.instruments()
+    url = instruments()
     payload = {'query': query}
 
-    data = helper.request_get(url, 'pagination', payload)
+    data = request_get(url, 'pagination', payload)
 
     if len(data) == 0:
-        print('No results found for that keyword', file=helper.get_output())
+        print('No results found for that keyword', file=get_output())
         return([None])
     else:
-        print('Found ' + str(len(data)) + ' results', file=helper.get_output())
+        print('Found ' + str(len(data)) + ' results', file=get_output())
         return(data)
 
 
@@ -545,40 +545,40 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
 
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=helper.get_output())
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "extended","regular",or "trading"', file=helper.get_output())
+        print('ERROR: Bounds must be "extended","regular",or "trading"', file=get_output())
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
         return([None])
 
-    symbols = helper.inputs_to_set(inputSymbols)
-    url = urls.historicals()
+    symbols = inputs_to_set(inputSymbols)
+    url = historicals()
     payload = {'symbols': ','.join(symbols),
                'interval': interval,
                'span': span,
                'bounds': bounds}
 
-    data = helper.request_get(url, 'results', payload)
+    data = request_get(url, 'results', payload)
     if (data == None or data == [None]):
         return data
 
     histData = []
     for count, item in enumerate(data):
         if (len(item['historicals']) == 0):
-            print(helper.error_ticker_does_not_exist(symbols[count]), file=helper.get_output())
+            print(error_ticker_does_not_exist(symbols[count]), file=get_output())
             continue
         stockSymbol = item['symbol']
         for subitem in item['historicals']:
             subitem['symbol'] = stockSymbol
             histData.append(subitem)
 
-    return(helper.filter_data(histData, info))
+    return(filter_data(histData, info))
 
 
 def get_stock_quote_by_id(stock_id, info=None):
@@ -608,10 +608,10 @@ def get_stock_quote_by_id(stock_id, info=None):
                       * updated_at
                       * instrument
     """
-    url = urls.marketdata_quotes(stock_id)
-    data = helper.request_get(url)
+    url = marketdata_quotes(stock_id)
+    data = request_get(url)
 
-    return (helper.filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_stock_quote_by_symbol(symbol, info=None):
@@ -642,7 +642,7 @@ def get_stock_quote_by_symbol(symbol, info=None):
                       * instrument
     """
 
-    return get_stock_quote_by_id(helper.id_for_stock(symbol))
+    return get_stock_quote_by_id(id_for_stock(symbol))
 
 
 def get_pricebook_by_id(stock_id, info=None):
@@ -657,10 +657,10 @@ def get_pricebook_by_id(stock_id, info=None):
     :return: Returns a dictionary of asks and bids.
 
     """
-    url = urls.marketdata_pricebook(stock_id)
-    data = helper.request_get(url)
+    url = marketdata_pricebook(stock_id)
+    data = request_get(url)
 
-    return (helper.filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_pricebook_by_symbol(symbol, info=None):
@@ -676,4 +676,4 @@ def get_pricebook_by_symbol(symbol, info=None):
 
     """
 
-    return get_pricebook_by_id(helper.id_for_stock(symbol))
+    return get_pricebook_by_id(id_for_stock(symbol))

@@ -13,14 +13,14 @@ spinner = spinning_cursor()
 
 def write_spinner():
     """ Function to create a spinning cursor to tell user that the code is working on getting market data. """
-    if helper.get_output()==sys.stdout:
+    if get_output()==sys.stdout:
         marketString = 'Loading Market Data '
         sys.stdout.write(marketString)
         sys.stdout.write(next(spinner))
         sys.stdout.flush()
         sys.stdout.write('\b'*(len(marketString)+1))
 
-@helper.login_required
+@login_required
 def get_aggregate_positions(info=None):
     """Collapses all option orders for a stock into a single dictionary.
 
@@ -30,12 +30,12 @@ def get_aggregate_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.aggregate()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = aggregate()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_market_options(info=None):
     """Returns a list of all options.
 
@@ -45,13 +45,13 @@ def get_market_options(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.option_orders()
-    data = helper.request_get(url, 'pagination')
+    url = option_orders()
+    data = request_get(url, 'pagination')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_all_option_positions(info=None):
     """Returns all option positions ever held for the account.
 
@@ -61,12 +61,12 @@ def get_all_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.option_positions()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = option_positions()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_open_option_positions(info=None):
     """Returns all open option positions for the account.
 
@@ -76,11 +76,11 @@ def get_open_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.option_positions()
+    url = option_positions()
     payload = {'nonzero': 'True'}
-    data = helper.request_get(url, 'pagination', payload)
+    data = request_get(url, 'pagination', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_chains(symbol, info=None):
@@ -97,15 +97,15 @@ def get_chains(symbol, info=None):
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
-    url = urls.chains(symbol)
-    data = helper.request_get(url)
+    url = chains(symbol)
+    data = request_get(url)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
     """Returns a list of all available options for a stock.
 
@@ -126,15 +126,15 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
-    url = urls.option_instruments()
-    if not helper.id_for_chain(symbol):
-        print("Symbol {} is not valid for finding options.".format(symbol), file=helper.get_output())
+    url = option_instruments()
+    if not id_for_chain(symbol):
+        print("Symbol {} is not valid for finding options.".format(symbol), file=get_output())
         return [None]
 
-    payload = {'chain_id': helper.id_for_chain(symbol),
+    payload = {'chain_id': id_for_chain(symbol),
                'chain_symbol': symbol,
                'state': 'active'}
 
@@ -145,10 +145,10 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
     if optionType:
         payload['type'] = optionType
 
-    data = helper.request_get(url, 'pagination', payload)
-    return(helper.filter_data(data, info))
+    data = request_get(url, 'pagination', payload)
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -165,11 +165,11 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
     """
     try:
-        symbols = helper.inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
     data = []
@@ -185,9 +185,9 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
         data.extend(filteredOptions)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -204,11 +204,11 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
     """
     try:
-        symbols = helper.inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
     data = []
@@ -223,9 +223,9 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
         data.extend(filteredOptions)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
     """Returns a list of all the option orders that match the seach parameters
 
@@ -244,11 +244,11 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
     """
     try:
-        symbols = helper.inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
     data = []
@@ -264,9 +264,9 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
         data.extend(filteredOptions)
 
-    return helper.filter_data(data, info)
+    return filter_data(data, info)
 
-@helper.login_required
+@login_required
 def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
     """Returns a list of option market data for several stock tickers that match a range of profitability.
 
@@ -290,11 +290,11 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
     If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    symbols = helper.inputs_to_set(inputSymbols)
+    symbols = inputs_to_set(inputSymbols)
     data = []
 
     if (typeProfit != "chance_of_profit_short" and typeProfit != "chance_of_profit_long"):
-        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.", file=helper.get_output())
+        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.", file=get_output())
         typeProfit = "chance_of_profit_short"
 
     for symbol in symbols:
@@ -316,9 +316,9 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 except:
                     pass
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_option_market_data_by_id(id, info=None):
     """Returns the option market data for a stock, including the greeks,
     open interest, change of profit, and adjusted mark price.
@@ -332,11 +332,11 @@ def get_option_market_data_by_id(id, info=None):
 
     """
     instrument = get_option_instrument_data_by_id(id)
-    url = urls.marketdata_options()
+    url = marketdata_options()
     payload = {
         "instruments" : instrument['url']
     }
-    data = helper.request_get(url, 'results', payload)
+    data = request_get(url, 'results', payload)
 
     if not data:
         data= {
@@ -370,9 +370,9 @@ def get_option_market_data_by_id(id, info=None):
         'low_fill_rate_sell_price':''
         }
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
     """Returns the option market data for the stock option, including the greeks,
     open interest, change of profit, and adjusted mark price.
@@ -392,20 +392,20 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
 
     """
     try:
-        symbols = helper.inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
     data = []
     for symbol in symbols:
-        optionID = helper.id_for_option(symbol, expirationDate, strikePrice, optionType)
+        optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
         marketData = get_option_market_data_by_id(optionID)
         data.append(marketData)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_option_instrument_data_by_id(id, info=None):
@@ -419,9 +419,9 @@ def get_option_instrument_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = urls.option_instruments(id)
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = option_instruments(id)
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
 def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None):
@@ -445,14 +445,14 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
         symbol = symbol.upper().strip()
         optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
-    optionID = helper.id_for_option(symbol, expirationDate, strikePrice, optionType)
-    url = urls.option_instruments(optionID)
-    data = helper.request_get(url)
+    optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
+    url = option_instruments(optionID)
+    data = request_get(url)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
 def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None):
@@ -483,7 +483,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         symbol = symbol.upper().strip()
         optionType = optionType.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return [None]
 
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
@@ -491,22 +491,22 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
     bounds_check = ['extended', 'regular', 'trading']
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day", "week", "year", or "5year"', file=helper.get_output())
+        print('ERROR: Span must be "day", "week", "year", or "5year"', file=get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "extended","regular",or "trading"', file=helper.get_output())
+        print('ERROR: Bounds must be "extended","regular",or "trading"', file=get_output())
         return([None])
 
-    optionID = helper.id_for_option(symbol, expirationDate, strikePrice, optionType)
+    optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
 
-    url = urls.option_historicals(optionID)
+    url = option_historicals(optionID)
     payload = {'span': span,
                'interval': interval,
                'bounds': bounds}
-    data = helper.request_get(url, 'regular', payload)
+    data = request_get(url, 'regular', payload)
     if (data == None or data == [None]):
         return data
 
@@ -515,4 +515,4 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         subitem['symbol'] = symbol
         histData.append(subitem)
 
-    return(helper.filter_data(histData, info))
+    return(filter_data(histData, info))

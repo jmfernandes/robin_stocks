@@ -22,18 +22,18 @@ def get_top_movers_sp500(direction, info=None):
     try:
         direction = direction.lower().strip()
     except AttributeError as message:
-        print(message, file=helper.get_output())
+        print(message, file=get_output())
         return None
 
     if (direction != 'up' and direction != 'down'):
-        print('Error: direction must be "up" or "down"', file=helper.get_output())
+        print('Error: direction must be "up" or "down"', file=get_output())
         return([None])
 
-    url = urls.movers_sp500()
+    url = movers_sp500()
     payload = {'direction': direction}
-    data = helper.request_get(url, 'pagination', payload)
+    data = request_get(url, 'pagination', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 def get_top_100(info=None):
     """Returns a list of the Top 100 stocks on Robin Hood.
@@ -59,14 +59,14 @@ def get_top_100(info=None):
                       * instrument
 
     """
-    url = urls.get_100_most_popular()
-    data = helper.request_get(url, 'regular')
-    data = helper.filter_data(data, 'instruments')
+    url = get_100_most_popular()
+    data = request_get(url, 'regular')
+    data = filter_data(data, 'instruments')
 
-    symbols = [stocks.get_symbol_by_url(x) for x in data]
-    data = stocks.get_quotes(symbols)
+    symbols = [get_symbol_by_url(x) for x in data]
+    data = get_quotes(symbols)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 def get_top_movers(info=None):
     """Returns a list of the Top 20 movers on Robin Hood.
@@ -92,14 +92,14 @@ def get_top_movers(info=None):
                       * instrument
 
     """
-    url = urls.movers_top()
-    data = helper.request_get(url, 'regular')
-    data = helper.filter_data(data, 'instruments')
+    url = movers_top()
+    data = request_get(url, 'regular')
+    data = filter_data(data, 'instruments')
 
-    symbols = [stocks.get_symbol_by_url(x) for x in data]
-    data = stocks.get_quotes(symbols)
+    symbols = [get_symbol_by_url(x) for x in data]
+    data = get_quotes(symbols)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 def get_all_stocks_from_market_tag(tag, info=None):
     """Returns all the stock quote information that matches a tag category.
@@ -127,18 +127,18 @@ def get_all_stocks_from_market_tag(tag, info=None):
                       * instrument
 
     """
-    url = urls.market_category(tag)
-    data = helper.request_get(url, 'regular')
-    data = helper.filter_data(data, 'instruments')
+    url = market_category(tag)
+    data = request_get(url, 'regular')
+    data = filter_data(data, 'instruments')
 
     if not data:
-        print('ERROR: "{}" is not a valid tag'.format(tag), file=helper.get_output())
+        print('ERROR: "{}" is not a valid tag'.format(tag), file=get_output())
         return [None]
 
-    symbols = [stocks.get_symbol_by_url(x) for x in data]
-    data = stocks.get_quotes(symbols)
+    symbols = [get_symbol_by_url(x) for x in data]
+    data = get_quotes(symbols)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 def get_markets(info=None):
     """Returns a list of available markets.
@@ -159,9 +159,9 @@ def get_markets(info=None):
                       * website
 
     """
-    url = urls.markets()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = markets()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 def get_market_today_hours(market, info=None):
     """Returns the opening and closing hours of a specific market for today. Also will tell you if market is
@@ -189,8 +189,8 @@ def get_market_today_hours(market, info=None):
         raise Exception('Not a valid market name. Check get_markets() for a list of market information.')
 
     url = result['todays_hours']
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
 def get_market_next_open_hours(market, info=None):
     """Returns the opening and closing hours for the next open trading day after today. Also will tell you if market is
@@ -213,8 +213,8 @@ def get_market_next_open_hours(market, info=None):
 
     """
     url = get_market_today_hours(market, info='next_open_hours')
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
 def get_market_next_open_hours_after_date(market, date, info=None):
     """Returns the opening and closing hours for the next open trading day after a date that is specified. Also will tell you if market is
@@ -239,8 +239,8 @@ def get_market_next_open_hours_after_date(market, date, info=None):
 
     """
     url = get_market_hours(market, date, info='next_open_hours')
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
 def get_market_hours(market, date, info=None):
     """Returns the opening and closing hours of a specific market on a specific date. Also will tell you if market is
@@ -264,9 +264,9 @@ def get_market_hours(market, date, info=None):
                       * next_open_hours
 
     """
-    url = urls.market_hours(market, date)
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    url = market_hours(market, date)
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
 
 def get_currency_pairs(info=None):
@@ -289,6 +289,6 @@ def get_currency_pairs(info=None):
                       * tradability
 
     """
-    url = urls.currency()
-    data = helper.request_get(url, 'results')
-    return(helper.filter_data(data, info))
+    url = currency()
+    data = request_get(url, 'results')
+    return(filter_data(data, info))

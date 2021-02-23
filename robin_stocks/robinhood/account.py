@@ -8,7 +8,7 @@ from robin_stocks.robinhood.stocks import *
 from robin_stocks.robinhood.urls import *
 
 
-@helper.login_required
+@login_required
 def load_phoenix_account(info=None):
     """Returns unified information about your account.
 
@@ -45,11 +45,11 @@ def load_phoenix_account(info=None):
                       * withdrawable_cash
 
     """
-    url = urls.phoenix()
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    url = phoenix()
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'month', '3month', 'year', '5year', 'all']
@@ -57,33 +57,33 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
 
     if interval not in interval_check:
         if interval is None and (bounds != 'regular' and span != 'all'):
-            print ('ERROR: Interval must be None for "all" span "regular" bounds', file=helper.get_output())
+            print ('ERROR: Interval must be None for "all" span "regular" bounds', file=get_output())
             return ([None])
         print(
-            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=helper.get_output())
+            'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=helper.get_output())
+        print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=get_output())
         return([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
         return([None])
 
-    account = profiles.load_account_profile('account_number')
-    url = urls.portfolis_historicals(account)
+    account = load_account_profile('account_number')
+    url = portfolis_historicals(account)
     payload = {
         'interval': interval,
         'span': span,
         'bounds': bounds
     }
-    data = helper.request_get(url, 'regular', payload)
+    data = request_get(url, 'regular', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_all_positions(info=None):
     """Returns a list containing every position ever traded.
 
@@ -110,13 +110,13 @@ def get_all_positions(info=None):
                       * created_at
 
     """
-    url = urls.positions()
-    data = helper.request_get(url, 'pagination')
+    url = positions()
+    data = request_get(url, 'pagination')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_open_stock_positions(info=None):
     """Returns a list of stocks that are currently held.
 
@@ -143,14 +143,14 @@ def get_open_stock_positions(info=None):
                       * created_at
 
     """
-    url = urls.positions()
+    url = positions()
     payload = {'nonzero': 'true'}
-    data = helper.request_get(url, 'pagination', payload)
+    data = request_get(url, 'pagination', payload)
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_dividends(info=None):
     """Returns a list of dividend trasactions that include information such as the percentage rate,
     amount, shares of held stock, and date paid.
@@ -175,21 +175,21 @@ def get_dividends(info=None):
                       * drip_enabled
 
     """
-    url = urls.dividends()
-    data = helper.request_get(url, 'pagination')
+    url = dividends()
+    data = request_get(url, 'pagination')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_total_dividends():
     """Returns a float number representing the total amount of dividends paid to the account.
 
     :returns: Total dollar amount of dividends paid to the account as a 2 precision float.
 
     """
-    url = urls.dividends()
-    data = helper.request_get(url, 'pagination')
+    url = dividends()
+    data = request_get(url, 'pagination')
 
     dividend_total = 0
     for item in data:
@@ -197,7 +197,7 @@ def get_total_dividends():
     return(dividend_total)
 
 
-@helper.login_required
+@login_required
 def get_dividends_by_instrument(instrument, dividend_data):
     """Returns a dictionary with three fields when given the instrument value for a stock
 
@@ -227,7 +227,7 @@ def get_dividends_by_instrument(instrument, dividend_data):
         pass
 
 
-@helper.login_required
+@login_required
 def get_notifications(info=None):
     """Returns a list of notifications.
 
@@ -237,25 +237,25 @@ def get_notifications(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.notifications()
-    data = helper.request_get(url, 'pagination')
+    url = notifications()
+    data = request_get(url, 'pagination')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_latest_notification():
     """Returns the time of the latest notification.
 
     :returns: Returns a dictionary of key/value pairs. But there is only one key, 'last_viewed_at'
 
     """
-    url = urls.notifications(True)
-    data = helper.request_get(url)
+    url = notifications(True)
+    data = request_get(url)
     return(data)
 
 
-@helper.login_required
+@login_required
 def get_wire_transfers(info=None):
     """Returns a list of wire transfers.
 
@@ -265,12 +265,12 @@ def get_wire_transfers(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.wiretransfers()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = wiretransfers()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_margin_calls(symbol=None):
     """Returns either all margin calls or margin calls for a specific stock.
 
@@ -279,22 +279,22 @@ def get_margin_calls(symbol=None):
     :returns: Returns a list of dictionaries of key/value pairs for each margin call.
 
     """
-    url = urls.margin()
+    url = margin()
     if symbol:
         try:
             symbol = symbol.upper().strip()
         except AttributeError as message:
-            print(message, file=helper.get_output())
+            print(message, file=get_output())
             return None
-        payload = {'equity_instrument_id', helper.id_for_stock(symbol)}
-        data = helper.request_get(url, 'results', payload)
+        payload = {'equity_instrument_id', id_for_stock(symbol)}
+        data = request_get(url, 'results', payload)
     else:
-        data = helper.request_get(url, 'results')
+        data = request_get(url, 'results')
 
     return(data)
 
 
-@helper.login_required
+@login_required
 def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
     """Submits a post request to withdraw a certain amount of money to a bank account.
 
@@ -307,18 +307,18 @@ def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
     :returns: Returns a list of dictionaries of key/value pairs for the transaction.
 
     """
-    url = urls.banktransfers()
+    url = banktransfers()
     payload = {
         "amount": amount,
         "direction": "withdraw",
         "ach_relationship": ach_relationship,
         "ref_id": str(uuid4())
     }
-    data = helper.request_post(url, payload)
-    return(helper.filter_data(data, info))
+    data = request_post(url, payload)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
     """Submits a post request to deposit a certain amount of money from a bank account to Robinhood.
 
@@ -331,17 +331,17 @@ def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
     :returns: Returns a list of dictionaries of key/value pairs for the transaction.
 
     """
-    url = urls.banktransfers()
+    url = banktransfers()
     payload = {
         "amount": amount,
         "direction": "deposit",
         "ach_relationship": ach_relationship,
         "ref_id": str(uuid4())
     }
-    data = helper.request_post(url, payload)
-    return(helper.filter_data(data, info))
+    data = request_post(url, payload)
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
 
@@ -350,12 +350,12 @@ def get_linked_bank_accounts(info=None):
     :returns: Returns a list of dictionaries of key/value pairs for each bank.
 
     """
-    url = urls.linked()
-    data = helper.request_get(url, 'results')
-    return(helper.filter_data(data, info))
+    url = linked()
+    data = request_get(url, 'results')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_bank_account_info(id, info=None):
     """Returns a single dictionary of bank information
 
@@ -367,12 +367,12 @@ def get_bank_account_info(id, info=None):
     the value of the key that matches info is extracted.
 
     """
-    url = urls.linked(id)
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = linked(id)
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def unlink_bank_account(id):
     """Unlinks a bank account.
 
@@ -381,12 +381,12 @@ def unlink_bank_account(id):
     :returns: Information returned from post request.
 
     """
-    url = urls.linked(id, True)
-    data = helper.request_post(url)
+    url = linked(id, True)
+    data = request_post(url)
     return(data)
 
 
-@helper.login_required
+@login_required
 def get_bank_transfers(direction=None, info=None):
     """Returns all bank transfers made for the account.
 
@@ -400,11 +400,11 @@ def get_bank_transfers(direction=None, info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.banktransfers(direction)
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = banktransfers(direction)
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_card_transactions(cardType=None, info=None):
     """Returns all debit card transactions made on the account
 
@@ -420,11 +420,11 @@ def get_card_transactions(cardType=None, info=None):
     if type:
         payload = { 'type': type }
 
-    url = urls.cardtransactions()
-    data = helper.request_get(url, 'pagination', payload)
-    return(helper.filter_data(data, info))
+    url = cardtransactions()
+    data = request_get(url, 'pagination', payload)
+    return(filter_data(data, info))
 
-@helper.login_required
+@login_required
 def get_stock_loan_payments(info=None):
     """Returns a list of loan payments.
 
@@ -434,12 +434,12 @@ def get_stock_loan_payments(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.stockloan()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = stockloan()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_margin_interest(info=None):
     """Returns a list of margin interest.
 
@@ -449,12 +449,12 @@ def get_margin_interest(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.margininterest()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = margininterest()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_subscription_fees(info=None):
     """Returns a list of subscription fees.
 
@@ -464,12 +464,12 @@ def get_subscription_fees(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.subscription()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = subscription()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_referrals(info=None):
     """Returns a list of referrals.
 
@@ -479,12 +479,12 @@ def get_referrals(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.referral()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = referral()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_day_trades(info=None):
     """Returns recent day trades.
 
@@ -494,13 +494,13 @@ def get_day_trades(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    account = profiles.load_account_profile('account_number')
-    url = urls.daytrades(account)
-    data = helper.request_get(url, 'regular')
-    return(helper.filter_data(data, info))
+    account = load_account_profile('account_number')
+    url = daytrades(account)
+    data = request_get(url, 'regular')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_documents(info=None):
     """Returns a list of documents that have been released by Robinhood to the account.
 
@@ -510,13 +510,13 @@ def get_documents(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.documents()
-    data = helper.request_get(url, 'pagination')
+    url = documents()
+    data = request_get(url, 'pagination')
 
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def download_document(url, name=None, dirpath=None):
     """Downloads a document and saves as it as a PDF. If no name is given, document is saved as
     the name that Robinhood has for the document. If no directory is given, document is saved in the root directory of code.
@@ -530,9 +530,9 @@ def download_document(url, name=None, dirpath=None):
     :returns: Returns the data from the get request.
 
     """
-    data = helper.request_document(url)
+    data = request_document(url)
 
-    print('Writing PDF...', file=helper.get_output())
+    print('Writing PDF...', file=get_output())
     if not name:
         name = url[36:].split('/', 1)[0]
 
@@ -550,7 +550,7 @@ def download_document(url, name=None, dirpath=None):
     return(data)
 
 
-@helper.login_required
+@login_required
 def download_all_documents(doctype=None, dirpath=None):
     """Downloads all the documents associated with an account and saves them as a PDF.
     If no name is given, document is saved as a combination of the data of creation, type, and id.
@@ -574,7 +574,7 @@ def download_all_documents(doctype=None, dirpath=None):
     counter = 0
     for item in documents:
         if doctype == None:
-            data = helper.request_document(item['download_url'])
+            data = request_document(item['download_url'])
             if data:
                 name = item['created_at'][0:10] + '-' + \
                     item['type'] + '-' + item['id']
@@ -583,10 +583,10 @@ def download_all_documents(doctype=None, dirpath=None):
                 open(filename, 'wb').write(data.content)
                 downloaded_files = True
                 counter += 1
-                print('Writing PDF {}...'.format(counter), file=helper.get_output())
+                print('Writing PDF {}...'.format(counter), file=get_output())
         else:
             if item['type'] == doctype:
-                data = helper.request_document(item['download_url'])
+                data = request_document(item['download_url'])
                 if data:
                     name = item['created_at'][0:10] + '-' + \
                         item['type'] + '-' + item['id']
@@ -595,22 +595,22 @@ def download_all_documents(doctype=None, dirpath=None):
                     open(filename, 'wb').write(data.content)
                     downloaded_files = True
                     counter += 1
-                    print('Writing PDF {}...'.format(counter), file=helper.get_output())
+                    print('Writing PDF {}...'.format(counter), file=get_output())
 
     if downloaded_files == False:
-        print('WARNING: Could not find files of that doctype to download', file=helper.get_output())
+        print('WARNING: Could not find files of that doctype to download', file=get_output())
     else:
         if counter == 1:
             print('Done - wrote {} file to {}'.format(counter,
-                                                      os.path.abspath(directory)), file=helper.get_output())
+                                                      os.path.abspath(directory)), file=get_output())
         else:
             print('Done - wrote {} files to {}'.format(counter,
-                                                       os.path.abspath(directory)), file=helper.get_output())
+                                                       os.path.abspath(directory)), file=get_output())
 
     return(documents)
 
 
-@helper.login_required
+@login_required
 def get_all_watchlists(info=None):
     """Returns a list of all watchlists that have been created. Everyone has a 'My First List' watchlist.
 
@@ -619,12 +619,12 @@ def get_all_watchlists(info=None):
     :returns: Returns a list of the watchlists. Keywords are 'url', 'user', and 'name'.
 
     """
-    url = urls.watchlists()
-    data = helper.request_get(url, 'result')
-    return(helper.filter_data(data, info))
+    url = watchlists()
+    data = request_get(url, 'result')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_watchlist_by_name(name="My First List", info=None):
     """Returns a list of information related to the stocks in a single watchlist.
 
@@ -643,12 +643,12 @@ def get_watchlist_by_name(name="My First List", info=None):
         if wl['display_name'] == name:
             watchlist_id = wl['id']
 
-    url = urls.watchlists(name)
-    data = helper.request_get(url,'list_id',{'list_id':watchlist_id})
-    return(helper.filter_data(data, info))
+    url = watchlists(name)
+    data = request_get(url,'list_id',{'list_id':watchlist_id})
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     """Posts multiple stock tickers to a watchlist.
 
@@ -659,8 +659,8 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     :returns: Returns result of the post request.
 
     """
-    symbols = helper.inputs_to_set(inputSymbols)
-    ids = stocks.get_instruments_by_symbols(symbols, info='id')
+    symbols = inputs_to_set(inputSymbols)
+    ids = get_instruments_by_symbols(symbols, info='id')
     data = []
     #Get id of requested watchlist
     all_watchlists = get_all_watchlists()
@@ -677,13 +677,13 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
                 "operation" : "create"
             }]
         }
-        url = urls.watchlists(name, True)
-        data.append(helper.request_post(url, payload, json=True))
+        url = watchlists(name, True)
+        data.append(request_post(url, payload, json=True))
 
     return(data)
 
 
-@helper.login_required
+@login_required
 def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     """Deletes multiple stock tickers from a watchlist.
 
@@ -694,8 +694,8 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     :returns: Returns result of the delete request.
 
     """
-    symbols = helper.inputs_to_set(inputSymbols)
-    ids = stocks.get_instruments_by_symbols(symbols, info='id')
+    symbols = inputs_to_set(inputSymbols)
+    ids = get_instruments_by_symbols(symbols, info='id')
     data = []
 
     #Get id of requested watchlist
@@ -713,13 +713,13 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
                 "operation" : "delete"
             }]
         }
-        url = urls.watchlists(name, True)
-        data.append(helper.request_post(url, payload, json=True))
+        url = watchlists(name, True)
+        data.append(request_post(url, payload, json=True))
 
     return(data)
 
 
-@helper.login_required
+@login_required
 def build_holdings(with_dividends=False):
     """Builds a dictionary of important information regarding the stocks and positions owned by the user.
 
@@ -731,8 +731,8 @@ def build_holdings(with_dividends=False):
 
     """
     positions_data = get_open_stock_positions()
-    portfolios_data = profiles.load_portfolio_profile()
-    accounts_data = profiles.load_account_profile()
+    portfolios_data = load_portfolio_profile()
+    accounts_data = load_account_profile()
 
     # user wants dividend information in their holdings
     if with_dividends is True:
@@ -757,11 +757,11 @@ def build_holdings(with_dividends=False):
             continue
 
         try:
-            instrument_data = stocks.get_instrument_by_url(item['instrument'])
+            instrument_data = get_instrument_by_url(item['instrument'])
             symbol = instrument_data['symbol']
-            fundamental_data = stocks.get_fundamentals(symbol)[0]
+            fundamental_data = get_fundamentals(symbol)[0]
 
-            price = stocks.get_latest_price(instrument_data['symbol'])[0]
+            price = get_latest_price(instrument_data['symbol'])[0]
             quantity = item['quantity']
             equity = float(item['quantity']) * float(price)
             equity_change = (float(quantity) * float(price)) - \
@@ -785,7 +785,7 @@ def build_holdings(with_dividends=False):
                 {'equity_change': "{0:2f}".format(equity_change)})
             holdings[symbol].update({'type': instrument_data['type']})
             holdings[symbol].update(
-                {'name': stocks.get_name_by_symbol(symbol)})
+                {'name': get_name_by_symbol(symbol)})
             holdings[symbol].update({'id': instrument_data['id']})
             holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio']})
             holdings[symbol].update(
@@ -802,7 +802,7 @@ def build_holdings(with_dividends=False):
     return(holdings)
 
 
-@helper.login_required
+@login_required
 def build_user_profile():
     """Builds a dictionary of important information regarding the user account.
 
@@ -811,8 +811,8 @@ def build_user_profile():
     """
     user = {}
 
-    portfolios_data = profiles.load_portfolio_profile()
-    accounts_data = profiles.load_account_profile()
+    portfolios_data = load_portfolio_profile()
+    accounts_data = load_account_profile()
 
     if portfolios_data:
         user['equity'] = portfolios_data['equity']

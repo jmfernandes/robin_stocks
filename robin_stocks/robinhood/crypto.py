@@ -2,7 +2,7 @@
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
 
-@helper.login_required
+@login_required
 def load_crypto_profile(info=None):
     """Gets the information associated with the crypto account.
 
@@ -21,12 +21,12 @@ def load_crypto_profile(info=None):
                       * user_id
 
     """
-    url = urls.crypto_account()
-    data = helper.request_get(url, 'indexzero')
-    return(helper.filter_data(data, info))
+    url = crypto_account()
+    data = request_get(url, 'indexzero')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_crypto_positions(info=None):
     """Returns crypto positions for the account.
 
@@ -46,9 +46,9 @@ def get_crypto_positions(info=None):
                       * updated_at
 
     """
-    url = urls.crypto_holdings()
-    data = helper.request_get(url, 'pagination')
-    return(helper.filter_data(data, info))
+    url = crypto_holdings()
+    data = request_get(url, 'pagination')
+    return(filter_data(data, info))
 
 
 def get_crypto_currency_pairs(info=None):
@@ -71,9 +71,9 @@ def get_crypto_currency_pairs(info=None):
                       * tradability
 
     """
-    url = urls.crypto_currency_pairs()
-    data = helper.request_get(url, 'results')
-    return(helper.filter_data(data, info))
+    url = crypto_currency_pairs()
+    data = request_get(url, 'results')
+    return(filter_data(data, info))
 
 
 def get_crypto_info(symbol, info=None):
@@ -98,17 +98,17 @@ def get_crypto_info(symbol, info=None):
                       * tradability
 
     """
-    url = urls.crypto_currency_pairs()
-    data = helper.request_get(url, 'results')
+    url = crypto_currency_pairs()
+    data = request_get(url, 'results')
     data = [x for x in data if x['asset_currency']['code'] == symbol]
     if len(data) > 0:
         data = data[0]
     else:
         data = None
-    return(helper.filter_data(data, info))
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_crypto_quote(symbol, info=None):
     """Gets information about a crypto including low price, high price, and open price
 
@@ -130,12 +130,12 @@ def get_crypto_quote(symbol, info=None):
  
     """
     id = get_crypto_info(symbol, info='id')
-    url = urls.crypto_quote(id)
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = crypto_quote(id)
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_crypto_quote_from_id(id, info=None):
     """Gets information about a crypto including low price, high price, and open price. Uses the id instead of crypto ticker.
 
@@ -156,12 +156,12 @@ def get_crypto_quote_from_id(id, info=None):
                       * volume
 
     """
-    url = urls.crypto_quote(id)
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = crypto_quote(id)
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', info=None):
     """Gets historical information about a crypto including open price, close price, high price, and low price.
 
@@ -195,26 +195,26 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
 
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"', file=helper.get_output())
+            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"', file=get_output())
         return([None])
     if span not in span_check:
-        print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"', file=helper.get_output())
+        print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"', file=get_output())
         return([None])
     if bounds not in bounds_check:
-        print('ERROR: Bounds must be "24_7","extended","regular",or "trading"', file=helper.get_output())
+        print('ERROR: Bounds must be "24_7","extended","regular",or "trading"', file=get_output())
         return([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=helper.get_output())
+        print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
         return([None])
 
 
-    symbol = helper.inputs_to_set(symbol)
+    symbol = inputs_to_set(symbol)
     id = get_crypto_info(symbol[0], info='id')
-    url = urls.crypto_historical(id)
+    url = crypto_historical(id)
     payload = {'interval': interval,
                'span': span,
                'bounds': bounds}
-    data = helper.request_get(url, 'regular', payload)
+    data = request_get(url, 'regular', payload)
 
     histData = []
     cryptoSymbol = data['symbol']
@@ -222,4 +222,4 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
         subitem['symbol'] = cryptoSymbol
         histData.append(subitem)
 
-    return(helper.filter_data(histData, info))
+    return(filter_data(histData, info))

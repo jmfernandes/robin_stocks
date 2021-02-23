@@ -3,7 +3,7 @@ from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
 
 
-@helper.login_required
+@login_required
 def load_account_profile(info=None):
     """Gets the information associated with the accounts profile,including day
     trading information and cash being held by Robinhood.
@@ -59,12 +59,12 @@ def load_account_profile(info=None):
                       * rhs_stock_loan_consent_status
 
     """
-    url = urls.account_profile()
-    data = helper.request_get(url, 'indexzero')
-    return(helper.filter_data(data, info))
+    url = account_profile()
+    data = request_get(url, 'indexzero')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def load_basic_profile(info=None):
     """Gets the information associated with the personal profile,
     such as phone number, city, marital status, and date of birth.
@@ -90,12 +90,12 @@ def load_basic_profile(info=None):
                       * updated_at
 
     """
-    url = urls.basic_profile()
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = basic_profile()
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def load_investment_profile(info=None):
     """Gets the information associated with the investment profile.
     These are the answers to the questionaire you filled out when you made your profile.
@@ -125,12 +125,12 @@ def load_investment_profile(info=None):
                       * updated_at
 
     """
-    url = urls.investment_profile()
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = investment_profile()
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def load_portfolio_profile(info=None):
     """Gets the information associated with the portfolios profile,
     such as withdrawable amount, market value of account, and excess margin.
@@ -164,12 +164,12 @@ def load_portfolio_profile(info=None):
                       * unwithdrawable_grants
 
     """
-    url = urls.portfolio_profile()
-    data = helper.request_get(url, 'indexzero')
-    return(helper.filter_data(data, info))
+    url = portfolio_profile()
+    data = request_get(url, 'indexzero')
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def load_security_profile(info=None):
     """Gets the information associated with the security profile.
 
@@ -197,12 +197,12 @@ def load_security_profile(info=None):
                       * updated_at
 
     """
-    url = urls.security_profile()
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = security_profile()
+    data = request_get(url)
+    return(filter_data(data, info))
 
 
-@helper.login_required
+@login_required
 def load_user_profile(info=None):
     """Gets the information associated with the user profile,
     such as username, email, and links to the urls for other profiles.
@@ -225,6 +225,6 @@ def load_user_profile(info=None):
                       * created_at
 
     """
-    url = urls.user_profile()
-    data = helper.request_get(url)
-    return(helper.filter_data(data, info))
+    url = user_profile()
+    data = request_get(url)
+    return(filter_data(data, info))
