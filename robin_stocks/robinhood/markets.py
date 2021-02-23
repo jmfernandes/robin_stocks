@@ -1,7 +1,7 @@
 """Contains functions for getting market level data."""
-import robin_stocks.robinhood.helper as helper
-import robin_stocks.robinhood.urls as urls
-import robin_stocks.robinhood.stocks as stocks
+from robin_stocks.robinhood.helper import *
+from robin_stocks.robinhood.urls import *
+from robin_stocks.robinhood.stocks import *
 
 def get_top_movers_sp500(direction, info=None):
     """Returns a list of the top S&P500 movers up or down for the day.

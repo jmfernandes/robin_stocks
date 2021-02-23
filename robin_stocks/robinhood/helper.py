@@ -3,7 +3,7 @@
 from functools import wraps
 
 import requests
-from robin_stocks.robinhood.globals import LOGGED_IN, SESSION, OUTPUT
+from robin_stocks.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
 
 
 def set_login_state(logged_in):

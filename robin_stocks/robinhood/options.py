@@ -1,7 +1,7 @@
 """Contains functions for getting information about options."""
 import sys
-import robin_stocks.robinhood.helper as helper
-import robin_stocks.robinhood.urls as urls
+from robin_stocks.robinhood.helper import *
+from robin_stocks.robinhood.urls import *
 
 def spinning_cursor():
     """ This is a generator function to yield a character. """
