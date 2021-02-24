@@ -648,6 +648,23 @@ def get_watchlist_by_name(name="My First List", info=None):
     return(filter_data(data, info))
 
 
+@helper.login_required
+def get_watchlist_by_id(list_id, info=None):
+    """Returns a list of information related to the stocks in a single watchlist.
+
+    :param list_id: The id of the watchlist to get data from.
+    :type list_id: str
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries that contain the instrument urls and a url that references itself.
+
+    """
+
+    url = urls.watchlists(id)
+    data = helper.request_get(url,'list_id',{'list_id':list_id})
+    return(helper.filter_data(data, info))
+
+
 @login_required
 def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     """Posts multiple stock tickers to a watchlist.
