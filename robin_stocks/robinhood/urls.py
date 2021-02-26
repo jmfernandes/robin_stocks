@@ -232,7 +232,7 @@ def marketdata_pricebook(id):
 # crypto
 
 
-def order_crypto():
+def crypto_order():
     return('https://nummus.robinhood.com/orders/')
 
 

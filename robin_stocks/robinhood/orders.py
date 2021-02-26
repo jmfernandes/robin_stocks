@@ -1439,7 +1439,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         'type': orderType
     }
 
-    url = order_crypto()
+    url = crypto_order()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
