@@ -1,6 +1,6 @@
 """Contains information in regards to stocks."""
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
@@ -29,7 +29,7 @@ def get_quotes(inputSymbols, info=None):
 
     """
     symbols = inputs_to_set(inputSymbols)
-    url = quotes()
+    url = urls.quotes()
     payload = {'symbols': ','.join(symbols)}
     data = request_get(url, 'results', payload)
 
@@ -80,9 +80,9 @@ def get_fundamentals(inputSymbols, info=None):
                       * year_founded
                       * symbol
 
-    """ 
+    """
     symbols = inputs_to_set(inputSymbols)
-    url = fundamentals()
+    url = urls.fundamentals()
     payload = {'symbols': ','.join(symbols)}
     data = request_get(url, 'results', payload)
 
@@ -135,9 +135,9 @@ def get_instruments_by_symbols(inputSymbols, info=None):
                       * fractional_tradability
                       * default_collar_fraction
 
-    """ 
+    """
     symbols = inputs_to_set(inputSymbols)
-    url = instruments()
+    url = urls.instruments()
     data = []
     for item in symbols:
         payload = {'symbol': item}
@@ -205,7 +205,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
     :type includeExtendedHours: bool
     :returns: [list] A list of prices as strings.
 
-    """ 
+    """
     symbols = inputs_to_set(inputSymbols)
     quote = get_quotes(symbols)
 
@@ -236,14 +236,14 @@ def get_name_by_symbol(symbol):
     :type symbol: str
     :returns: [str] Returns the simple name of the stock. If the simple name does not exist then returns the full name.
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
         return None
 
-    url = instruments()
+    url = urls.instruments()
     payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
     if not data:
@@ -304,7 +304,7 @@ def get_ratings(symbol, info=None):
                       * instrument_id - value is a string
                       * ratings_published_at - value is a string
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -324,7 +324,7 @@ def get_ratings(symbol, info=None):
             item['text'] = oldText.encode('UTF-8')
 
     return(filter_data(data, info))
-    
+
 
 def get_events(symbol, info=None):
     """Returns the events related to a stock that the user owns. For example, if you owned options for USO and that stock \
@@ -354,7 +354,7 @@ def get_events(symbol, info=None):
                       * underlying_price
                       * updated_at
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -362,7 +362,7 @@ def get_events(symbol, info=None):
         return None
 
     payload = {'equity_instrument_id': id_for_stock(symbol)}
-    url = events()
+    url = urls.events()
     data = request_get(url, 'results', payload)
 
     return(filter_data(data, info))
@@ -386,14 +386,14 @@ def get_earnings(symbol, info=None):
                       * report
                       * call
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
         return None
 
-    url = earnings()
+    url = urls.earnings()
     payload = {'symbol': symbol}
     data = request_get(url, 'results', payload)
 
@@ -426,7 +426,7 @@ def get_news(symbol, info=None):
                       * preview_text
                       * currency_id
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -499,8 +499,8 @@ def find_instrument_data(query):
                       * fractional_tradability
                       * default_collar_fraction
 
-    """ 
-    url = instruments()
+    """
+    url = urls.instruments()
     payload = {'query': query}
 
     data = request_get(url, 'pagination', payload)
@@ -538,7 +538,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
                       * interpolated
                       * symbol
 
-    """    
+    """
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'month', '3month', 'year', '5year']
     bounds_check = ['extended', 'regular', 'trading']
@@ -558,7 +558,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
         return([None])
 
     symbols = inputs_to_set(inputSymbols)
-    url = historicals()
+    url = urls.historicals()
     payload = {'symbols': ','.join(symbols),
                'interval': interval,
                'span': span,

@@ -1,6 +1,6 @@
 """Contains functions for getting all the information tied to a user account."""
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 
 @login_required
@@ -59,7 +59,7 @@ def load_account_profile(info=None):
                       * rhs_stock_loan_consent_status
 
     """
-    url = account_profile()
+    url = urls.account_profile()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -90,7 +90,7 @@ def load_basic_profile(info=None):
                       * updated_at
 
     """
-    url = basic_profile()
+    url = urls.basic_profile()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -125,7 +125,7 @@ def load_investment_profile(info=None):
                       * updated_at
 
     """
-    url = investment_profile()
+    url = urls.investment_profile()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -164,7 +164,7 @@ def load_portfolio_profile(info=None):
                       * unwithdrawable_grants
 
     """
-    url = portfolio_profile()
+    url = urls.portfolio_profile()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -197,7 +197,7 @@ def load_security_profile(info=None):
                       * updated_at
 
     """
-    url = security_profile()
+    url = urls.security_profile()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -225,6 +225,6 @@ def load_user_profile(info=None):
                       * created_at
 
     """
-    url = user_profile()
+    url = urls.user_profile()
     data = request_get(url)
     return(filter_data(data, info))

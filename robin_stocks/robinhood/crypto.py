@@ -1,6 +1,6 @@
 """Contains functions to get information about crypto-currencies."""
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 @login_required
 def load_crypto_profile(info=None):
@@ -21,7 +21,7 @@ def load_crypto_profile(info=None):
                       * user_id
 
     """
-    url = crypto_account()
+    url = urls.crypto_account()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -46,7 +46,7 @@ def get_crypto_positions(info=None):
                       * updated_at
 
     """
-    url = crypto_holdings()
+    url = urls.crypto_holdings()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -71,7 +71,7 @@ def get_crypto_currency_pairs(info=None):
                       * tradability
 
     """
-    url = crypto_currency_pairs()
+    url = urls.crypto_currency_pairs()
     data = request_get(url, 'results')
     return(filter_data(data, info))
 
@@ -98,7 +98,7 @@ def get_crypto_info(symbol, info=None):
                       * tradability
 
     """
-    url = crypto_currency_pairs()
+    url = urls.crypto_currency_pairs()
     data = request_get(url, 'results')
     data = [x for x in data if x['asset_currency']['code'] == symbol]
     if len(data) > 0:
@@ -127,7 +127,7 @@ def get_crypto_quote(symbol, info=None):
                       * open_price
                       * symbol
                       * volume
- 
+
     """
     id = get_crypto_info(symbol, info='id')
     url = crypto_quote(id)

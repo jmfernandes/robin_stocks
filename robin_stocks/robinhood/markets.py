@@ -1,6 +1,6 @@
 """Contains functions for getting market level data."""
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 from robin_stocks.robinhood.stocks import *
 
 def get_top_movers_sp500(direction, info=None):
@@ -29,7 +29,7 @@ def get_top_movers_sp500(direction, info=None):
         print('Error: direction must be "up" or "down"', file=get_output())
         return([None])
 
-    url = movers_sp500()
+    url = urls.movers_sp500()
     payload = {'direction': direction}
     data = request_get(url, 'pagination', payload)
 
@@ -59,7 +59,7 @@ def get_top_100(info=None):
                       * instrument
 
     """
-    url = get_100_most_popular()
+    url = urls.get_100_most_popular()
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -92,7 +92,7 @@ def get_top_movers(info=None):
                       * instrument
 
     """
-    url = movers_top()
+    url = urls.movers_top()
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -159,7 +159,7 @@ def get_markets(info=None):
                       * website
 
     """
-    url = markets()
+    url = urls.markets()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -289,6 +289,6 @@ def get_currency_pairs(info=None):
                       * tradability
 
     """
-    url = currency()
+    url = urls.currency()
     data = request_get(url, 'results')
     return(filter_data(data, info))

@@ -5,7 +5,7 @@ from uuid import uuid4
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.profiles import *
 from robin_stocks.robinhood.stocks import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 
 @login_required
@@ -45,7 +45,7 @@ def load_phoenix_account(info=None):
                       * withdrawable_cash
 
     """
-    url = phoenix()
+    url = urls.phoenix()
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 
@@ -110,7 +110,7 @@ def get_all_positions(info=None):
                       * created_at
 
     """
-    url = positions()
+    url = urls.positions()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -143,7 +143,7 @@ def get_open_stock_positions(info=None):
                       * created_at
 
     """
-    url = positions()
+    url = urls.positions()
     payload = {'nonzero': 'true'}
     data = request_get(url, 'pagination', payload)
 
@@ -175,7 +175,7 @@ def get_dividends(info=None):
                       * drip_enabled
 
     """
-    url = dividends()
+    url = urls.dividends()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -188,7 +188,7 @@ def get_total_dividends():
     :returns: Total dollar amount of dividends paid to the account as a 2 precision float.
 
     """
-    url = dividends()
+    url = urls.dividends()
     data = request_get(url, 'pagination')
 
     dividend_total = 0
@@ -237,7 +237,7 @@ def get_notifications(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = notifications()
+    url = urls.notifications()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -265,7 +265,7 @@ def get_wire_transfers(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = wiretransfers()
+    url = urls.wiretransfers()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -279,7 +279,7 @@ def get_margin_calls(symbol=None):
     :returns: Returns a list of dictionaries of key/value pairs for each margin call.
 
     """
-    url = margin()
+    url = urls.margin()
     if symbol:
         try:
             symbol = symbol.upper().strip()
@@ -307,7 +307,7 @@ def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
     :returns: Returns a list of dictionaries of key/value pairs for the transaction.
 
     """
-    url = banktransfers()
+    url = urls.banktransfers()
     payload = {
         "amount": amount,
         "direction": "withdraw",
@@ -331,7 +331,7 @@ def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
     :returns: Returns a list of dictionaries of key/value pairs for the transaction.
 
     """
-    url = banktransfers()
+    url = urls.banktransfers()
     payload = {
         "amount": amount,
         "direction": "deposit",
@@ -350,7 +350,7 @@ def get_linked_bank_accounts(info=None):
     :returns: Returns a list of dictionaries of key/value pairs for each bank.
 
     """
-    url = linked()
+    url = urls.linked()
     data = request_get(url, 'results')
     return(filter_data(data, info))
 
@@ -420,7 +420,7 @@ def get_card_transactions(cardType=None, info=None):
     if type:
         payload = { 'type': type }
 
-    url = cardtransactions()
+    url = urls.cardtransactions()
     data = request_get(url, 'pagination', payload)
     return(filter_data(data, info))
 
@@ -434,7 +434,7 @@ def get_stock_loan_payments(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = stockloan()
+    url = urls.stockloan()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -449,7 +449,7 @@ def get_margin_interest(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = margininterest()
+    url = urls.margininterest()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -464,7 +464,7 @@ def get_subscription_fees(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = subscription()
+    url = urls.subscription()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -479,7 +479,7 @@ def get_referrals(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = referral()
+    url = urls.referral()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -510,7 +510,7 @@ def get_documents(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = documents()
+    url = urls.documents()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -619,7 +619,7 @@ def get_all_watchlists(info=None):
     :returns: Returns a list of the watchlists. Keywords are 'url', 'user', and 'name'.
 
     """
-    url = watchlists()
+    url = urls.watchlists()
     data = request_get(url, 'result')
     return(filter_data(data, info))
 

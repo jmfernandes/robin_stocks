@@ -1,7 +1,7 @@
 """Contains functions for getting information about options."""
 import sys
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 def spinning_cursor():
     """ This is a generator function to yield a character. """
@@ -30,7 +30,7 @@ def get_aggregate_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = aggregate()
+    url = urls.aggregate()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -45,7 +45,7 @@ def get_market_options(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders()
+    url = urls.option_orders()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -61,7 +61,7 @@ def get_all_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_positions()
+    url = urls.option_positions()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -76,7 +76,7 @@ def get_open_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_positions()
+    url = urls.option_positions()
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
 
@@ -129,7 +129,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         print(message, file=get_output())
         return [None]
 
-    url = option_instruments()
+    url = urls.option_instruments()
     if not id_for_chain(symbol):
         print("Symbol {} is not valid for finding options.".format(symbol), file=get_output())
         return [None]
@@ -304,7 +304,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 continue
 
             market_data = get_option_market_data_by_id(option['id'])
-            
+
             if len(market_data):
                 option.update(market_data[0])
                 write_spinner()
@@ -332,7 +332,7 @@ def get_option_market_data_by_id(id, info=None):
 
     """
     instrument = get_option_instrument_data_by_id(id)
-    url = marketdata_options()
+    url = urls.marketdata_options()
     payload = {
         "instruments" : instrument['url']
     }

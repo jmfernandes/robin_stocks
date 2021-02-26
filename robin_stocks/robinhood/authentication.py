@@ -5,7 +5,7 @@ import pickle
 import random
 
 from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+import robin_stocks.robinhood.urls as urls
 
 def generate_device_token():
     """This function will generate a token used when loggin on.
@@ -90,7 +90,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     else:
         challenge_type = "email"
 
-    url = login_url()
+    url = urls.login_url()
     payload = {
         'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
         'expires_in': expiresIn,
