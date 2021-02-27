@@ -43,7 +43,7 @@ def respond_to_challenge(challenge_id, sms_code):
     :returns:  The response from requests.
 
     """
-    url = challenge_url(challenge_id)
+    url = urls.challenge_url(challenge_id)
     payload = {
         'response': sms_code
     }

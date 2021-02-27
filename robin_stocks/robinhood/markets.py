@@ -127,7 +127,7 @@ def get_all_stocks_from_market_tag(tag, info=None):
                       * instrument
 
     """
-    url = market_category(tag)
+    url = urls.market_category(tag)
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -212,7 +212,7 @@ def get_market_next_open_hours(market, info=None):
                       * next_open_hours
 
     """
-    url = get_market_today_hours(market, info='next_open_hours')
+    url = urls.get_market_today_hours(market, info='next_open_hours')
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 
@@ -238,7 +238,7 @@ def get_market_next_open_hours_after_date(market, date, info=None):
                       * next_open_hours
 
     """
-    url = get_market_hours(market, date, info='next_open_hours')
+    url = urls.get_market_hours(market, date, info='next_open_hours')
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 
@@ -264,7 +264,7 @@ def get_market_hours(market, date, info=None):
                       * next_open_hours
 
     """
-    url = market_hours(market, date)
+    url = urls.market_hours(market, date)
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 

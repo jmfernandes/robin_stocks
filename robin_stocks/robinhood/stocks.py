@@ -311,7 +311,7 @@ def get_ratings(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = ratings(symbol)
+    url = urls.ratings(symbol)
     data = request_get(url)
     if not data:
         return(data)
@@ -433,7 +433,7 @@ def get_news(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = news(symbol)
+    url = urls.news(symbol)
     data = request_get(url, 'results')
 
     return(filter_data(data, info))
@@ -463,7 +463,7 @@ def get_splits(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = splits(symbol)
+    url = urls.splits(symbol)
     data = request_get(url, 'results')
     return(filter_data(data, info))
 
@@ -608,7 +608,7 @@ def get_stock_quote_by_id(stock_id, info=None):
                       * updated_at
                       * instrument
     """
-    url = marketdata_quotes(stock_id)
+    url = urls.marketdata_quotes(stock_id)
     data = request_get(url)
 
     return (filter_data(data, info))
@@ -657,7 +657,7 @@ def get_pricebook_by_id(stock_id, info=None):
     :return: Returns a dictionary of asks and bids.
 
     """
-    url = marketdata_pricebook(stock_id)
+    url = urls.marketdata_pricebook(stock_id)
     data = request_get(url)
 
     return (filter_data(data, info))

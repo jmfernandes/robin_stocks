@@ -130,7 +130,7 @@ def get_crypto_quote(symbol, info=None):
 
     """
     id = get_crypto_info(symbol, info='id')
-    url = crypto_quote(id)
+    url = urls.urls.crypto_quote(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -156,7 +156,7 @@ def get_crypto_quote_from_id(id, info=None):
                       * volume
 
     """
-    url = crypto_quote(id)
+    url = urls.urls.crypto_quote(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -210,7 +210,7 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
 
     symbol = inputs_to_set(symbol)
     id = get_crypto_info(symbol[0], info='id')
-    url = crypto_historical(id)
+    url = urls.urls.crypto_historical(id)
     payload = {'interval': interval,
                'span': span,
                'bounds': bounds}

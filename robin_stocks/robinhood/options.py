@@ -100,7 +100,7 @@ def get_chains(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = chains(symbol)
+    url = urls.chains(symbol)
     data = request_get(url)
 
     return(filter_data(data, info))
@@ -419,7 +419,7 @@ def get_option_instrument_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = option_instruments(id)
+    url = urls.option_instruments(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -449,7 +449,7 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
         return [None]
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
-    url = option_instruments(optionID)
+    url = urls.option_instruments(optionID)
     data = request_get(url)
 
     return(filter_data(data, info))
@@ -502,7 +502,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
 
-    url = option_historicals(optionID)
+    url = urls.option_historicals(optionID)
     payload = {'span': span,
                'interval': interval,
                'bounds': bounds}

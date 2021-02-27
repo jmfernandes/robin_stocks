@@ -115,7 +115,7 @@ def get_stock_order_info(orderID):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = orders(orderID)
+    url = urls.orders(orderID)
     data = request_get(url)
     return(data)
 
@@ -129,7 +129,7 @@ def get_option_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = option_orders(order_id)
+    url = urls.option_orders(order_id)
     data = request_get(url)
     return data
 
@@ -143,7 +143,7 @@ def get_crypto_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = crypto_orders(order_id)
+    url = urls.crypto_orders(order_id)
     data = request_get(url)
     return data
 
@@ -198,7 +198,7 @@ def cancel_stock_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """
-    url = cancel(orderID)
+    url = urls.cancel(orderID)
     data = request_post(url)
 
     if data:
@@ -215,7 +215,7 @@ def cancel_option_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """
-    url = option_cancel(orderID)
+    url = urls.option_cancel(orderID)
     data = request_post(url)
 
     if data:
@@ -232,7 +232,7 @@ def cancel_crypto_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """
-    url = crypto_cancel(orderID)
+    url = urls.crypto_cancel(orderID)
     data = request_post(url)
 
     if data:
