@@ -30,7 +30,7 @@ def get_aggregate_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = aggregate()
+    url = aggregate_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -45,7 +45,7 @@ def get_market_options(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders()
+    url = option_orders_url()
     data = request_get(url, 'pagination')
 
     return(filter_data(data, info))
@@ -61,7 +61,7 @@ def get_all_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_positions()
+    url = option_positions_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -76,7 +76,7 @@ def get_open_option_positions(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_positions()
+    url = option_positions_url()
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
 
@@ -100,7 +100,7 @@ def get_chains(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = chains(symbol)
+    url = chains_url(symbol)
     data = request_get(url)
 
     return(filter_data(data, info))
@@ -129,7 +129,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         print(message, file=get_output())
         return [None]
 
-    url = option_instruments()
+    url = option_instruments_url()
     if not id_for_chain(symbol):
         print("Symbol {} is not valid for finding options.".format(symbol), file=get_output())
         return [None]
@@ -332,7 +332,7 @@ def get_option_market_data_by_id(id, info=None):
 
     """
     instrument = get_option_instrument_data_by_id(id)
-    url = marketdata_options()
+    url = marketdata_options_url()
     payload = {
         "instruments" : instrument['url']
     }
@@ -419,7 +419,7 @@ def get_option_instrument_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = option_instruments(id)
+    url = option_instruments_url(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -449,7 +449,7 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
         return [None]
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
-    url = option_instruments(optionID)
+    url = option_instruments_url(optionID)
     data = request_get(url)
 
     return(filter_data(data, info))
@@ -502,7 +502,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
 
-    url = option_historicals(optionID)
+    url = option_historicals_url(optionID)
     payload = {'span': span,
                'interval': interval,
                'bounds': bounds}

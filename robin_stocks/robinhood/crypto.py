@@ -21,7 +21,7 @@ def load_crypto_profile(info=None):
                       * user_id
 
     """
-    url = crypto_account()
+    url = crypto_account_url()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -46,7 +46,7 @@ def get_crypto_positions(info=None):
                       * updated_at
 
     """
-    url = crypto_holdings()
+    url = crypto_holdings_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -71,7 +71,7 @@ def get_crypto_currency_pairs(info=None):
                       * tradability
 
     """
-    url = crypto_currency_pairs()
+    url = crypto_currency_pairs_url()
     data = request_get(url, 'results')
     return(filter_data(data, info))
 
@@ -98,7 +98,7 @@ def get_crypto_info(symbol, info=None):
                       * tradability
 
     """
-    url = crypto_currency_pairs()
+    url = crypto_currency_pairs_url()
     data = request_get(url, 'results')
     data = [x for x in data if x['asset_currency']['code'] == symbol]
     if len(data) > 0:
@@ -130,7 +130,7 @@ def get_crypto_quote(symbol, info=None):
  
     """
     id = get_crypto_info(symbol, info='id')
-    url = crypto_quote(id)
+    url = crypto_quote_url(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -156,7 +156,7 @@ def get_crypto_quote_from_id(id, info=None):
                       * volume
 
     """
-    url = crypto_quote(id)
+    url = crypto_quote_url(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -210,7 +210,7 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
 
     symbol = inputs_to_set(symbol)
     id = get_crypto_info(symbol[0], info='id')
-    url = crypto_historical(id)
+    url = crypto_historical_url(id)
     payload = {'interval': interval,
                'span': span,
                'bounds': bounds}

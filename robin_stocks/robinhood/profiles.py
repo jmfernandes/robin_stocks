@@ -59,7 +59,7 @@ def load_account_profile(info=None):
                       * rhs_stock_loan_consent_status
 
     """
-    url = account_profile()
+    url = account_profile_url()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -90,7 +90,7 @@ def load_basic_profile(info=None):
                       * updated_at
 
     """
-    url = basic_profile()
+    url = basic_profile_url()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -125,7 +125,7 @@ def load_investment_profile(info=None):
                       * updated_at
 
     """
-    url = investment_profile()
+    url = investment_profile_url()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -164,7 +164,7 @@ def load_portfolio_profile(info=None):
                       * unwithdrawable_grants
 
     """
-    url = portfolio_profile()
+    url = portfolio_profile_url()
     data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
@@ -197,7 +197,7 @@ def load_security_profile(info=None):
                       * updated_at
 
     """
-    url = security_profile()
+    url = security_profile_url()
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -225,6 +225,6 @@ def load_user_profile(info=None):
                       * created_at
 
     """
-    url = user_profile()
+    url = user_profile_url()
     data = request_get(url)
     return(filter_data(data, info))

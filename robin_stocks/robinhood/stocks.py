@@ -29,7 +29,7 @@ def get_quotes(inputSymbols, info=None):
 
     """
     symbols = inputs_to_set(inputSymbols)
-    url = quotes()
+    url = quotes_url()
     payload = {'symbols': ','.join(symbols)}
     data = request_get(url, 'results', payload)
 
@@ -82,7 +82,7 @@ def get_fundamentals(inputSymbols, info=None):
 
     """ 
     symbols = inputs_to_set(inputSymbols)
-    url = fundamentals()
+    url = fundamentals_url()
     payload = {'symbols': ','.join(symbols)}
     data = request_get(url, 'results', payload)
 
@@ -137,7 +137,7 @@ def get_instruments_by_symbols(inputSymbols, info=None):
 
     """ 
     symbols = inputs_to_set(inputSymbols)
-    url = instruments()
+    url = instruments_url()
     data = []
     for item in symbols:
         payload = {'symbol': item}
@@ -243,7 +243,7 @@ def get_name_by_symbol(symbol):
         print(message, file=get_output())
         return None
 
-    url = instruments()
+    url = instruments_url()
     payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
     if not data:
@@ -311,7 +311,7 @@ def get_ratings(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = ratings(symbol)
+    url = ratings_url(symbol)
     data = request_get(url)
     if not data:
         return(data)
@@ -362,7 +362,7 @@ def get_events(symbol, info=None):
         return None
 
     payload = {'equity_instrument_id': id_for_stock(symbol)}
-    url = events()
+    url = events_url()
     data = request_get(url, 'results', payload)
 
     return(filter_data(data, info))
@@ -393,7 +393,7 @@ def get_earnings(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = earnings()
+    url = earnings_url()
     payload = {'symbol': symbol}
     data = request_get(url, 'results', payload)
 
@@ -433,7 +433,7 @@ def get_news(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = news(symbol)
+    url = news_url(symbol)
     data = request_get(url, 'results')
 
     return(filter_data(data, info))
@@ -463,7 +463,7 @@ def get_splits(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = splits(symbol)
+    url = splits_url(symbol)
     data = request_get(url, 'results')
     return(filter_data(data, info))
 
@@ -500,7 +500,7 @@ def find_instrument_data(query):
                       * default_collar_fraction
 
     """ 
-    url = instruments()
+    url = instruments_url()
     payload = {'query': query}
 
     data = request_get(url, 'pagination', payload)
@@ -558,7 +558,7 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
         return([None])
 
     symbols = inputs_to_set(inputSymbols)
-    url = historicals()
+    url = historicals_url()
     payload = {'symbols': ','.join(symbols),
                'interval': interval,
                'span': span,
@@ -608,7 +608,7 @@ def get_stock_quote_by_id(stock_id, info=None):
                       * updated_at
                       * instrument
     """
-    url = marketdata_quotes(stock_id)
+    url = marketdata_quotes_url(stock_id)
     data = request_get(url)
 
     return (filter_data(data, info))
@@ -657,7 +657,7 @@ def get_pricebook_by_id(stock_id, info=None):
     :return: Returns a dictionary of asks and bids.
 
     """
-    url = marketdata_pricebook(stock_id)
+    url = marketdata_pricebook_url(stock_id)
     data = request_get(url)
 
     return (filter_data(data, info))

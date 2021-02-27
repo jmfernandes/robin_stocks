@@ -17,7 +17,7 @@ def get_all_stock_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders()
+    url = orders_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -32,7 +32,7 @@ def get_all_option_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders()
+    url = option_orders_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -47,7 +47,7 @@ def get_all_crypto_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = crypto_orders()
+    url = crypto_orders_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -62,7 +62,7 @@ def get_all_open_stock_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders()
+    url = orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel'] is not None]
@@ -80,7 +80,7 @@ def get_all_open_option_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders()
+    url = option_orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
@@ -98,7 +98,7 @@ def get_all_open_crypto_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = crypto_orders()
+    url = crypto_orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
@@ -115,7 +115,7 @@ def get_stock_order_info(orderID):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = orders(orderID)
+    url = orders_url(orderID)
     data = request_get(url)
     return(data)
 
@@ -129,7 +129,7 @@ def get_option_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = option_orders(order_id)
+    url = option_orders_url(order_id)
     data = request_get(url)
     return data
 
@@ -143,7 +143,7 @@ def get_crypto_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = crypto_orders(order_id)
+    url = crypto_orders_url(order_id)
     data = request_get(url)
     return data
 
@@ -157,7 +157,7 @@ def find_stock_orders(**arguments):
     :returns: Returns a list of orders.
 
     """ 
-    url = orders()
+    url = orders_url()
     data = request_get(url, 'pagination')
 
     if (len(arguments) == 0):
@@ -198,7 +198,7 @@ def cancel_stock_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = cancel(orderID)
+    url = cancel_url(orderID)
     data = request_post(url)
 
     if data:
@@ -215,7 +215,7 @@ def cancel_option_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = option_cancel(orderID)
+    url = option_cancel_url(orderID)
     data = request_post(url)
 
     if data:
@@ -232,7 +232,7 @@ def cancel_crypto_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = crypto_cancel(orderID)
+    url = crypto_cancel_url(orderID)
     data = request_post(url)
 
     if data:
@@ -247,7 +247,7 @@ def cancel_all_stock_orders():
     :returns: The list of orders that were cancelled.
 
     """ 
-    url = orders()
+    url = orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel'] is not None]
@@ -266,7 +266,7 @@ def cancel_all_option_orders():
     :returns: Returns the order information for the orders that were cancelled.
 
     """ 
-    url = option_orders()
+    url = option_orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
@@ -285,7 +285,7 @@ def cancel_all_crypto_orders():
     :returns: Returns the order information for the orders that were cancelled.
 
     """ 
-    url = crypto_orders()
+    url = crypto_orders_url()
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
@@ -741,7 +741,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
     else:
         payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage)}
 
-    url = orders()
+    url = orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return (data)
@@ -820,7 +820,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
         'extended_hours': extendedHours
     }
 
-    url = orders()
+    url = orders_url()
     data = request_post(url, payload, jsonify_data=jsonify)
 
     return(data)
@@ -929,7 +929,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
         legs.append({'position_effect': each['effect'],
                      'side': each['action'],
                      'ratio_quantity': 1,
-                     'option': option_instruments(optionID)})
+                     'option': option_instruments_url(optionID)})
 
     payload = {
         'account': load_account_profile(info='url'),
@@ -945,7 +945,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders()
+    url = option_orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -995,7 +995,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1006,7 +1006,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders()
+    url = option_orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1058,7 +1058,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1070,7 +1070,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders()
+    url = option_orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1121,7 +1121,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1133,7 +1133,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders()
+    url = option_orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1183,7 +1183,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1194,7 +1194,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders()
+    url = option_orders_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1439,7 +1439,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         'type': orderType
     }
 
-    url = order_crypto()
+    url = order_crypto_url()
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)

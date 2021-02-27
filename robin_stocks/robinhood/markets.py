@@ -29,7 +29,7 @@ def get_top_movers_sp500(direction, info=None):
         print('Error: direction must be "up" or "down"', file=get_output())
         return([None])
 
-    url = movers_sp500()
+    url = movers_sp500_url()
     payload = {'direction': direction}
     data = request_get(url, 'pagination', payload)
 
@@ -59,7 +59,7 @@ def get_top_100(info=None):
                       * instrument
 
     """
-    url = get_100_most_popular()
+    url = get_100_most_popular_url()
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -92,7 +92,7 @@ def get_top_movers(info=None):
                       * instrument
 
     """
-    url = movers_top()
+    url = movers_top_url()
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -127,7 +127,7 @@ def get_all_stocks_from_market_tag(tag, info=None):
                       * instrument
 
     """
-    url = market_category(tag)
+    url = market_category_url(tag)
     data = request_get(url, 'regular')
     data = filter_data(data, 'instruments')
 
@@ -159,7 +159,7 @@ def get_markets(info=None):
                       * website
 
     """
-    url = markets()
+    url = markets_url()
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -264,7 +264,7 @@ def get_market_hours(market, date, info=None):
                       * next_open_hours
 
     """
-    url = market_hours(market, date)
+    url = market_hours_url(market, date)
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 
@@ -289,6 +289,6 @@ def get_currency_pairs(info=None):
                       * tradability
 
     """
-    url = currency()
+    url = currency_url()
     data = request_get(url, 'results')
     return(filter_data(data, info))
