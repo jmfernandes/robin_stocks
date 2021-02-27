@@ -660,7 +660,7 @@ def get_watchlist_by_id(list_id, info=None):
 
     """
 
-    url = urls.watchlists(id)
+    url = urls.watchlists_url(id)
     data = helper.request_get(url,'list_id',{'list_id':list_id})
     return(helper.filter_data(data, info))
 
