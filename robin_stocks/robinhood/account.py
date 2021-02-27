@@ -73,7 +73,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
         return([None])
 
     account = load_account_profile('account_number')
-    url = urls.urls.portfolis_historicals(account)
+    url = urls.portfolis_historicals(account)
     payload = {
         'interval': interval,
         'span': span,
@@ -250,7 +250,7 @@ def get_latest_notification():
     :returns: Returns a dictionary of key/value pairs. But there is only one key, 'last_viewed_at'
 
     """
-    url = urls.urls.notifications(True)
+    url = urls.notifications(True)
     data = request_get(url)
     return(data)
 
@@ -367,7 +367,7 @@ def get_bank_account_info(id, info=None):
     the value of the key that matches info is extracted.
 
     """
-    url = urls.urls.linked(id)
+    url = urls.linked(id)
     data = request_get(url)
     return(filter_data(data, info))
 
@@ -381,7 +381,7 @@ def unlink_bank_account(id):
     :returns: Information returned from post request.
 
     """
-    url = urls.urls.linked(id, True)
+    url = urls.linked(id, True)
     data = request_post(url)
     return(data)
 
@@ -400,7 +400,7 @@ def get_bank_transfers(direction=None, info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = urls.urls.banktransfers(direction)
+    url = urls.banktransfers(direction)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -495,7 +495,7 @@ def get_day_trades(info=None):
 
     """
     account = load_account_profile('account_number')
-    url = urls.urls.daytrades(account)
+    url = urls.daytrades(account)
     data = request_get(url, 'regular')
     return(filter_data(data, info))
 
@@ -643,7 +643,7 @@ def get_watchlist_by_name(name="My First List", info=None):
         if wl['display_name'] == name:
             watchlist_id = wl['id']
 
-    url = urls.urls.watchlists(name)
+    url = urls.watchlists(name)
     data = request_get(url,'list_id',{'list_id':watchlist_id})
     return(filter_data(data, info))
 
@@ -677,7 +677,7 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
                 "operation" : "create"
             }]
         }
-        url = urls.urls.watchlists(name, True)
+        url = urls.watchlists(name, True)
         data.append(request_post(url, payload, json=True))
 
     return(data)
@@ -713,7 +713,7 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
                 "operation" : "delete"
             }]
         }
-        url = urls.urls.watchlists(name, True)
+        url = urls.watchlists(name, True)
         data.append(request_post(url, payload, json=True))
 
     return(data)
