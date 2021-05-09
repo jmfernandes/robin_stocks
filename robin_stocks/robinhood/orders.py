@@ -1406,10 +1406,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         print(message, file=get_output())
         return None
 
-    crypto_info = get_crypto_info(symbol)
-    if crypto_info['display_only']:
-        print("WARNING: The dictionary returned by crypto.get_crypto_info() for this crypto has key 'display_only' set to True. May not be able to trade this crypto.", file=get_output())
-
+    crypto_id = get_crypto_id(symbol)
     orderType = "market"
 
     if side == "buy":
@@ -1421,7 +1418,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         price = limitPrice
         orderType = "limit"
     else:
-        price = round_price(get_crypto_quote_from_id(crypto_info['id'], info=priceType))
+        price = round_price(get_crypto_quote_from_id(crypto_id, info=priceType))
 
     if amountIn == "quantity":
         quantity = quantityOrPrice
@@ -1430,7 +1427,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
 
     payload = {
         'account_id': load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_info['id'],
+        'currency_pair_id': crypto_id,
         'price': price,
         'quantity': quantity,
         'ref_id': str(uuid4()),

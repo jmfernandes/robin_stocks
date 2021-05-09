@@ -108,6 +108,24 @@ def get_crypto_info(symbol, info=None):
     return(filter_data(data, info))
 
 
+SYMBOL_TO_ID_CACHE = {}
+def get_crypto_id(symbol):
+    """Gets the Robinhood ID of the given cryptocurrency used to make trades.
+    This function uses an in-memory cache of the IDs to save a network round-trip when possible.
+
+    :param symbol: The crypto ticker.
+    :type symbol: str
+    :returns: [str] The symbol's Robinhood ID.
+    """
+    if symbol in SYMBOL_TO_ID_CACHE:
+        return SYMBOL_TO_ID_CACHE[symbol]
+
+    id = get_crypto_info(symbol, 'id')
+    if id:
+        SYMBOL_TO_ID_CACHE[symbol] = id
+    return id
+
+
 @login_required
 def get_crypto_quote(symbol, info=None):
     """Gets information about a crypto including low price, high price, and open price
