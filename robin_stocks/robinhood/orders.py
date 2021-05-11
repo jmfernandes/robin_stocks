@@ -1440,6 +1440,14 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
     }
 
     url = order_crypto_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+
+    # This is safe because 'ref_id' guards us from duplicate orders
+    attempts = 3
+    while attempts > 0:
+        data = request_post(url, payload, json=True, jsonify_data=jsonify)
+        if data is not None:
+            break
+
+        attempts -= 1
 
     return(data)
