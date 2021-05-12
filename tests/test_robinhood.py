@@ -605,8 +605,6 @@ class TestMarkets:
         assert ('extended_closes_at' in market)
         assert ('previous_open_hours' in market)
         assert ('next_open_hours' in market)
-        todaymarket = r.get_market_today_hours(self.nasdaq)
-        assert (market['date'] == todaymarket['date'])
 
     def test_currency_pairs(self):
         currency = r.get_currency_pairs()
