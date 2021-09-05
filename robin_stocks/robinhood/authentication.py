@@ -3,6 +3,7 @@ import getpass
 import os
 import pickle
 import random
+import hashlib
 
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
@@ -82,7 +83,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     data_dir = os.path.join(home_dir, ".tokens")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
-    creds_file = "robinhood.pickle"
+    creds_file = hashlib.md5(username.encode()).hexdigest()+".robinhood.pickle"
     pickle_path = os.path.join(data_dir, creds_file)
     # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
