@@ -50,7 +50,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None):
+def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=None):
     """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -73,6 +73,8 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     :type store_session: Optional[boolean]
     :param mfa_code: MFA token if enabled.
     :type mfa_code: Optional[str]
+    :param pickle_name: Allows users to name Pickle token file in order to switch
+        between different accounts without having to re-login every time.
     :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
     contains information on whether the access token was generated or loaded from pickle file.
 
@@ -82,7 +84,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     data_dir = os.path.join(home_dir, ".tokens")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
-    creds_file = "robinhood.pickle"
+    creds_file = "robinhood" + pickle_name + ".pickle"
     pickle_path = os.path.join(data_dir, creds_file)
     # Challenge type is used if not logging in with two-factor authentication.
     if by_sms:
