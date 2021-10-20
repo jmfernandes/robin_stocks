@@ -127,7 +127,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                         'Authorization', '{0} {1}'.format(token_type, access_token))
                     # Try to load account profile to check that authorization token is still valid.
                     res = request_get(
-                        portfolio_profile_url(), 'regular', payload, jsonify_data=False)
+                        positions_url(), 'pagination', {'nonzero': 'true'}, jsonify_data=False)
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
                     return({'access_token': access_token, 'token_type': token_type,
