@@ -183,7 +183,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                     pickle.dump({'token_type': data['token_type'],
                                  'access_token': data['access_token'],
                                  'refresh_token': data['refresh_token'],
-                                 'device_token': device_token}, f)
+                                 'device_token': payload['device_token']}, f)
         else:
             raise Exception(data['detail'])
     else:
