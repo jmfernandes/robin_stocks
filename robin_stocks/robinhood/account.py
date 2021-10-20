@@ -773,7 +773,11 @@ def build_holdings(with_dividends=False):
             else:
                 percent_change = (float(
                     price) - float(item['average_buy_price'])) * 100 / float(item['average_buy_price'])
-
+            if (float(item['intraday_average_buy_price']) == 0.0):
+                intraday_percent_change = 0.0
+            else:
+                intraday_percent_change = (float(
+                    price) - float(item['intraday_average_buy_price'])) * 100 / float(item['intraday_average_buy_price'])
             holdings[symbol] = ({'price': price})
             holdings[symbol].update({'quantity': quantity})
             holdings[symbol].update(
@@ -781,6 +785,8 @@ def build_holdings(with_dividends=False):
             holdings[symbol].update({'equity': "{0:.2f}".format(equity)})
             holdings[symbol].update(
                 {'percent_change': "{0:.2f}".format(percent_change)})
+            holdings[symbol].update(
+                {'intraday_percent_change': "{0:.2f}".format(intraday_percent_change)})
             holdings[symbol].update(
                 {'equity_change': "{0:2f}".format(equity_change)})
             holdings[symbol].update({'type': instrument_data['type']})
