@@ -331,10 +331,9 @@ def get_option_market_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    instrument = get_option_instrument_data_by_id(id)
     url = marketdata_options_url()
     payload = {
-        "instruments" : instrument['url']
+        "instruments" : option_instruments_url(id)
     }
     data = request_get(url, 'results', payload)
 
