@@ -50,6 +50,30 @@ def get_crypto_positions(info=None):
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
+@login_required
+def get_open_crypto_positions(info=None):
+    """Returns all open crypto positions for the account.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: [list] Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+    :Dictionary Keys: * account_id
+                      * cost_basis
+                      * created_at
+                      * currency
+                      * id
+                      * quantity
+                      * quantity_available
+                      * quantity_held_for_buy
+                      * quantity_held_for_sell
+                      * updated_at
+
+    """
+    url = crypto_holdings_url()
+    payload = {'nonzero': 'true'}
+    data = request_get(url, 'pagination', payload)
+    return(filter_data(data, info))
 
 def get_crypto_currency_pairs(info=None):
     """Gets a list of all the cypto currencies that you can trade.
