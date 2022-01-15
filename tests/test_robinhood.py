@@ -814,3 +814,26 @@ class TestProfiles:
         r.logout()
         profile = r.load_account_profile(info=None)
         assert profile
+
+class TestOrders:
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+    
+    def test_find_stock_orders(cls):
+        def isFloat(f):
+            try:
+                float(f)
+                return True
+            except ValueError:
+                return False
+
+        orderHistory = r.find_stock_orders()
+        assert orderHistory
+
+        for order in orderHistory:
+            assert isFloat(order['quantity'])
+            assert isFloat(order['cumulative_quantity'])
+            if(order['state'] == 'filled'):
+                assert (order['quantity'] == order['cumulative_quantity'])

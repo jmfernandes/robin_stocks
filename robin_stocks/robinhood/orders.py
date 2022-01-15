@@ -164,7 +164,8 @@ def find_stock_orders(**arguments):
         return(data)
 
     for item in data:
-        item['quantity'] = str(int(float(item['quantity'])))
+        item['quantity'] = str(float(item['quantity']))
+        item['cumulative_quantity'] = str(float(item['cumulative_quantity']))
 
     if 'symbol' in arguments.keys():
         arguments['instrument'] = get_instruments_by_symbols(
