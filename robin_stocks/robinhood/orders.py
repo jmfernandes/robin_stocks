@@ -928,7 +928,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
                                         each['optionType'])
         legs.append({'position_effect': each['effect'],
                      'side': each['action'],
-                     'ratio_quantity': 1,
+                     'ratio_quantity': each.get('ratio_quantity', default=1),
                      'option': option_instruments_url(optionID)})
 
     payload = {
