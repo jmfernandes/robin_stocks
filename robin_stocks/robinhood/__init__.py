@@ -60,9 +60,10 @@ from .orders import (cancel_all_crypto_orders, cancel_all_option_orders,
                      order_sell_crypto_limit, order_sell_crypto_limit_by_price,
                      order_sell_fractional_by_price,
                      order_sell_fractional_by_quantity, order_sell_limit,
-                     order_sell_market, order_sell_option_limit,
-                     order_sell_option_stop_limit, order_sell_stop_limit,
-                     order_sell_stop_loss, order_sell_trailing_stop)
+                     order_sell_market, order_sell_option_limit, 
+                     order_sell_option_limit_by_id, order_sell_option_stop_limit,
+                     order_sell_stop_limit, order_sell_stop_loss,
+                     order_sell_trailing_stop)
 from .profiles import (load_account_profile, load_basic_profile,
                        load_investment_profile, load_portfolio_profile,
                        load_security_profile, load_user_profile)
