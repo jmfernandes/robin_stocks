@@ -1140,6 +1140,51 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
 
 
 @login_required
+def order_sell_option_limit_by_id(positionEffect, creditOrDebit, price, quantity, optionID, timeInForce='gtc', jsonify=True):
+    """Submits a limit order for an option by its ID. i.e. place a short call or a short put.
+
+    :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
+    :type positionEffect: str
+    :param creditOrDebit: Either 'debit' or 'credit'.
+    :type creditOrDebit: str
+    :param price: The limit price to trigger a sell of the option.
+    :type price: float
+    :param quantity: The number of options to sell.
+    :type quantity: int
+    :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
+    'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
+    :type timeInForce: Optional[str]
+    :param jsonify: If set to False, function will return the request object which contains status code and headers.
+    :type jsonify: Optional[str]
+    :returns: Dictionary that contains information regarding the selling of options, \
+    such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
+    the price, and the quantity.
+
+    """
+    payload = {
+        'account': load_account_profile(info='url'),
+        'direction': creditOrDebit,
+        'time_in_force': timeInForce,
+        'legs': [
+            {'position_effect': positionEffect, 'side': 'sell',
+                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+        ],
+        'type': 'limit',
+        'trigger': 'immediate',
+        'price': price,
+        'quantity': quantity,
+        'override_day_trade_checks': False,
+        'override_dtbp_checks': False,
+        'ref_id': str(uuid4()),
+    }
+
+    url = option_orders_url()
+    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+
+    return(data)
+
+
+@login_required
 def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
