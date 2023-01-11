@@ -2,23 +2,23 @@ import robin_stocks.robinhood as r
 import os
 import datetime
 import time as t
+import pyotp
+from dotenv import load_dotenv
+from two_factor_log_in import *
+
+login = loginmfa()
 
 '''
 This is an example script that will print out options data every 10 seconds for 1 minute.
 It also saves the data to a txt file. The txt file is saved in the same directory as this code.
 '''
 
-#!!! Fill out username and password
-username = ''
-password = ''
-#!!!
 
-login = r.login(username,password)
 
 #!!! fill out the specific option information
-strike = 300
-date = "2020-07-02"
-stock = "AAPL"
+strike = 380
+date = "2023-01-09"
+stock = "SPY"
 optionType = "call" #or "put"
 #!!!
 
@@ -58,7 +58,7 @@ while t.time() < endTime:
     fileStream.write("{} Market Data {}".format("="*30,"="*30))
     print("{} Market Data {}".format("="*30,"="*30))
 
-    for key, value in market_data[0].items():
+    for (key, value) in market_data:
         fileStream.write("\n")
         fileStream.write("key: {:<25} value: {}".format(key,value))
         print("key: {:<25} value: {}".format(key,value))

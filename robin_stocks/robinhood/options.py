@@ -251,20 +251,39 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
         print(message, file=get_output())
         return [None]
 
-    data = []
     for symbol in symbols:
         allOptions = find_tradable_options(symbol, expirationDate, strikePrice, optionType, None)
         filteredOptions = [item for item in allOptions if item.get("expiration_date") == expirationDate]
+        filter_data = updateOptionsMarketData(filteredOptions, info)
 
-        for item in filteredOptions:
-            marketData = get_option_market_data_by_id(item['id'])
-            if marketData:
-                item.update(marketData[0])
-            write_spinner()
+    return filter_data
 
-        data.extend(filteredOptions)
+def updateOptionsMarketData(filteredOptions, info=None):
+    data = []
+
+    for item in filteredOptions:
+        update_option_market_data_by_id(item)
+
+    data.extend(filteredOptions)
+    
+    return filter_data(data, info)
+
+def updateOptionsCalendarMarketData(filteredCalendarOptions, info=None):
+    data = []
+
+    for front_leg, back_leg in filteredCalendarOptions:
+        update_option_market_data_by_id(front_leg)
+        update_option_market_data_by_id(back_leg)
+        print(front_leg['expiration_date'], back_leg['expiration_date'])
+    data.extend(filteredCalendarOptions)
 
     return filter_data(data, info)
+
+def update_option_market_data_by_id(item):
+    marketData = get_option_market_data_by_id(item['id'])
+    if marketData:
+        item.update(marketData[0])
+    write_spinner()
 
 @login_required
 def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
@@ -317,6 +336,45 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                     pass
 
     return(filter_data(data, info))
+
+@login_required
+def filter_options_by_specific_profitability(options, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
+    """Returns a list of option market data for several stock tickers that match a range of profitability.
+    :param options: Will either be "chance_of_profit_short" or "chance_of_profit_long".
+    :type options: option[]
+    :param typeProfit: Will either be "chance_of_profit_short" or "chance_of_profit_long".
+    :type typeProfit: str
+    :param profitFloor: The lower percentage on scale 0 to 1.
+    :type profitFloor: int
+    :param profitCeiling: The higher percentage on scale 0 to 1.
+    :type profitCeiling: int
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data. \
+    If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    data = []
+
+    if (typeProfit != "chance_of_profit_short" and typeProfit != "chance_of_profit_long"):
+        print("Invalid string for 'typeProfit'. Defaulting to 'chance_of_profit_short'.", file=get_output())
+        typeProfit = "chance_of_profit_short"
+
+    for option in options:
+        market_data = get_option_market_data_by_id(option['id'])
+
+        if len(market_data):
+            option.update(market_data[0])
+            write_spinner()
+
+            try:
+                floatValue = float(option[typeProfit])
+                if (floatValue >= profitFloor and floatValue <= profitCeiling):
+                    data.append(option)
+            except:
+                pass
+
+    return (filter_data(data, info))
 
 @login_required
 def get_option_market_data_by_id(id, info=None):
