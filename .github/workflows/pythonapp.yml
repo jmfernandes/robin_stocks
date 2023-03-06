@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -11,22 +14,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.7
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Lint with flake8
+    - name: Lint with ruff
       run: |
-        pip install flake8
+        pip install ruff
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        ruff --select=E9,F63,F7,F82 --show-source .
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        ruff --exit-zero -line-length=127 --statistics --target-version=py37
     - name: Test with pytest
       env:
         robin_username: ${{ secrets.username }}
@@ -42,9 +45,5 @@ jobs:
         tda_encryption_passcode: ${{ secrets.tda_encryption_passcode }}
         tda_order_account: ${{ secrets.tda_order_account }}
       run: |
-        pip install pytest
-        pip install pytest-dotenv
-        pip install python-dateutil
-        pytest tests/test_robinhood.py
-        pytest tests/test_gemini.py
-        pytest tests/test_tda.py
+        pip install pytest pytest-dotenv python-dateutil
+        pytest
