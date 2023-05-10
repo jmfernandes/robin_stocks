@@ -321,7 +321,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False, j
 
 
 @login_required
-def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extendedHours=False, jsonify=True):
+def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -330,6 +330,8 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
@@ -341,11 +343,11 @@ def order_buy_fractional_by_quantity(symbol, quantity, timeInForce='gfd', extend
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, quantity, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False, jsonify=True):
+def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -354,6 +356,8 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
     :type symbol: str
     :param amountInDollars: The amount in dollars of the fractional shares you want to buy.
     :type amountInDollars: float
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
@@ -373,7 +377,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', ex
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "buy", None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
@@ -507,7 +511,7 @@ def order_sell_market(symbol, quantity, timeInForce='gtc', extendedHours=False, 
 
 
 @login_required
-def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True):
+def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -516,6 +520,8 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', price
     :type symbol: str
     :param quantity: The amount of the fractional shares you want to buy.
     :type quantity: float
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param timeInForce: Changes how long the order will be in effect for. 'gfd' = good for the day.
     :type timeInForce: Optional[str]
     :param extendedHours: Premium users only. Allows trading during extended hours. Should be true or false.
@@ -527,11 +533,11 @@ def order_sell_fractional_by_quantity(symbol, quantity, timeInForce='gfd', price
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, quantity, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', extendedHours=False, jsonify=True):
+def order_sell_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -558,7 +564,7 @@ def order_sell_fractional_by_price(symbol, amountInDollars, timeInForce='gfd', e
     price = next(iter(get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "sell", None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, fractional_shares, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
@@ -748,7 +754,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
 
 
 @login_required
-def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order(symbol, quantity, side, account_number=None, limitPrice=None, stopPrice=None, timeInForce='gtc', extendedHours=False, jsonify=True):
     """A generic order function.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -757,6 +763,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
     :type quantity: int
     :param side: Either 'buy' or 'sell'
     :type side: str
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param limitPrice: The price to trigger the market order.
     :type limitPrice: float
     :param stopPrice: The price to trigger the limit or market order.
@@ -804,9 +812,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
         trigger = "stop"
     else:
         price = round_price(next(iter(get_latest_price(symbol, priceType, extendedHours)), 0.00))
-
     payload = {
-        'account': load_account_profile(info='url'),
+        'account': load_account_profile(account_number=account_number, info='url'),
         'instrument': get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
         'price': price,
@@ -821,6 +828,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, timeInForce='
     }
 
     url = orders_url()
+
+
     data = request_post(url, payload, jsonify_data=jsonify)
 
     return(data)

@@ -117,9 +117,11 @@ def get_all_positions(info=None):
 
 
 @login_required
-def get_open_stock_positions(info=None):
+def get_open_stock_positions(account_number=None, info=None):
     """Returns a list of stocks that are currently held.
 
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: [list] Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, \
@@ -143,7 +145,7 @@ def get_open_stock_positions(info=None):
                       * created_at
 
     """
-    url = positions_url()
+    url = positions_url(account_number=account_number)
     payload = {'nonzero': 'true'}
     data = request_get(url, 'pagination', payload)
 

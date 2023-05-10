@@ -14,8 +14,8 @@ def challenge_url(challenge_id):
 # Profiles
 
 
-def account_profile_url():
-    return('https://api.robinhood.com/accounts/')
+def account_profile_url(account_number=None):
+    return('https://api.robinhood.com/accounts/'+account_number)
 
 
 def basic_profile_url():
@@ -86,8 +86,8 @@ def splits_url(symbol):
 def phoenix_url():
     return('https://phoenix.robinhood.com/accounts/unified')
 
-def positions_url():
-    return('https://api.robinhood.com/positions/')
+def positions_url(account_number=None):
+    return('https://api.robinhood.com/positions/?account_number='+account_number)
 
 def banktransfers_url(direction=None):
     if direction == 'received':
@@ -212,8 +212,8 @@ def option_orders_url(orderID=None):
         return('https://api.robinhood.com/options/orders/')
 
 
-def option_positions_url():
-    return('https://api.robinhood.com/options/positions/')
+def option_positions_url(account_number):
+    return('https://api.robinhood.com/options/positions/?account_numbers='+account_number)
 
 
 def marketdata_options_url():
