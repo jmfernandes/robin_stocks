@@ -836,7 +836,7 @@ def order(symbol, quantity, side, account_number=None, limitPrice=None, stopPric
 
 
 @login_required
-def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
+def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True):
     """Submits a limit order for an option credit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -856,17 +856,19 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' = execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce, jsonify))
+    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
 
 
 @login_required
-def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
+def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True):
     """Submits a limit order for an option debit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -886,17 +888,19 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
      'gtc' = good until cancelled. \
      'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce, jsonify))
+    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
 
 
 @login_required
-def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc', jsonify=True):
+def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
     :param direction: Can be "credit" or "debit".
@@ -920,6 +924,8 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -941,7 +947,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
                      'option': option_instruments_url(optionID)})
 
     payload = {
-        'account': load_account_profile(info='url'),
+        'account': load_account_profile(account_number=account_number, info='url'),
         'direction': direction,
         'time_in_force': timeInForce,
         'legs': legs,
@@ -961,7 +967,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, timeInForce=
 
 
 @login_required
-def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
+def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', account_number=None, jsonify=True):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -983,6 +989,8 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
@@ -999,7 +1007,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(info='url'),
+        'account': load_account_profile(account_number=account_number, info='url'),
         'direction': creditOrDebit,
         'time_in_force': timeInForce,
         'legs': [
@@ -1046,6 +1054,8 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
@@ -1109,6 +1119,8 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the buying of options, \
@@ -1149,7 +1161,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
 
 
 @login_required
-def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', jsonify=True):
+def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', timeInForce='gtc', account_number=None, jsonify=True):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
@@ -1171,6 +1183,8 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     :param timeInForce: Changes how long the order will be in effect for. 'gtc' = good until cancelled. \
     'gfd' = good for the day. 'ioc' = immediate or cancel. 'opg' execute at opening.
     :type timeInForce: Optional[str]
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
     :returns: Dictionary that contains information regarding the selling of options, \
@@ -1187,7 +1201,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(info='url'),
+        'account': load_account_profile(account_number=account_number, info='url'),
         'direction': creditOrDebit,
         'time_in_force': timeInForce,
         'legs': [
