@@ -64,6 +64,19 @@ def export_completed_stock_orders(dir_path, file_name=None):
             'average_price'
         ])
         for order in all_orders:
+            # include candled order if partial executed
+            if order['state'] == 'cancelled' and len(order['executions']) > 0:
+                for partial in order['executions']:
+                    csv_writer.writerow([
+                        get_symbol_by_url(order['instrument']),
+                        partial['timestamp'],
+                        order['type'],
+                        order['side'],
+                        order['fees'],
+                        partial['quantity'],
+                        partial['price']
+                    ])
+
             if order['state'] == 'filled' and order['cancel'] is None:
                 csv_writer.writerow([
                     get_symbol_by_url(order['instrument']),
