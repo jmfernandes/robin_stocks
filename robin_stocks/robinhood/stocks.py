@@ -1,4 +1,6 @@
 """Contains information in regards to stocks."""
+from functools import cache
+
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
 
@@ -227,7 +229,7 @@ def get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True):
             prices.append(None)
     return(prices)
 
-
+@cache
 @convert_none_to_string
 def get_name_by_symbol(symbol):
     """Returns the name of a stock from the stock ticker.
@@ -255,6 +257,7 @@ def get_name_by_symbol(symbol):
     return(filter)
 
 
+@cache
 @convert_none_to_string
 def get_name_by_url(url):
     """Returns the name of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``
@@ -275,6 +278,7 @@ def get_name_by_url(url):
     return(filter)
 
 
+@cache
 @convert_none_to_string
 def get_symbol_by_url(url):
     """Returns the symbol of a stock from the instrument url. Should be located at ``https://api.robinhood.com/instruments/<id>``

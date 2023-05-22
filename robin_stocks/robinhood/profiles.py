@@ -4,10 +4,12 @@ from robin_stocks.robinhood.urls import *
 
 
 @login_required
-def load_account_profile(info=None):
+def load_account_profile(account_number=None, info=None):
     """Gets the information associated with the accounts profile,including day
     trading information and cash being held by Robinhood.
 
+    :param acccount_number: the robinhood account number.
+    :type acccount_number: Optional[str]
     :param info: The name of the key whose value is to be returned from the function.
     :type info: Optional[str]
     :returns: The function returns a dictionary of key/value pairs. \
@@ -59,8 +61,11 @@ def load_account_profile(info=None):
                       * rhs_stock_loan_consent_status
 
     """
-    url = account_profile_url()
-    data = request_get(url, 'indexzero')
+    url = account_profile_url(account_number)
+    if account_number is not None:
+         data = request_get(url)
+    else:
+        data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
 
