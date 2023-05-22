@@ -43,7 +43,7 @@ class TestStocks:
     instrument = 'https://api.robinhood.com/instruments/450dfc6d-5510-4d40-abfb-f633b7d9be3e/'
     fake_instrument = 'https://api.robinhood.com/instruments/aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa/'
     id = '450dfc6d-5510-4d40-abfb-f633b7d9be3e'
-    list_stocks = ['tsla', 'f', 'plug', 'fB', 'SPY', 'botz', 'jnug']
+    list_stocks = ['tsla', 'f', 'plug', 'meTA', 'SPY', 'botz', 'jnug']
     fake_stocks = ['87627273', 'ffffffffff']
 
     @classmethod
