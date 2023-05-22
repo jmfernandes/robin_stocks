@@ -1,4 +1,4 @@
 requests==2.20.0
 pyotp==2.3.0
 python-dotenv==0.15.0
-cryptography==3.4.6
+cryptography==39.0.1
