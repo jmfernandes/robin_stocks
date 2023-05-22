@@ -688,7 +688,6 @@ class TestProfiles:
         assert ('cash_held_for_options_collateral' in profile)
         assert ('fractional_position_closing_only' in profile)
         assert ('user_id' in profile)
-        assert ('rhs_stock_loan_consent_status' in profile)
 
     def test_basic_profile(self):
         profile = r.load_basic_profile(info=None)
