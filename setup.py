@@ -16,7 +16,7 @@ setup(name='robin_stocks',
       author_email='joshfernandes@mac.com',
       keywords=['robinhood','robin stocks','finance app','stocks','options','trading','investing'],
       license='MIT',
-      python_requires='>=3',
+      python_requires='>=3.9',
       packages=find_packages(),
       requires=['requests', 'pyotp', 'cryptography'],
       install_requires=[
