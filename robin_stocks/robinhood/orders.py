@@ -377,8 +377,31 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
     # turn the money amount into decimal number of shares
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
+    
+    ### BEGIN: Patch for new Robinhood Order Form (GuitarGuyChrisB 5/25/2023)
+    # return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
 
-    return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
+    payload = {
+        'account': load_account_profile(account_number=account_number, info='url'),
+        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
+        'order_form_version': "2",
+        'preset_percent_limit': "0.05",
+        'symbol': symbol,
+        'price': price,
+        'quantity': fractional_shares,
+        'ref_id': str(uuid4()),
+        'type': "limit",
+        'time_in_force': timeInForce,
+        'trigger': "immediate",
+        'side': "buy",
+        'extended_hours': extendedHours
+    }
+
+    url = orders_url()
+    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+
+    return (data)
+    ### END: Patch for new Robinhood Order Form (GuitarGuyChrisB 5/25/2023)
 
 
 @login_required
