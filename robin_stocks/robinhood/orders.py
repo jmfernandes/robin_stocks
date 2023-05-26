@@ -378,30 +378,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
     
-    ### BEGIN: Patch for new Robinhood Order Form (GuitarGuyChrisB 5/25/2023)
-    # return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
-
-    payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
-        'order_form_version': "2",
-        'preset_percent_limit': "0.05",
-        'symbol': symbol,
-        'price': price,
-        'quantity': fractional_shares,
-        'ref_id': str(uuid4()),
-        'type': "limit",
-        'time_in_force': timeInForce,
-        'trigger': "immediate",
-        'side': "buy",
-        'extended_hours': extendedHours
-    }
-
-    url = orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
-
-    return (data)
-    ### END: Patch for new Robinhood Order Form (GuitarGuyChrisB 5/25/2023)
+    return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
@@ -850,6 +827,11 @@ def order(symbol, quantity, side, account_number=None, limitPrice=None, stopPric
         'side': side,
         'extended_hours': extendedHours
     }
+    # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
+    if side == "buy":
+        payload['order_form_version'] = "2"
+        payload['preset_percent_limit'] = "0.05"
+    # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
 
     url = orders_url()
 
