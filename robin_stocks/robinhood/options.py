@@ -333,7 +333,6 @@ def get_option_market_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    # import pdb; pdb.set_trace()
     instrument = get_option_instrument_data_by_id(id)
     if instrument is None:
       # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
