@@ -334,43 +334,15 @@ def get_option_market_data_by_id(id, info=None):
 
     """
     instrument = get_option_instrument_data_by_id(id)
-    url = marketdata_options_url()
-    payload = {
-        "instruments" : instrument['url']
-    }
-    data = request_get(url, 'results', payload)
-
-    if not data:
-        data= {
-        'adjusted_mark_price':'',
-        'ask_price':'',
-        'ask_size':'',
-        'bid_price':'',
-        'bid_size':'',
-        'break_even_price':'',
-        'high_price':'',
-        'instrument':'',
-        'last_trade_price':'',
-        'last_trade_size':'',
-        'low_price':'',
-        'mark_price':'',
-        'open_interest':'',
-        'previous_close_date':'',
-        'previous_close_price':'',
-        'volume':'',
-        'chance_of_profit_long':'',
-        'chance_of_profit_short':'',
-        'delta':'',
-        'gamma':'',
-        'implied_volatility':'',
-        'rho':'',
-        'theta':'',
-        'vega':'',
-        'high_fill_rate_buy_price':'',
-        'high_fill_rate_sell_price':'',
-        'low_fill_rate_buy_price':'',
-        'low_fill_rate_sell_price':''
-        }
+    if instrument is None:
+      # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
+      return None  # just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problem
+    else:
+      payload = {
+          "instruments" : instrument['url']
+      }
+      url = marketdata_options_url()
+      data = request_get(url, 'results', payload)
 
     return(filter_data(data, info))
 

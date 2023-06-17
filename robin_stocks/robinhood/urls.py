@@ -211,11 +211,14 @@ def option_instruments_url(id=None):
         return('https://api.robinhood.com/options/instruments/')
 
 
-def option_orders_url(orderID=None):
+def option_orders_url(orderID=None, account_number=None):
+    url = 'https://api.robinhood.com/options/orders/'
     if orderID:
-        return('https://api.robinhood.com/options/orders/{0}/'.format(orderID))
-    else:
-        return('https://api.robinhood.com/options/orders/')
+        url += '{0}/'.format(orderID)
+    if account_number:
+        url += ('?account_numbers='+account_number)
+
+    return url
 
 
 def option_positions_url(account_number):

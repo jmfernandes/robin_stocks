@@ -71,7 +71,7 @@ def get_all_open_stock_orders(info=None):
 
 
 @login_required
-def get_all_open_option_orders(info=None):
+def get_all_open_option_orders(info=None, account_number=None):
     """Returns a list of all the orders that are currently open.
 
     :param info: Will filter the results to get a specific value.
@@ -80,7 +80,7 @@ def get_all_open_option_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
