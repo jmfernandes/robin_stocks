@@ -318,7 +318,7 @@ def order_buy_market(symbol, quantity, timeInForce='gtc', extendedHours=False, j
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, quantity, "buy", None, None, None, timeInForce, extendedHours, jsonify)
 
 
 @login_required
