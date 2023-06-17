@@ -34,6 +34,21 @@ def get_aggregate_positions(info=None):
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
+@login_required
+def get_aggregate_open_positions(info=None):
+    """Collapses all open option positions for a stock into a single dictionary.
+
+    :param info: Will filter the results to get a specific value.
+    :type info: Optional[str]
+    :returns: Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, \
+    a list of strings is returned where the strings are the value of the key that matches info.
+
+    """
+    url = aggregate_url()
+    payload = {'nonzero': 'True'}
+    data = request_get(url, 'pagination', payload)
+    return(filter_data(data, info))
+
 
 @login_required
 def get_market_options(info=None):
