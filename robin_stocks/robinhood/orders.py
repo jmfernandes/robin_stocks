@@ -868,8 +868,6 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     elif market_hours == 'all_day_hours': 
         payload['type'] = 'limit' 
         payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
-        if orderType == 'market' and side =='sell':
-            payload['price'] = price
         
     url = orders_url()
 
