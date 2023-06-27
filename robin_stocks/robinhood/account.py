@@ -72,7 +72,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
         print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
         return([None])
 
-    account = load_account_profile('account_number')
+    account = load_account_profile(info='account_number')
     url = portfolis_historicals_url(account)
     payload = {
         'interval': interval,
@@ -496,7 +496,7 @@ def get_day_trades(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    account = load_account_profile('account_number')
+    account = load_account_profile(info='account_number')
     url = daytrades_url(account)
     data = request_get(url, 'regular')
     return(filter_data(data, info))

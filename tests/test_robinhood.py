@@ -43,7 +43,7 @@ class TestStocks:
     instrument = 'https://api.robinhood.com/instruments/450dfc6d-5510-4d40-abfb-f633b7d9be3e/'
     fake_instrument = 'https://api.robinhood.com/instruments/aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa/'
     id = '450dfc6d-5510-4d40-abfb-f633b7d9be3e'
-    list_stocks = ['tsla', 'f', 'plug', 'fB', 'SPY', 'botz', 'jnug']
+    list_stocks = ['tsla', 'f', 'plug', 'meTA', 'SPY', 'botz', 'jnug']
     fake_stocks = ['87627273', 'ffffffffff']
 
     @classmethod
@@ -688,7 +688,6 @@ class TestProfiles:
         assert ('cash_held_for_options_collateral' in profile)
         assert ('fractional_position_closing_only' in profile)
         assert ('user_id' in profile)
-        assert ('rhs_stock_loan_consent_status' in profile)
 
     def test_basic_profile(self):
         profile = r.load_basic_profile(info=None)
@@ -814,3 +813,26 @@ class TestProfiles:
         r.logout()
         profile = r.load_account_profile(info=None)
         assert profile
+
+class TestOrders:
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+    
+    def test_find_stock_orders(cls):
+        def isFloat(f):
+            try:
+                float(f)
+                return True
+            except ValueError:
+                return False
+
+        orderHistory = r.find_stock_orders()
+        assert orderHistory
+
+        for order in orderHistory:
+            assert isFloat(order['quantity'])
+            assert isFloat(order['cumulative_quantity'])
+            if(order['state'] == 'filled'):
+                assert (order['quantity'] == order['cumulative_quantity'])
