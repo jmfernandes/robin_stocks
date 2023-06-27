@@ -380,7 +380,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
     
-    return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, fractional_shares, "buy", None, None, account_number,  timeInForce, extendedHours, jsonify)
 
 
 @login_required
@@ -544,7 +544,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, tim
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, quantity, "sell", None, None, account_number,  timeInForce, extendedHours, jsonify)
 
 
 @login_required
