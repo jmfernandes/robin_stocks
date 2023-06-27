@@ -813,7 +813,6 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
 
     if side == "buy":
         priceType = "ask_price"
-        orderType = 'limit'
     else:
         priceType = "bid_price"
 
@@ -846,16 +845,19 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'time_in_force': timeInForce,
         'trigger': trigger,
         'side': side,
+        'market_hours': "regular_hours",
         'extended_hours': extendedHours
     }
-    # fix market sell
-    if orderType == 'market':
+    if orderType == 'market' and side == 'sell':
         del payload['price']
         del payload['stop_price']
+    if orderType == 'market' and side == 'buy':
+        del payload['stop_price']
+        payload['type'] = 'limit' 
         
     # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
     if side == "buy":
-        payload['order_form_version'] = "2"
+        payload['order_form_version'] = 4
         payload['preset_percent_limit'] = "0.05"
     # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
 
