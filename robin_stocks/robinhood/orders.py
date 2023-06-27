@@ -851,7 +851,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     }
         
     # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-    if side == "buy":
+    if side == "buy" and market_hours == 'regular_hours':
         payload['preset_percent_limit'] = "0.05"
     # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
         
@@ -864,6 +864,9 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         del payload['price']
         del payload['stop_price']
         del payload['extended_hours']
+    
+    if market_hours == 'all_day_hours': #round to integer instead of fractional
+        payload['quantity']=int(payload['quantity'])
         
     url = orders_url()
 
