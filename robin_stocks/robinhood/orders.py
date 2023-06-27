@@ -846,23 +846,26 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'trigger': trigger,
         'side': side,
         'market_hours': "regular_hours",
-        'extended_hours': extendedHours
+        'extended_hours': extendedHours,
+        'order_form_version': 4
     }
-    if orderType == 'market' and side == 'sell':
-        del payload['price']
-        del payload['stop_price']
-    if orderType == 'market' and side == 'buy':
-        del payload['stop_price']
-        payload['type'] = 'limit' 
         
     # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
     if side == "buy":
-        payload['order_form_version'] = 4
         payload['preset_percent_limit'] = "0.05"
     # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-
+        
+    if orderType == 'market' and side == 'buy':
+        del payload['stop_price']
+        del payload['extended_hours']
+        payload['type'] = 'limit' 
+        
+    if orderType == 'market' and side == 'sell':
+        del payload['price']
+        del payload['stop_price']
+        del payload['extended_hours']
+        
     url = orders_url()
-
 
     data = request_post(url, payload, jsonify_data=jsonify)
 
