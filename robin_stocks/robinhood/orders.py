@@ -848,6 +848,11 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'side': side,
         'extended_hours': extendedHours
     }
+    # fix market sell
+    if orderType == 'market':
+        del payload['price']
+        del payload['stop_price']
+        
     # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
     if side == "buy":
         payload['order_form_version'] = "2"
