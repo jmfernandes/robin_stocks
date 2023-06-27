@@ -855,12 +855,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         del payload['extended_hours'] 
         
     if market_hours == 'regular_hours':
-        # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
         if side == "buy":
             payload['preset_percent_limit'] = "0.05"
-        # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-        # regular buy
-        if side == 'buy':
             payload['type'] = 'limit' 
         # regular market sell
         elif orderType == 'market' and side == 'sell':
