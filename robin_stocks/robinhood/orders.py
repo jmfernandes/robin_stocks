@@ -859,7 +859,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         if side == "buy":
             payload['preset_percent_limit'] = "0.05"
         # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-        # regular market buy
+        # regular buy
         if side == 'buy':
             payload['type'] = 'limit' 
         # regular market sell
