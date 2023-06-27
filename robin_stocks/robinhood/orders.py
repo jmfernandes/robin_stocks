@@ -849,24 +849,27 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'extended_hours': extendedHours,
         'order_form_version': 4
     }
-        
-    # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-    if side == "buy" and market_hours == 'regular_hours':
-        payload['preset_percent_limit'] = "0.05"
-    # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-        
-    if orderType == 'market' and side == 'buy':
+    # adjust market orders
+    if orderType == 'market':
         del payload['stop_price']
-        del payload['extended_hours']
+        del payload['extended_hours'] 
+        
+    if market_hours == 'regular_hours':
+        # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
+        if side == "buy":
+            payload['preset_percent_limit'] = "0.05"
+        # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
+        # regular market buy
+        if orderType == 'market' and side == 'buy':
+            payload['type'] = 'limit' 
+        # regular market sell
+        if orderType == 'market' and side == 'sell':
+            del payload['price']   
+    elif market_hours == 'all_day_hours': 
         payload['type'] = 'limit' 
-        
-    if orderType == 'market' and side == 'sell':
-        del payload['price']
-        del payload['stop_price']
-        del payload['extended_hours']
-    
-    if market_hours == 'all_day_hours': #round to integer instead of fractional
-        payload['quantity']=int(payload['quantity'])
+        payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
+        if orderType == 'market' and side =='sell':
+            payload['price'] = price
         
     url = orders_url()
 
