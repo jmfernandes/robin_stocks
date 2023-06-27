@@ -349,6 +349,8 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
                 'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
         else:
             res = SESSION.post(url, data=payload, timeout=timeout)
+        if res.status_code == 500:
+            raise ValueError("Received 500!")
         data = res.json()
     except Exception as message:
         print("Error in request_post: {0}".format(message), file=get_output())
