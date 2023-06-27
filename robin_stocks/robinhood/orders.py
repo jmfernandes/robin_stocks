@@ -813,6 +813,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
 
     if side == "buy":
         priceType = "ask_price"
+        orderType = 'limit'
     else:
         priceType = "bid_price"
 
