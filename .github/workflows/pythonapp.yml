@@ -27,7 +27,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test robinhood with pytest
       env:
         robin_username: ${{ secrets.username }}
         robin_password: ${{ secrets.password }}
@@ -35,16 +35,34 @@ jobs:
         account_number: ${{ secrets.account }}
         zipcode: ${{ secrets.zipcode }}
         crypto_account: ${{ secrets.crypto }}
+      run: |
+        pip install pytest
+        pip install pytest-dotenv
+        pip install python-dateutil
+        pytest tests/test_robinhood.py
+    - name: Test gemini with pytest
+      env:
+        account_number: ${{ secrets.account }}
+        zipcode: ${{ secrets.zipcode }}
+        crypto_account: ${{ secrets.crypto }}
         gemini_account_key: ${{ secrets.gemini_account_key }}
         gemini_account_secret: ${{ secrets.gemini_account_secret }}
         gemini_sandbox_key: ${{ secrets.gemini_sandbox_key }}
         gemini_sandbox_secret: ${{ secrets.gemini_sandbox_secret }}
+      run: |
+        pip install pytest
+        pip install pytest-dotenv
+        pip install python-dateutil
+        pytest tests/test_gemini.py
+    - name: Test TDA with pytest
+      env:
+        account_number: ${{ secrets.account }}
+        zipcode: ${{ secrets.zipcode }}
+        crypto_account: ${{ secrets.crypto }}
         tda_encryption_passcode: ${{ secrets.tda_encryption_passcode }}
         tda_order_account: ${{ secrets.tda_order_account }}
       run: |
         pip install pytest
         pip install pytest-dotenv
         pip install python-dateutil
-        pytest tests/test_robinhood.py
-        pytest tests/test_gemini.py
         pytest tests/test_tda.py
