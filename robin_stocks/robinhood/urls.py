@@ -289,8 +289,11 @@ def option_cancel_url(id):
     return('https://api.robinhood.com/options/orders/{0}/cancel/'.format(id))
 
 
-def orders_url(orderID=None):
+def orders_url(orderID=None, account_number=None):
+    url = 'https://api.robinhood.com/orders/'
     if orderID:
-        return('https://api.robinhood.com/orders/{0}/'.format(orderID))
-    else:
-        return('https://api.robinhood.com/orders/')
+        url += '{0}/'.format(orderID)
+    if account_number:
+        url += ('?account_numbers='+account_number)
+
+    return url

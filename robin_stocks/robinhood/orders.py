@@ -53,7 +53,7 @@ def get_all_crypto_orders(info=None):
 
 
 @login_required
-def get_all_open_stock_orders(info=None):
+def get_all_open_stock_orders(info=None, account_number=None):
     """Returns a list of all the orders that are currently open.
 
     :param info: Will filter the results to get a specific value.
@@ -62,7 +62,7 @@ def get_all_open_stock_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel'] is not None]
@@ -350,7 +350,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, time
 
 
 @login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True):
+def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True, market_hours='regular_hours'):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -380,7 +380,7 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
     
-    return order(symbol, fractional_shares, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, fractional_shares, "buy", None, None, account_number,  timeInForce, extendedHours, jsonify, market_hours)
 
 
 @login_required
@@ -522,7 +522,7 @@ def order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', 
 
 
 @login_required
-def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True):
+def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True, market_hours='regular_hours'):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade.
     Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders
     for fractional trades.
@@ -544,7 +544,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, tim
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(symbol, quantity, "sell", None, None, account_number,  timeInForce, extendedHours, jsonify, market_hours)
 
 
 @login_required
@@ -775,7 +775,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
 
 
 @login_required
-def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True, market_hours='regular_hours'):
     """A generic order function.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -845,16 +845,27 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'time_in_force': timeInForce,
         'trigger': trigger,
         'side': side,
-        'extended_hours': extendedHours
+        'market_hours': market_hours, # choices are ['regular_hours', 'all_day_hours']
+        'extended_hours': extendedHours,
+        'order_form_version': 4
     }
-    # BEGIN PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-    if side == "buy":
-        payload['order_form_version'] = "2"
-        payload['preset_percent_limit'] = "0.05"
-    # END PATCH FOR NEW ROBINHOOD BUY FORM (GuitarGuyChrisB 5/26/2023)
-
+    # adjust market orders
+    if orderType == 'market':
+        del payload['stop_price']
+        del payload['extended_hours'] 
+        
+    if market_hours == 'regular_hours':
+        if side == "buy":
+            payload['preset_percent_limit'] = "0.05"
+            payload['type'] = 'limit' 
+        # regular market sell
+        elif orderType == 'market' and side == 'sell':
+            del payload['price']   
+    elif market_hours == 'all_day_hours': 
+        payload['type'] = 'limit' 
+        payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
+        
     url = orders_url()
-
 
     data = request_post(url, payload, jsonify_data=jsonify)
 

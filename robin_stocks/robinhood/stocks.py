@@ -1,5 +1,5 @@
 """Contains information in regards to stocks."""
-from functools import cache
+from functools import lru_cache as cache
 
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
