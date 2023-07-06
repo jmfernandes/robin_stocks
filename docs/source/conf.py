@@ -22,7 +22,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
 def setup(app):
-    app.add_stylesheet('style.css')
+    app.add_css_file('style.css')
 
 
 # -- General configuration ------------------------------------------------
