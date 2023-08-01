@@ -349,12 +349,17 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
                 'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
         else:
             res = SESSION.post(url, data=payload, timeout=timeout)
-        if res.status_code in [500,400]:
+        if res.status_code == 400:
+            print("Error in request_post: {0}".format(message), file=get_output())
+        else:
             raise Exception("Received "+ str(res.status_code))
         data = res.json()
     except Exception as message:
+        # Either return response <200,401,etc.> or the data that is returned from requests.
         print("Error in request_post: {0}".format(message), file=get_output())
-    # Either return response <200,401,etc.> or the data that is returned from requests.
+        if (res.status_code != 400):
+            raise Exception("Received "+ str(res.status_code))
+        data = res.json()
     if jsonify_data:
         return(data)
     else:
