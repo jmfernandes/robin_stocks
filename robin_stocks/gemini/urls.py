@@ -50,87 +50,87 @@ class URLS:
     # account.py
     @classmethod
     def account_detail(cls):
-        return cls.get_base_url(Version.v1) + "account"
+        return cls.get_base_url(version=Version.v1) + "account"
 
     @classmethod
     def available_balances(cls):
-        return cls.get_base_url(Version.v1) + "balances"
+        return cls.get_base_url(version=Version.v1) + "balances"
 
     @classmethod
     def notional_balances(cls):
-        return cls.get_base_url(Version.v1) + "notionalbalances/usd"
+        return cls.get_base_url(version=Version.v1) + "notionalbalances/usd"
 
     @classmethod
     def transfers(cls):
-        return cls.get_base_url(Version.v1) + "transfers"
+        return cls.get_base_url(version=Version.v1) + "transfers"
 
     @classmethod
     def deposit_addresses(cls, network):
-        return cls.get_base_url(Version.v1) + "addresses/{0}".format(network)
+        return cls.get_base_url(version=Version.v1) + "addresses/{0}".format(network)
 
     @classmethod
     def approved_addresses(cls, network):
-        return cls.get_base_url(Version.v1) + "approvedAddresses/account/{0}".format(network)
+        return cls.get_base_url(version=Version.v1) + "approvedAddresses/account/{0}".format(network)
 
     @classmethod
     def withdrawl_crypto(cls, currency_code):
-        return cls.get_base_url(Version.v1) + "withdraw/{0}".format(currency_code)
+        return cls.get_base_url(version=Version.v1) + "withdraw/{0}".format(currency_code)
 
     # authentication.py
     @classmethod
     def heartbeat(cls):
-        return cls.get_base_url(Version.v1) + "heartbeat"
+        return cls.get_base_url(version=Version.v1) + "heartbeat"
 
     # crypto.py
     @classmethod
     def pubticker(cls, ticker):
-        return cls.get_base_url(Version.v1) + "pubticker/{0}".format(ticker)
+        return cls.get_base_url(version=Version.v1) + "pubticker/{0}".format(ticker)
 
     @classmethod
     def ticker(cls, ticker):
-        return cls.get_base_url(Version.v2) + "ticker/{0}".format(ticker)
+        return cls.get_base_url(version=Version.v2) + "ticker/{0}".format(ticker)
 
     @classmethod
     def symbols(cls):
-        return cls.get_base_url(Version.v1) + "symbols"
+        return cls.get_base_url(version=Version.v1) + "symbols"
 
     @classmethod
     def symbol_details(cls, ticker):
-        return cls.get_base_url(Version.v1) + "symbols/details/{0}".format(ticker)
+        return cls.get_base_url(version=Version.v1) + "symbols/details/{0}".format(ticker)
 
     @classmethod
     def notional_volume(cls):
-        return cls.get_base_url(Version.v1) + "notionalvolume"
+        return cls.get_base_url(version=Version.v1) + "notionalvolume"
 
     @classmethod
     def trade_volume(cls):
-        return cls.get_base_url(Version.v1) + "tradevolume"
+        return cls.get_base_url(version=Version.v1) + "tradevolume"
 
     # orders.py
     @classmethod
     def mytrades(cls):
-        return cls.get_base_url(Version.v1) + "mytrades"
+        return cls.get_base_url(version=Version.v1) + "mytrades"
 
     @classmethod
     def cancel_session_orders(cls):
-        return cls.get_base_url(Version.v1) + "order/cancel/session"
+        return cls.get_base_url(version=Version.v1) + "order/cancel/session"
 
     @classmethod
     def cancel_order(cls):
-        return cls.get_base_url(Version.v1) + "order/cancel"
+        return cls.get_base_url(version=Version.v1) + "order/cancel"
 
     @classmethod
     def order_status(cls):
-        return cls.get_base_url(Version.v1) + "order/status"
+        return cls.get_base_url(version=Version.v1) + "order/status"
 
     @classmethod
     def active_orders(cls):
-        return cls.get_base_url(Version.v1) + "orders"
+        return cls.get_base_url(version=Version.v1) + "orders"
 
     @classmethod
     def cancel_active_orders(cls):
-        return cls.get_base_url(Version.v1) + "order/cancel/all"
+        return cls.get_base_url(version=Version.v1) + "order/cancel/all"
 
     @classmethod
     def order_new(cls):
-        return cls.get_base_url(Version.v1) + "order/new"
+        return cls.get_base_url(version=Version.v1) + "order/new"

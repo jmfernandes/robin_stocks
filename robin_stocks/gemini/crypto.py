@@ -23,8 +23,8 @@ def get_pubticker(ticker, jsonify=None):
                       * volume - Information about the 24 hour volume on the exchange
 
     """
-    url = URLS.pubticker(ticker)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.pubticker(ticker=ticker)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -52,8 +52,8 @@ def get_ticker(ticker, jsonify=None):
 
 
     """
-    url = URLS.ticker(ticker)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.ticker(ticker=ticker)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -70,7 +70,7 @@ def get_symbols(jsonify=None):
 
     """
     url = URLS.symbols()
-    data, error = request_get(url, None, jsonify)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -97,8 +97,8 @@ def get_symbol_details(ticker, jsonify=None):
 
 
     """
-    url = URLS.symbol_details(ticker)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.symbol_details(ticker=ticker)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -132,10 +132,10 @@ def get_notional_volume(jsonify=None):
     """
     url = URLS.notional_volume()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -173,10 +173,10 @@ def get_trade_volume(jsonify=None):
     """
     url = URLS.trade_volume()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -190,7 +190,7 @@ def get_price(ticker, side):
     :returns: Returns the bid or ask price as a string.
 
     """
-    data, _ = get_pubticker(ticker, jsonify=True)
+    data, _ = get_pubticker(ticker=ticker, jsonify=True)
     if side == "buy":
         return data["ask"]
     else:

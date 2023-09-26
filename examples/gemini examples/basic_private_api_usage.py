@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 ##
 ticker = "btcusd"
 ##
-g.login(os.environ['gemini_account_key'], os.environ['gemini_account_secret'])
-my_trades, error = g.get_trades_for_crypto(ticker, jsonify=True)
+g.login(api_key=os.environ['gemini_account_key'], secret_key=os.environ['gemini_account_secret'])
+my_trades, error = g.get_trades_for_crypto(ticker=ticker, jsonify=True)
 if error:
     print("oh my an error")
 else:

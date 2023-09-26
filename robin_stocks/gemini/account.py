@@ -32,10 +32,10 @@ def get_account_detail(jsonify=None):
     """
     url = URLS.account_detail()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -60,10 +60,10 @@ def check_available_balances(jsonify=None):
     """
     url = URLS.available_balances()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -90,10 +90,10 @@ def check_notional_balances(jsonify=None):
     """
     url = URLS.notional_balances()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -130,19 +130,19 @@ def check_transfers(timestamp=None, limit_transfers=10, show_completed_deposit_a
     """
     url = URLS.transfers()
     payload = {
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "show_completed_deposit_advances": show_completed_deposit_advances
     }
     if timestamp:
         payload["timestamp"] = timestamp
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
 @login_required
 @format_inputs
-def get_deposit_addresses(network, timestamp=None,  jsonify=None):
+def get_deposit_addresses(network, timestamp=None, jsonify=None):
     """ Gets a list of all deposit addresses.
 
     :param network: network can be bitcoin, ethereum, bitcoincash, litecoin, zcash, filecoin.
@@ -161,14 +161,14 @@ def get_deposit_addresses(network, timestamp=None,  jsonify=None):
                       * label - Optional. if you provided a label when creating the address, it will be echoed back here.
 
     """
-    url = URLS.deposit_addresses(network)
+    url = URLS.deposit_addresses(network=network)
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
     if timestamp:
         payload["timestamp"] = timestamp
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -195,12 +195,12 @@ def get_approved_addresses(network, jsonify=None):
                         -- address - The address on the approved address list.
 
     """
-    url = URLS.approved_addresses(network)
+    url = URLS.approved_addresses(network=network)
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -233,12 +233,12 @@ def withdraw_crypto_funds(currency_code, address, amount, jsonify=None):
                       * message - A human-readable English string describing the withdrawal. Only shown for BTC, ZEC, LTC and BCH withdrawals.
 
     """
-    url = URLS.withdrawl_crypto(currency_code)
+    url = URLS.withdrawl_crypto(currency_code=currency_code)
     payload = {
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "address": address,
         "amount": amount
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
