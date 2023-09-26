@@ -15,7 +15,7 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = r.login(username=username,password=password)
 
 profileData = r.load_portfolio_profile()
 allTransactions = r.get_bank_transfers()

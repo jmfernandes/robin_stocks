@@ -43,11 +43,11 @@ def respond_to_challenge(challenge_id, sms_code):
     :returns:  The response from requests.
 
     """
-    url = challenge_url(challenge_id)
+    url = challenge_url(challenge_id=challenge_id)
     payload = {
         'response': sms_code
     }
-    return(request_post(url, payload))
+    return(request_post(url=url, payload=payload))
 
 
 def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=""):
@@ -122,12 +122,12 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                     pickle_device_token = pickle_data['device_token']
                     payload['device_token'] = pickle_device_token
                     # Set login status to True in order to try and get account info.
-                    set_login_state(True)
+                    set_login_state(logged_in=True)
                     update_session(
-                        'Authorization', '{0} {1}'.format(token_type, access_token))
+                        key='Authorization', value='{0} {1}'.format(token_type, access_token))
                     # Try to load account profile to check that authorization token is still valid.
                     res = request_get(
-                        positions_url(), 'pagination', {'nonzero': 'true'}, jsonify_data=False)
+                        url=positions_url(), dataType='pagination', payload={'nonzero': 'true'}, jsonify_data=False)
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
                     return({'access_token': access_token, 'token_type': token_type,
@@ -136,8 +136,8 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
             except:
                 print(
                     "ERROR: There was an issue loading pickle file. Authentication may be expired - logging in normally.", file=get_output())
-                set_login_state(False)
-                update_session('Authorization', None)
+                set_login_state(logged_in=False)
+                update_session(key='Authorization', value=None)
         else:
             os.remove(pickle_path)
 
@@ -150,35 +150,35 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         password = getpass.getpass("Robinhood password: ")
         payload['password'] = password
 
-    data = request_post(url, payload)
+    data = request_post(url=url, payload=payload)
     # Handle case where mfa or challenge is required.
     if data:
         if 'mfa_required' in data:
             mfa_token = input("Please type in the MFA code: ")
             payload['mfa_code'] = mfa_token
-            res = request_post(url, payload, jsonify_data=False)
+            res = request_post(url=url, payload=payload, jsonify_data=False)
             while (res.status_code != 200):
                 mfa_token = input(
                     "That MFA code was not correct. Please type in another MFA code: ")
                 payload['mfa_code'] = mfa_token
-                res = request_post(url, payload, jsonify_data=False)
+                res = request_post(url=url, payload=payload, jsonify_data=False)
             data = res.json()
         elif 'challenge' in data:
             challenge_id = data['challenge']['id']
             sms_code = input('Enter Robinhood code for validation: ')
-            res = respond_to_challenge(challenge_id, sms_code)
+            res = respond_to_challenge(challenge_id=challenge_id, sms_code=sms_code)
             while 'challenge' in res and res['challenge']['remaining_attempts'] > 0:
                 sms_code = input('That code was not correct. {0} tries remaining. Please type in another code: '.format(
                     res['challenge']['remaining_attempts']))
-                res = respond_to_challenge(challenge_id, sms_code)
+                res = respond_to_challenge(challenge_id=challenge_id, sms_code=sms_code)
             update_session(
-                'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
-            data = request_post(url, payload)
+                key='X-ROBINHOOD-CHALLENGE-RESPONSE-ID', value=challenge_id)
+            data = request_post(url=url, payload=payload)
         # Update Session data with authorization or raise exception with the information present in data.
         if 'access_token' in data:
             token = '{0} {1}'.format(data['token_type'], data['access_token'])
-            update_session('Authorization', token)
-            set_login_state(True)
+            update_session(key='Authorization', value=token)
+            set_login_state(logged_in=True)
             data['detail'] = "logged in with brand new authentication code."
             if store_session:
                 with open(pickle_path, 'wb') as f:
@@ -200,5 +200,5 @@ def logout():
     :returns: None
 
     """
-    set_login_state(False)
-    update_session('Authorization', None)
+    set_login_state(logged_in=False)
+    update_session(key='Authorization', value=None)

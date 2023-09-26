@@ -30,7 +30,7 @@ def third_friday(year, month, day):
 
 
 def round_up_price(ticker, multiplier):
-    price = float(r.get_latest_price(ticker)[0])
+    price = float(r.get_latest_price(inputSymbols=ticker)[0])
     num = price + (multiplier - 1)
     return num - (num % multiplier)
 
@@ -56,11 +56,11 @@ class TestStocks:
         r.logout()
 
     def test_name_apple(self):
-        name = r.get_name_by_symbol('aapl')
+        name = r.get_name_by_symbol(symbol='aapl')
         assert name == "Apple"
 
     def test_quotes(self):
-        quote = r.get_quotes(self.single_stock, info=None)
+        quote = r.get_quotes(inputSymbols=self.single_stock, info=None)
         assert (len(quote) == 1)
         quote = quote[0]
         assert (quote['symbol'] == self.single_stock)
@@ -80,15 +80,15 @@ class TestStocks:
         assert ('updated_at' in quote)
         assert ('instrument' in quote)
         #
-        more_quotes = r.get_quotes(self.list_stocks, info=None)
+        more_quotes = r.get_quotes(inputSymbols=self.list_stocks, info=None)
         assert (len(more_quotes) ==  len(self.list_stocks))
         #
-        fake_quotes = r.get_quotes(self.fake_stocks, info=None)
+        fake_quotes = r.get_quotes(inputSymbols=self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
         assert (fake_quotes[0] == None)
 
     def test_fundamentals(self):
-        quote = r.get_fundamentals(self.single_stock, info=None)
+        quote = r.get_fundamentals(inputSymbols=self.single_stock, info=None)
         assert (len(quote) == 1)
         assert (quote[0]['symbol'] == self.single_stock)
         quote = quote[0]
@@ -117,15 +117,15 @@ class TestStocks:
         assert ('year_founded' in quote)
         assert ('symbol' in quote)
         #
-        more_quotes = r.get_fundamentals(self.list_stocks, info=None)
+        more_quotes = r.get_fundamentals(inputSymbols=self.list_stocks, info=None)
         assert (len(more_quotes) == len(self.list_stocks))
         #
-        fake_quotes = r.get_fundamentals(self.fake_stocks, info=None)
+        fake_quotes = r.get_fundamentals(inputSymbols=self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
         assert (fake_quotes[0] == None)
 
     def test_instruments(self):
-        quote = r.get_instruments_by_symbols(self.single_stock)
+        quote = r.get_instruments_by_symbols(inputSymbols=self.single_stock)
         assert (len(quote) == 1)
         assert (quote[0]['symbol'] == self.single_stock)
         quote = quote[0]
@@ -154,15 +154,15 @@ class TestStocks:
         assert ('fractional_tradability' in quote)
         assert ('default_collar_fraction' in quote)
         #
-        more_quotes = r.get_fundamentals(self.list_stocks, info=None)
+        more_quotes = r.get_fundamentals(inputSymbols=self.list_stocks, info=None)
         assert (len(more_quotes) == len(self.list_stocks))
         #
-        fake_quotes = r.get_fundamentals(self.fake_stocks, info=None)
+        fake_quotes = r.get_fundamentals(inputSymbols=self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
         assert (fake_quotes[0] == None)
 
     def test_instrument_id(self):
-        quote = r.get_instrument_by_url(self.instrument)
+        quote = r.get_instrument_by_url(url=self.instrument)
         assert (quote['symbol'] == self.single_stock)
         assert ('id' in quote)
         assert ('url' in quote)
@@ -190,45 +190,45 @@ class TestStocks:
         assert ('default_collar_fraction' in quote)
 
     def test_latest_price(self):
-        price = r.get_latest_price(self.single_stock)
+        price = r.get_latest_price(inputSymbols=self.single_stock)
         assert (len(price) == 1)
-        more_prices = r.get_latest_price(self.list_stocks)
+        more_prices = r.get_latest_price(inputSymbols=self.list_stocks)
         assert (len(more_prices) == len(self.list_stocks))
-        fake_prices = r.get_latest_price(self.fake_stocks)
+        fake_prices = r.get_latest_price(inputSymbols=self.fake_stocks)
         assert (len(fake_prices) == 1)
         assert (fake_prices[0] == None)
 
     def test_name_by_symbol(self):
-        name = r.get_name_by_symbol(self.single_stock)
+        name = r.get_name_by_symbol(symbol=self.single_stock)
         assert (name == 'Apple')
-        fake_name = r.get_name_by_symbol(self.fake_stock)
+        fake_name = r.get_name_by_symbol(symbol=self.fake_stock)
         assert (fake_name == '')
 
     def test_name_by_url(self):
-        name = r.get_name_by_url(self.instrument)
+        name = r.get_name_by_url(url=self.instrument)
         assert (name == 'Apple')
-        fake_name = r.get_name_by_url(self.fake_instrument)
+        fake_name = r.get_name_by_url(url=self.fake_instrument)
         assert (fake_name == '')
 
     def test_symbol_by_url(self):
-        symbol = r.get_symbol_by_url(self.instrument)
+        symbol = r.get_symbol_by_url(url=self.instrument)
         assert (symbol == self.single_stock)
-        fake_symbol = r.get_symbol_by_url(self.fake_instrument)
+        fake_symbol = r.get_symbol_by_url(url=self.fake_instrument)
         assert (fake_symbol == '')
 
     def test_get_ratings(self):
-        ratings = r.get_ratings(self.single_stock)
+        ratings = r.get_ratings(symbol=self.single_stock)
         assert ('summary' in ratings)
         assert ('ratings' in ratings)
         assert ('instrument_id' in ratings)
         assert ('ratings_published_at' in ratings)
-        fake_ratings = r.get_ratings(self.fake_stock)
+        fake_ratings = r.get_ratings(symbol=self.fake_stock)
         assert (fake_ratings == '')
 
     def test_events(self):
-        event = r.get_events(self.single_stock)
+        event = r.get_events(symbol=self.single_stock)
         assert (len(event) == 0)
-        event = r.get_events(self.event_stock)
+        event = r.get_events(symbol=self.event_stock)
         assert (len(event) != 0)
         event = event[0]
         assert ('account' in event)
@@ -249,7 +249,7 @@ class TestStocks:
         assert ('updated_at' in event)
 
     def test_earning(self):
-        earnings = r.get_earnings(self.single_stock)[0]
+        earnings = r.get_earnings(symbol=self.single_stock)[0]
         assert (earnings['symbol'] == self.single_stock)
         assert ('symbol' in earnings)
         assert ('instrument' in earnings)
@@ -258,11 +258,11 @@ class TestStocks:
         assert ('eps' in earnings)
         assert ('report' in earnings)
         assert ('call' in earnings)
-        fake_earnings = r.get_earnings(self.fake_stock)
+        fake_earnings = r.get_earnings(symbol=self.fake_stock)
         assert (len(fake_earnings) == 0)
 
     def test_news(self):
-        news = r.get_news(self.single_stock)[0]
+        news = r.get_news(symbol=self.single_stock)[0]
         assert ('author' in news)
         assert ('num_clicks' in news)
         assert ('preview_image_url' in news)
@@ -277,21 +277,21 @@ class TestStocks:
         assert ('related_instruments' in news)
         assert ('preview_text' in news)
         assert ('currency_id' in news)
-        fake_news = r.get_news(self.fake_stock)
+        fake_news = r.get_news(symbol=self.fake_stock)
         assert (len(fake_news) == 0)
 
     def test_split(self):
-        split = r.get_splits(self.single_stock)[0]
+        split = r.get_splits(symbol=self.single_stock)[0]
         assert (split['instrument'] == self.instrument)
-        fake_split = r.get_splits(self.fake_stock)
+        fake_split = r.get_splits(symbol=self.fake_stock)
         assert (len(fake_split) == 0)
 
     def test_stock_historicals(self):
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='regular', info=None)
+        historicals = r.get_stock_historicals(inputSymbols=self.single_stock, interval='hour', span='day', bounds='regular', info=None)
         assert (len(historicals) <= 6) # 6 regular hours in a day
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='trading', info=None)
+        historicals = r.get_stock_historicals(inputSymbols=self.single_stock, interval='hour', span='day', bounds='trading', info=None)
         assert (len(historicals) <= 9) # 9 trading hours total in a day
-        historicals = r.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='extended', info=None)
+        historicals = r.get_stock_historicals(inputSymbols=self.single_stock, interval='hour', span='day', bounds='extended', info=None)
         assert (len(historicals) <= 16) # 16 extended hours total in a day
 
 class TestCrypto:
@@ -306,7 +306,7 @@ class TestCrypto:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -345,7 +345,7 @@ class TestCrypto:
         assert (len(fake) == 0)
 
     def test_crypto_info(self):
-        crypto = r.get_crypto_info(self.bitcoin, info=None)
+        crypto = r.get_crypto_info(symbol=self.bitcoin, info=None)
         assert ('asset_currency' in crypto)
         assert ('display_only' in crypto)
         assert ('id' in crypto)
@@ -357,11 +357,11 @@ class TestCrypto:
         assert ('quote_currency' in crypto)
         assert ('symbol' in crypto)
         assert ('tradability' in crypto)
-        crypto = r.get_crypto_info(self.stock, info=None)
+        crypto = r.get_crypto_info(symbol=self.stock, info=None)
         assert (crypto == None)
 
     def test_crypto_quote(self):
-        crypto = r.get_crypto_quote(self.bitcoin, info=None)
+        crypto = r.get_crypto_quote(symbol=self.bitcoin, info=None)
         assert ('ask_price' in crypto)
         assert ('bid_price' in crypto)
         assert ('mark_price' in crypto)
@@ -371,13 +371,13 @@ class TestCrypto:
         assert ('symbol' in crypto)
         assert ('id' in crypto)
         assert ('volume' in crypto)
-        crypto = r.get_crypto_quote(self.stock, info=None)
+        crypto = r.get_crypto_quote(symbol=self.stock, info=None)
         assert (crypto == None)
-        crypto = r.get_crypto_quote(self.fake, info=None)
+        crypto = r.get_crypto_quote(symbol=self.fake, info=None)
         assert (crypto == None)
 
     def test_crypto_historicals(self):
-        crypto = r.get_crypto_historicals(self.bitcoin, 'day', 'week', '24_7', info=None)
+        crypto = r.get_crypto_historicals(symbol=self.bitcoin, interval='day', span='week', bounds='24_7', info=None)
         assert (len(crypto) == 7)
         first_point = crypto[0]
         # check keys
@@ -390,20 +390,20 @@ class TestCrypto:
         assert ('session' in first_point)
         assert ('interpolated' in first_point)
         #
-        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'regular', info=None)
+        crypto = r.get_crypto_historicals(symbol=self.bitcoin, interval='hour', span='day', bounds='regular', info=None)
         assert (len(crypto) <= 6) # 6 regular hours in a day
-        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'trading', info=None)
+        crypto = r.get_crypto_historicals(symbol=self.bitcoin, interval='hour', span='day', bounds='trading', info=None)
         assert (len(crypto) <= 9) # 9 trading hours in a day
-        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'extended', info=None)
+        crypto = r.get_crypto_historicals(symbol=self.bitcoin, interval='hour', span='day', bounds='extended', info=None)
         assert (len(crypto) <= 16) # 16 extended hours in a day
-        crypto = r.get_crypto_historicals(self.bitcoin, 'hour', 'day', '24_7', info=None)
+        crypto = r.get_crypto_historicals(symbol=self.bitcoin, interval='hour', span='day', bounds='24_7', info=None)
         assert (len(crypto) <= 24) # 24 24_7 hours in a day
 
 class TestOptions:
 
     # have to login to use round_up_price
     totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-    login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+    login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
     #
     now = datetime.datetime.now() + relativedelta(months=1)
     expiration_date = third_friday(now.year, now.month, now.day).strftime("%Y-%m-%d")
@@ -413,40 +413,40 @@ class TestOptions:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
         r.logout()
 
     def test_find_tradable_options(self):
-        info = r.find_options_by_expiration(self.symbol, self.expiration_date)
+        info = r.find_options_by_expiration(inputSymbols=self.symbol, expirationDate=self.expiration_date)
         first = info[0]
         assert (first['expiration_date'] == self.expiration_date)
         assert (len(info) > 50)
-        info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='strike_price')
+        info = r.find_options_by_expiration(inputSymbols=self.symbol, expirationDate=self.expiration_date, info='strike_price')
         first = info[0]
         assert (type(first) == str)
         assert (len(info) > 50)
-        info = r.find_options_by_expiration(self.symbol, self.expiration_date, info='expiration_date')
+        info = r.find_options_by_expiration(inputSymbols=self.symbol, expirationDate=self.expiration_date, info='expiration_date')
         assert (len(set(info)) == 1)
 
     def test_find_options_by_strike(self):
-        info = r.find_options_by_strike(self.symbol, self.strike)
+        info = r.find_options_by_strike(inputSymbols=self.symbol, strikePrice=self.strike)
         assert (len(info) >= 24)
-        info = r.find_options_by_strike(self.symbol, self.strike,'call')
+        info = r.find_options_by_strike(inputSymbols=self.symbol, strikePrice=self.strike,optionType='call')
         assert (info[0]['type'] == 'call')
-        info = r.find_options_by_strike(self.symbol, self.strike, info='expiration_date')
+        info = r.find_options_by_strike(inputSymbols=self.symbol, strikePrice=self.strike, info='expiration_date')
         assert (len(set(info)) > 1)
-        info = r.find_options_by_strike(self.symbol, self.strike, info='strike_price')
+        info = r.find_options_by_strike(inputSymbols=self.symbol, strikePrice=self.strike, info='strike_price')
         assert (len(set(info)) == 1)
 
     def test_find_options_by_expiration_and_strike(self):
-        info = r.find_options_by_expiration_and_strike(self.symbol, self.expiration_date, self.strike)
+        info = r.find_options_by_expiration_and_strike(inputSymbols=self.symbol, expirationDate=self.expiration_date, strikePrice=self.strike)
         assert (len(info) == 2)
         assert (info[0]['expiration_date'] == self.expiration_date)
         assert (float(info[0]['strike_price']) == self.strike)
-        info = r.find_options_by_expiration_and_strike(self.symbol, self.expiration_date, self.strike, 'call')
+        info = r.find_options_by_expiration_and_strike(inputSymbols=self.symbol, expirationDate=self.expiration_date, strikePrice=self.strike, optionType='call')
         assert (len(info) == 1)
         assert (info[0]['type'] == 'call')
 
@@ -462,7 +462,7 @@ class TestMarkets:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -510,7 +510,7 @@ class TestMarkets:
 
     def test_top_movers_sp500(self):
         # going up
-        movers = r.get_top_movers_sp500('up')
+        movers = r.get_top_movers_sp500(direction='up')
         assert (movers)
         first = movers[0]
         assert ('instrument_url' in first)
@@ -522,13 +522,13 @@ class TestMarkets:
         assert ('market_hours_last_price' in first['price_movement'])
         assert (float(first['price_movement']['market_hours_last_movement_pct']) > 0)
         # going down
-        movers = r.get_top_movers_sp500('down')
+        movers = r.get_top_movers_sp500(direction='down')
         assert (movers)
         first = movers[0]
         assert (float(first['price_movement']['market_hours_last_movement_pct']) < 0)
 
     def test_get_all_stocks_from_market_tag(self):
-        movers = r.get_all_stocks_from_market_tag('technology')
+        movers = r.get_all_stocks_from_market_tag(tag='technology')
         assert (movers)
         first = movers[0]
         assert ('ask_price' in first)
@@ -563,7 +563,7 @@ class TestMarkets:
         assert ('website' in first)
 
     def test_get_market_today_hours(self):
-        market = r.get_market_today_hours(self.nyse)
+        market = r.get_market_today_hours(market=self.nyse)
         assert ('date' in market)
         assert ('is_open' in market)
         assert ('opens_at' in market)
@@ -574,7 +574,7 @@ class TestMarkets:
         assert ('next_open_hours' in market)
 
     def test_get_market_next_open_hours(self):
-        market = r.get_market_next_open_hours(self.amex)
+        market = r.get_market_next_open_hours(market=self.amex)
         assert ('date' in market)
         assert ('is_open' in market)
         assert ('opens_at' in market)
@@ -585,7 +585,7 @@ class TestMarkets:
         assert ('next_open_hours' in market)
 
     def test_get_market_next_open_hours_after_date(self):
-        market = r.get_market_next_open_hours_after_date(self.nasdaq, self.today)
+        market = r.get_market_next_open_hours_after_date(market=self.nasdaq, date=self.today)
         assert ('date' in market)
         assert ('is_open' in market)
         assert ('opens_at' in market)
@@ -596,7 +596,7 @@ class TestMarkets:
         assert ('next_open_hours' in market)
 
     def test_get_market_hours(self):
-        market = r.get_market_hours(self.nasdaq, self.today)
+        market = r.get_market_hours(market=self.nasdaq, date=self.today)
         assert ('date' in market)
         assert ('is_open' in market)
         assert ('opens_at' in market)
@@ -624,19 +624,19 @@ class TestMarkets:
 
     @pytest.mark.xfail()
     def test_market_fail(self):
-        market = r.get_market_hours(self.fake, self.today)
+        market = r.get_market_hours(market=self.fake, date=self.today)
         assert market
 
     @pytest.mark.xfail()
     def test_market_date_fail(self):
-        market = r.get_market_hours(self.nasdaq, self.american_time)
+        market = r.get_market_hours(market=self.nasdaq, date=self.american_time)
         assert market
 
 class TestProfiles:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -818,7 +818,7 @@ class TestOrders:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], mfa_code=totp)
     
     def test_find_stock_orders(cls):
         def isFloat(f):

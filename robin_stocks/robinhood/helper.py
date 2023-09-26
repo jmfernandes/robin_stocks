@@ -62,9 +62,9 @@ def id_for_stock(symbol):
 
     url = 'https://api.robinhood.com/instruments/'
     payload = {'symbol': symbol}
-    data = request_get(url, 'indexzero', payload)
+    data = request_get(url=url, dataType='indexzero', payload=payload)
 
-    return(filter_data(data, 'id'))
+    return(filter_data(data=data, info='id'))
 
 
 def id_for_chain(symbol):
@@ -84,7 +84,7 @@ def id_for_chain(symbol):
     url = 'https://api.robinhood.com/instruments/'
 
     payload = {'symbol': symbol}
-    data = request_get(url, 'indexzero', payload)
+    data = request_get(url=url, dataType='indexzero', payload=payload)
 
     if data:
         return(data['tradable_chain_id'])
@@ -107,8 +107,8 @@ def id_for_group(symbol):
         return(None)
 
     url = 'https://api.robinhood.com/options/chains/{0}/'.format(
-        id_for_chain(symbol))
-    data = request_get(url)
+        id_for_chain(symbol=symbol))
+    data = request_get(url=url)
     return(data['underlying_instruments'][0]['id'])
 
 
@@ -127,7 +127,7 @@ def id_for_option(symbol, expirationDate, strike, optionType):
 
     """ 
     symbol = symbol.upper()
-    chain_id = id_for_chain(symbol)
+    chain_id = id_for_chain(symbol=symbol)
     payload = {
         'chain_id': chain_id,
         'expiration_dates': expirationDate,
@@ -136,7 +136,7 @@ def id_for_option(symbol, expirationDate, strike, optionType):
         'state': 'active'
     }
     url = 'https://api.robinhood.com/options/instruments/'
-    data = request_get(url, 'pagination', payload)
+    data = request_get(url=url, dataType='pagination', payload=payload)
 
     listOfOptions = [item for item in data if item["expiration_date"] == expirationDate]
     if (len(listOfOptions) == 0):
@@ -194,7 +194,7 @@ def filter_data(data, info):
         elif info in compareDict and type(data) == dict:
             return(data[info])
         else:
-            print(error_argument_not_key_in_dictionary(info), file=get_output())
+            print(error_argument_not_key_in_dictionary(keyword=info), file=get_output())
             return(noneType)
     else:
         return(data)
@@ -343,10 +343,10 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     res = None
     try:
         if json:
-            update_session('Content-Type', 'application/json')
+            update_session(key='Content-Type', value='application/json')
             res = SESSION.post(url, json=payload, timeout=timeout)
             update_session(
-                'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+                key='Content-Type', value='application/x-www-form-urlencoded; charset=utf-8')
         else:
             res = SESSION.post(url, data=payload, timeout=timeout)
         if res.status_code not in [200, 201, 202, 204, 301, 302, 303, 304, 307, 400, 401, 402, 403]:

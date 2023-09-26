@@ -9,22 +9,22 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username, password)
+login = r.login(username=username, password=password)
 
 # Query your positions
 positions = r.get_open_stock_positions()
 
 # Get Ticker symbols
-tickers = [r.get_symbol_by_url(item["instrument"]) for item in positions]
+tickers = [r.get_symbol_by_url(url=item["instrument"]) for item in positions]
 
 # Get your quantities
 quantities = [float(item["quantity"]) for item in positions]
 
 # Query previous close price for each stock ticker
-prevClose = r.get_quotes(tickers, "previous_close")
+prevClose = r.get_quotes(inputSymbols=tickers, info="previous_close")
 
 # Query last trading price for each stock ticker
-lastPrice = r.get_quotes(tickers, "last_trade_price")
+lastPrice = r.get_quotes(inputSymbols=tickers, info="last_trade_price")
 
 # Calculate the profit per share
 profitPerShare = [float(lastPrice[i]) - float(prevClose[i]) for i in range(len(tickers))]

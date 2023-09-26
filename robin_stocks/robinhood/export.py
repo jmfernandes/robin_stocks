@@ -36,7 +36,7 @@ def create_absolute_csv(dir_path, file_name, order_type):
     if not file_name:
         file_name = "{}_orders_{}.csv".format(order_type, date.today().strftime('%b-%d-%Y'))
     else:
-        file_name = fix_file_extension(file_name)
+        file_name = fix_file_extension(file_name=file_name)
     return(Path.joinpath(directory, file_name))
 
 
@@ -50,7 +50,7 @@ def export_completed_stock_orders(dir_path, file_name=None):
     :type file_name: Optional[str]
 
     """
-    file_path = create_absolute_csv(dir_path, file_name, 'stock')
+    file_path = create_absolute_csv(dir_path=dir_path, file_name=file_name, order_type='stock')
     all_orders = get_all_stock_orders()
     with open(file_path, 'w', newline='') as f:
         csv_writer = writer(f)
@@ -68,7 +68,7 @@ def export_completed_stock_orders(dir_path, file_name=None):
             if order['state'] == 'cancelled' and len(order['executions']) > 0:
                 for partial in order['executions']:
                     csv_writer.writerow([
-                        get_symbol_by_url(order['instrument']),
+                        get_symbol_by_url(url=order['instrument']),
                         partial['timestamp'],
                         order['type'],
                         order['side'],
@@ -79,7 +79,7 @@ def export_completed_stock_orders(dir_path, file_name=None):
 
             if order['state'] == 'filled' and order['cancel'] is None:
                 csv_writer.writerow([
-                    get_symbol_by_url(order['instrument']),
+                    get_symbol_by_url(url=order['instrument']),
                     order['last_transaction_at'],
                     order['type'],
                     order['side'],
@@ -99,7 +99,7 @@ def export_completed_crypto_orders(dir_path, file_name=None):
     :type file_name: Optional[str]
 
     """
-    file_path = create_absolute_csv(dir_path, file_name, 'crypto')
+    file_path = create_absolute_csv(dir_path=dir_path, file_name=file_name, order_type='crypto')
     all_orders = get_all_crypto_orders()
     
     with open(file_path, 'w', newline='') as f:
@@ -120,7 +120,7 @@ def export_completed_crypto_orders(dir_path, file_name=None):
                 except KeyError:
                     fees = 0.0
                 csv_writer.writerow([
-                    get_crypto_quote_from_id(order['currency_pair_id'], 'symbol'),
+                    get_crypto_quote_from_id(id=order['currency_pair_id'], info='symbol'),
                     order['last_transaction_at'],
                     order['type'],
                     order['side'],
@@ -141,7 +141,7 @@ def export_completed_option_orders(dir_path, file_name=None):
         :type file_name: Optional[str]
 
     """
-    file_path = create_absolute_csv(dir_path, file_name, 'option')
+    file_path = create_absolute_csv(dir_path=dir_path, file_name=file_name, order_type='option')
     all_orders = get_all_option_orders()
     with open(file_path, 'w', newline='') as f:
         csv_writer = writer(f)
@@ -163,7 +163,7 @@ def export_completed_option_orders(dir_path, file_name=None):
         for order in all_orders:
             if order['state'] == 'filled':
                 for leg in order['legs']:
-                    instrument_data = request_get(leg['option'])
+                    instrument_data = request_get(url=leg['option'])
                     csv_writer.writerow([
                         order['chain_symbol'],
                         instrument_data['expiration_date'],

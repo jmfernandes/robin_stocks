@@ -22,8 +22,8 @@ def load_crypto_profile(info=None):
 
     """
     url = crypto_account_url()
-    data = request_get(url, 'indexzero')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='indexzero')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -47,8 +47,8 @@ def get_crypto_positions(info=None):
 
     """
     url = crypto_holdings_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 def get_crypto_currency_pairs(info=None):
@@ -72,8 +72,8 @@ def get_crypto_currency_pairs(info=None):
 
     """
     url = crypto_currency_pairs_url()
-    data = request_get(url, 'results')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='results')
+    return(filter_data(data=data, info=info))
 
 
 def get_crypto_info(symbol, info=None):
@@ -99,13 +99,13 @@ def get_crypto_info(symbol, info=None):
 
     """
     url = crypto_currency_pairs_url()
-    data = request_get(url, 'results')
+    data = request_get(url=url, dataType='results')
     data = [x for x in data if x['asset_currency']['code'] == symbol]
     if len(data) > 0:
         data = data[0]
     else:
         data = None
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 SYMBOL_TO_ID_CACHE = {}
@@ -120,7 +120,7 @@ def get_crypto_id(symbol):
     if symbol in SYMBOL_TO_ID_CACHE:
         return SYMBOL_TO_ID_CACHE[symbol]
 
-    id = get_crypto_info(symbol, 'id')
+    id = get_crypto_info(symbol=symbol, info='id')
     if id:
         SYMBOL_TO_ID_CACHE[symbol] = id
     return id
@@ -147,10 +147,10 @@ def get_crypto_quote(symbol, info=None):
                       * volume
  
     """
-    id = get_crypto_info(symbol, info='id')
-    url = crypto_quote_url(id)
-    data = request_get(url)
-    return(filter_data(data, info))
+    id = get_crypto_info(symbol=symbol, info='id')
+    url = crypto_quote_url(id=id)
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -174,9 +174,9 @@ def get_crypto_quote_from_id(id, info=None):
                       * volume
 
     """
-    url = crypto_quote_url(id)
-    data = request_get(url)
-    return(filter_data(data, info))
+    url = crypto_quote_url(id=id)
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -226,13 +226,13 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
         return([None])
 
 
-    symbol = inputs_to_set(symbol)
-    id = get_crypto_info(symbol[0], info='id')
-    url = crypto_historical_url(id)
+    symbol = inputs_to_set(inputSymbols=symbol)
+    id = get_crypto_info(symbol=symbol[0], info='id')
+    url = crypto_historical_url(id=id)
     payload = {'interval': interval,
                'span': span,
                'bounds': bounds}
-    data = request_get(url, 'regular', payload)
+    data = request_get(url=url, dataType='regular', payload=payload)
 
     histData = []
     cryptoSymbol = data['symbol']
@@ -240,4 +240,4 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
         subitem['symbol'] = cryptoSymbol
         histData.append(subitem)
 
-    return(filter_data(histData, info))
+    return(filter_data(data=histData, info=info))

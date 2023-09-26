@@ -71,18 +71,18 @@ def news_url(symbol):
 
 
 def popularity_url(symbol):
-    return('https://api.robinhood.com/instruments/{0}/popularity/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{0}/popularity/'.format(id_for_stock(symbol=symbol)))
 
 def quotes_url():
     return('https://api.robinhood.com/quotes/')
 
 
 def ratings_url(symbol):
-    return('https://api.robinhood.com/midlands/ratings/{0}/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/midlands/ratings/{0}/'.format(id_for_stock(symbol=symbol)))
 
 
 def splits_url(symbol):
-    return('https://api.robinhood.com/instruments/{0}/splits/'.format(id_for_stock(symbol)))
+    return('https://api.robinhood.com/instruments/{0}/splits/'.format(id_for_stock(symbol=symbol)))
 
 # account
 
@@ -197,7 +197,7 @@ def aggregate_url():
 
 
 def chains_url(symbol):
-    return('https://api.robinhood.com/options/chains/{0}/'.format(id_for_chain(symbol)))
+    return('https://api.robinhood.com/options/chains/{0}/'.format(id_for_chain(symbol=symbol)))
 
 
 def option_historicals_url(id):

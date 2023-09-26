@@ -31,8 +31,8 @@ def get_aggregate_positions(info=None):
 
     """
     url = aggregate_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_aggregate_open_positions(info=None):
@@ -46,8 +46,8 @@ def get_aggregate_open_positions(info=None):
     """
     url = aggregate_url()
     payload = {'nonzero': 'True'}
-    data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination', payload=payload)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -61,9 +61,9 @@ def get_market_options(info=None):
 
     """
     url = option_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -77,8 +77,8 @@ def get_all_option_positions(info=None):
 
     """
     url = option_positions_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -95,9 +95,9 @@ def get_open_option_positions(account_number=None, info=None):
     """
     url = option_positions_url(account_number=account_number)
     payload = {'nonzero': 'True'}
-    data = request_get(url, 'pagination', payload)
+    data = request_get(url=url, dataType='pagination', payload=payload)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 def get_chains(symbol, info=None):
@@ -117,10 +117,10 @@ def get_chains(symbol, info=None):
         print(message, file=get_output())
         return None
 
-    url = chains_url(symbol)
-    data = request_get(url)
+    url = chains_url(symbol=symbol)
+    data = request_get(url=url)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
@@ -147,11 +147,11 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         return [None]
 
     url = option_instruments_url()
-    if not id_for_chain(symbol):
+    if not id_for_chain(symbol=symbol):
         print("Symbol {} is not valid for finding options.".format(symbol), file=get_output())
         return [None]
 
-    payload = {'chain_id': id_for_chain(symbol),
+    payload = {'chain_id': id_for_chain(symbol=symbol),
                'chain_symbol': symbol,
                'state': 'active'}
 
@@ -162,8 +162,8 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
     if optionType:
         payload['type'] = optionType
 
-    data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination', payload=payload)
+    return(filter_data(data=data, info=info))
 
 @login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
@@ -182,7 +182,7 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
     """
     try:
-        symbols = inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols=inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
@@ -191,18 +191,18 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
     data = []
     for symbol in symbols:
-        allOptions = find_tradable_options(symbol, expirationDate, None, optionType, None)
+        allOptions = find_tradable_options(None, None, symbol=symbol, expirationDate=expirationDate, optionType=optionType)
         filteredOptions = [item for item in allOptions if item.get("expiration_date") == expirationDate]
 
         for item in filteredOptions:
-            marketData = get_option_market_data_by_id(item['id'])
+            marketData = get_option_market_data_by_id(id=item['id'])
             if marketData:
                 item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
@@ -221,7 +221,7 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
     """
     try:
-        symbols = inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols=inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
@@ -230,17 +230,17 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
     data = []
     for symbol in symbols:
-        filteredOptions = find_tradable_options(symbol, None, strikePrice, optionType, None)
+        filteredOptions = find_tradable_options(None, None, symbol=symbol, strikePrice=strikePrice, optionType=optionType)
 
         for item in filteredOptions:
-            marketData = get_option_market_data_by_id(item['id'])
+            marketData = get_option_market_data_by_id(id=item['id'])
             if marketData:
                 item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
@@ -261,7 +261,7 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
     """
     try:
-        symbols = inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols=inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
@@ -270,18 +270,18 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
     data = []
     for symbol in symbols:
-        allOptions = find_tradable_options(symbol, expirationDate, strikePrice, optionType, None)
+        allOptions = find_tradable_options(None, symbol=symbol, expirationDate=expirationDate, strikePrice=strikePrice, optionType=optionType)
         filteredOptions = [item for item in allOptions if item.get("expiration_date") == expirationDate]
 
         for item in filteredOptions:
-            marketData = get_option_market_data_by_id(item['id'])
+            marketData = get_option_market_data_by_id(id=item['id'])
             if marketData:
                 item.update(marketData[0])
             write_spinner()
 
         data.extend(filteredOptions)
 
-    return filter_data(data, info)
+    return filter_data(data=data, info=info)
 
 @login_required
 def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
@@ -307,7 +307,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
     If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    symbols = inputs_to_set(inputSymbols)
+    symbols = inputs_to_set(inputSymbols=inputSymbols)
     data = []
 
     if (typeProfit != "chance_of_profit_short" and typeProfit != "chance_of_profit_long"):
@@ -315,12 +315,12 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
         typeProfit = "chance_of_profit_short"
 
     for symbol in symbols:
-        tempData = find_tradable_options(symbol, expirationDate, strikePrice, optionType, info=None)
+        tempData = find_tradable_options(symbol=symbol, expirationDate=expirationDate, strikePrice=strikePrice, optionType=optionType, info=None)
         for option in tempData:
             if expirationDate and option.get("expiration_date") != expirationDate:
                 continue
 
-            market_data = get_option_market_data_by_id(option['id'])
+            market_data = get_option_market_data_by_id(id=option['id'])
             
             if len(market_data):
                 option.update(market_data[0])
@@ -333,7 +333,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 except:
                     pass
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_option_market_data_by_id(id, info=None):
@@ -348,7 +348,7 @@ def get_option_market_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    instrument = get_option_instrument_data_by_id(id)
+    instrument = get_option_instrument_data_by_id(id=id)
     if instrument is None:
       # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
       return None  # just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problem
@@ -357,9 +357,9 @@ def get_option_market_data_by_id(id, info=None):
           "instruments" : instrument['url']
       }
       url = marketdata_options_url()
-      data = request_get(url, 'results', payload)
+      data = request_get(url=url, dataType='results', payload=payload)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
@@ -381,7 +381,7 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
 
     """
     try:
-        symbols = inputs_to_set(inputSymbols)
+        symbols = inputs_to_set(inputSymbols=inputSymbols)
         if optionType:
             optionType = optionType.lower().strip()
     except AttributeError as message:
@@ -390,11 +390,11 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
 
     data = []
     for symbol in symbols:
-        optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
-        marketData = get_option_market_data_by_id(optionID)
+        optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strikePrice, optionType=optionType)
+        marketData = get_option_market_data_by_id(id=optionID)
         data.append(marketData)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 def get_option_instrument_data_by_id(id, info=None):
@@ -408,9 +408,9 @@ def get_option_instrument_data_by_id(id, info=None):
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
-    url = option_instruments_url(id)
-    data = request_get(url)
-    return(filter_data(data, info))
+    url = option_instruments_url(id=id)
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None):
@@ -437,11 +437,11 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
         print(message, file=get_output())
         return [None]
 
-    optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
-    url = option_instruments_url(optionID)
-    data = request_get(url)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strikePrice, optionType=optionType)
+    url = option_instruments_url(id=optionID)
+    data = request_get(url=url)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None):
@@ -489,13 +489,13 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         print('ERROR: Bounds must be "extended","regular",or "trading"', file=get_output())
         return([None])
 
-    optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strikePrice, optionType=optionType)
 
-    url = option_historicals_url(optionID)
+    url = option_historicals_url(id=optionID)
     payload = {'span': span,
                'interval': interval,
                'bounds': bounds}
-    data = request_get(url, 'regular', payload)
+    data = request_get(url=url, dataType='regular', payload=payload)
     if (data == None or data == [None]):
         return data
 
@@ -504,4 +504,4 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         subitem['symbol'] = symbol
         histData.append(subitem)
 
-    return(filter_data(histData, info))
+    return(filter_data(data=histData, info=info))

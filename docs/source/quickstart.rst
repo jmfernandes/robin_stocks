@@ -54,7 +54,7 @@ Now you should be able to login with the following code,
 >>> import pyotp
 >>> import robin_stocks.robinhood as r
 >>> totp  = pyotp.TOTP("My2factorAppHere").now()
->>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
+>>> login = r.login(username='joshsmith@email.com', password='password', mfa_code=totp)
 
 Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
@@ -78,13 +78,13 @@ Trading stocks, options, and crypto-currencies is one of the most powerful featu
 Robinhood supports it. Here is a list of possible trades you can make
 
 >>> #Buy 10 shares of Apple at market price
->>> robin_stocks.order_buy_market('AAPL',10)
+>>> robin_stocks.order_buy_market(symbol='AAPL',quantity=10)
 >>> #Sell half a Bitcoin is price reaches 10,000
->>> robin_stocks.order_sell_crypto_limit('BTC',0.5,10000)
+>>> robin_stocks.order_sell_crypto_limit(symbol='BTC',quantity=0.5,limitPrice=10000)
 >>> #Buy $500 worth of Bitcoin
->>> robin_stocks.order_buy_crypto_by_price('BTC',500)
+>>> robin_stocks.order_buy_crypto_by_price(symbol='BTC',amountInDollars=500)
 >>> #Buy 5 $150 May 1st, 2020 SPY puts if the price per contract is $1.00. Good until cancelled.
->>> robin_stocks.order_buy_option_limit('open','debit',1.00,'SPY',5,'2020-05-01',150,'put','gtc')
+>>> robin_stocks.order_buy_option_limit(positionEffect='open', creditOrDebit='debit', price=1.00, symbol='SPY', quantity=5,expirationDate='2020-05-01', strike=150, optionType='put',timeInForce='gtc')
 
 Now let's try a slightly more complex example. Let's say you wanted to sell half your Tesla stock if it fell to 200.00.
 To do this you would type
@@ -94,10 +94,10 @@ To do this you would type
 >>> ## does not provide that information in the stock orders.
 >>> ## This process is very slow since it is making a GET request for each order.
 >>> for item in positions_data:
->>>     item['symbol'] = robin_stocks.get_symbol_by_url(item['instrument'])
+>>>     item['symbol'] = robin_stocks.get_symbol_by_url(url=item['instrument'])
 >>> TSLAData = [item for item in positions_data if item['symbol'] == 'TSLA']
 >>> sellQuantity = float(TSLAData['quantity'])//2.0
->>> robin_stocks.order_sell_limit('TSLA',sellQuantity,200.00)
+>>> robin_stocks.order_sell_limit(symbol='TSLA', quantity=sellQuantity,limitPrice=200.00)
 
 Also be aware that all the order functions default to 'gtc' or 'good until cancelled'. To change this, pass one of the following in as
 the last parameter in the function: 'gfd'(good for the day), 'ioc'(immediate or cancel), or 'opg'(execute at opening).
@@ -126,10 +126,10 @@ If you want to cancel all your limit sells, you would type
 >>> ## Note: Again we are adding symbol to our list of orders because Robinhood
 >>> ## does not include this with the order information.
 >>> for item in positions_data:
->>>    item['symbol'] = robin_stocks.get_crypto_quote_from_id(item['currency_pair_id'], 'symbol')
+>>>    item['symbol'] = robin_stocks.get_crypto_quote_from_id(id=item['currency_pair_id'], info='symbol')
 >>> btcOrders = [item for item in positions_data if item['symbol'] == 'BTCUSD' and item['side'] == 'sell']
 >>> for item in btcOrders:
->>>    robin_stocks.cancel_crypto_order(item['id'])
+>>>    robin_stocks.cancel_crypto_order(orderId=item['id'])
 
 Saving to CSV File
 ------------------
@@ -139,8 +139,8 @@ can be either absolute or relative. To save the file in the current directory, s
 file extension. If it is missing it will be added, and any other file extension will be automatically changed. Below are example calls.
 
 >>> # let's say that I am running code from C:/Users/josh/documents/
->>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
->>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
+>>> r.export_completed_stock_orders(dir_path=".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
+>>> r.export_completed_option_orders(dir_path="../", file_name="toplevel") # save at C:/Users/josh/toplevel.csv
 
 Using Option Spreads
 --------------------

@@ -31,9 +31,9 @@ def get_top_movers_sp500(direction, info=None):
 
     url = movers_sp500_url()
     payload = {'direction': direction}
-    data = request_get(url, 'pagination', payload)
+    data = request_get(url=url, dataType='pagination', payload=payload)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 def get_top_100(info=None):
     """Returns a list of the Top 100 stocks on Robin Hood.
@@ -60,13 +60,13 @@ def get_top_100(info=None):
 
     """
     url = get_100_most_popular_url()
-    data = request_get(url, 'regular')
-    data = filter_data(data, 'instruments')
+    data = request_get(url=url, dataType='regular')
+    data = filter_data(data=data, info='instruments')
 
-    symbols = [get_symbol_by_url(x) for x in data]
-    data = get_quotes(symbols)
+    symbols = [get_symbol_by_url(url=x) for x in data]
+    data = get_quotes(inputSymbols=symbols)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 def get_top_movers(info=None):
     """Returns a list of the Top 20 movers on Robin Hood.
@@ -93,13 +93,13 @@ def get_top_movers(info=None):
 
     """
     url = movers_top_url()
-    data = request_get(url, 'regular')
-    data = filter_data(data, 'instruments')
+    data = request_get(url=url, dataType='regular')
+    data = filter_data(data=data, info='instruments')
 
-    symbols = [get_symbol_by_url(x) for x in data]
-    data = get_quotes(symbols)
+    symbols = [get_symbol_by_url(url=x) for x in data]
+    data = get_quotes(inputSymbols=symbols)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 def get_all_stocks_from_market_tag(tag, info=None):
     """Returns all the stock quote information that matches a tag category.
@@ -127,18 +127,18 @@ def get_all_stocks_from_market_tag(tag, info=None):
                       * instrument
 
     """
-    url = market_category_url(tag)
-    data = request_get(url, 'regular')
-    data = filter_data(data, 'instruments')
+    url = market_category_url(category=tag)
+    data = request_get(url=url, dataType='regular')
+    data = filter_data(data=data, info='instruments')
 
     if not data:
         print('ERROR: "{}" is not a valid tag'.format(tag), file=get_output())
         return [None]
 
-    symbols = [get_symbol_by_url(x) for x in data]
-    data = get_quotes(symbols)
+    symbols = [get_symbol_by_url(url=x) for x in data]
+    data = get_quotes(inputSymbols=symbols)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 def get_markets(info=None):
     """Returns a list of available markets.
@@ -160,8 +160,8 @@ def get_markets(info=None):
 
     """
     url = markets_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 def get_market_today_hours(market, info=None):
     """Returns the opening and closing hours of a specific market for today. Also will tell you if market is
@@ -189,8 +189,8 @@ def get_market_today_hours(market, info=None):
         raise Exception('Not a valid market name. Check get_markets() for a list of market information.')
 
     url = result['todays_hours']
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 def get_market_next_open_hours(market, info=None):
     """Returns the opening and closing hours for the next open trading day after today. Also will tell you if market is
@@ -212,9 +212,9 @@ def get_market_next_open_hours(market, info=None):
                       * next_open_hours
 
     """
-    url = get_market_today_hours(market, info='next_open_hours')
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    url = get_market_today_hours(market=market, info='next_open_hours')
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 def get_market_next_open_hours_after_date(market, date, info=None):
     """Returns the opening and closing hours for the next open trading day after a date that is specified. Also will tell you if market is
@@ -238,9 +238,9 @@ def get_market_next_open_hours_after_date(market, date, info=None):
                       * next_open_hours
 
     """
-    url = get_market_hours(market, date, info='next_open_hours')
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    url = get_market_hours(market=market, date=date, info='next_open_hours')
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 def get_market_hours(market, date, info=None):
     """Returns the opening and closing hours of a specific market on a specific date. Also will tell you if market is
@@ -264,9 +264,9 @@ def get_market_hours(market, date, info=None):
                       * next_open_hours
 
     """
-    url = market_hours_url(market, date)
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    url = market_hours_url(market=market, date=date)
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 
 def get_currency_pairs(info=None):
@@ -290,5 +290,5 @@ def get_currency_pairs(info=None):
 
     """
     url = currency_url()
-    data = request_get(url, 'results')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='results')
+    return(filter_data(data=data, info=info))

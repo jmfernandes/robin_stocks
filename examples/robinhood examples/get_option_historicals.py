@@ -18,11 +18,11 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = r.login(username=username, password=password)
 
 #!!! fill out the specific option information
 symbol = 'AAPL'
-symbol_name = r.get_name_by_symbol(symbol)
+symbol_name = r.get_name_by_symbol(symbol=symbol)
 expirationDate = '2020-07-02' # format is YYYY-MM-DD.
 strike = 300
 optionType = 'call' # available options are 'call' or 'put' or None.
@@ -32,7 +32,7 @@ bounds = 'regular' # available options are 'regular', 'trading', and 'extended'.
 info = None
 #!!!
 
-historicalData = r.get_option_historicals(symbol, expirationDate, strike, optionType, interval, span, bounds, info)
+historicalData = r.get_option_historicals(symbol=symbol, expirationDate=expirationDate, strikePrice=strike, optionType=optionType, interval=interval, span=span, bounds=bounds, info=info)
 
 dates = []
 closingPrices = []
