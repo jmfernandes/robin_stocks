@@ -29,8 +29,8 @@ and a refresh token that is also generated on the TD Ameritrade API website.
 To log in for the first time, execute the following code.
 
 >>> import robin_stocks.tda as tda
->>> tda.login_first_time("my-encryption-passcode", "my-application-consumer-key",
->>>     "my-authroization-token", "my-refresh-token") # ONLY CALL ME ONCE. EVER.
+>>> tda.login_first_time(encryption_passcode="my-encryption-passcode", client_id="my-application-consumer-key",
+>>>     authorization_token="my-authroization-token", refresh_token="my-refresh-token") # ONLY CALL ME ONCE. EVER.
 
 Please be sure that you do not call login_first_time every time you run a script. You run it only once, 
 and then you should delete the code from your python file. A better solution would be to enter the python interpreter 
@@ -41,7 +41,7 @@ and the refresh token is used by robin_stocks to get you a new authentication to
 So, at the start of every TD Ameritrade script or program you write, you should execute the following code.
 
 >>> import robin_stocks.tda as tda
->>> tda.login("my-encryption-passcode") # make sure you have called login_first_time as some point.
+>>> tda.login(encryption_passcode="my-encryption-passcode") # make sure you have called login_first_time as some point.
 
 The login function will use your encryption passcode to decrypt your pickle file, generate a new authorization token 
 if it needs to, and then save your authorization to the requests session information. 

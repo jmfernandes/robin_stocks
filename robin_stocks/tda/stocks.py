@@ -17,8 +17,8 @@ def get_quote(ticker, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.quote(ticker)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.quote(ticker=ticker)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -41,7 +41,7 @@ def get_quotes(tickers, jsonify=None):
     payload = {
         "symbol": tickers
     }
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -92,7 +92,7 @@ def get_price_history(ticker, period_type, frequency_type, frequency,
     if (start_date or end_date) and period:
         raise ValueError(
             "If start_date and end_date are provided, period should not be provided.")
-    url = URLS.price_history(ticker)
+    url = URLS.price_history(ticker=ticker)
     payload = {
         "periodType": period_type,
         "frequencyType": frequency_type,
@@ -105,7 +105,7 @@ def get_price_history(ticker, period_type, frequency_type, frequency,
         payload["startDate"] = start_date
     if end_date:
         payload["endDate"] = end_date
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -136,7 +136,7 @@ def search_instruments(ticker_string, projection, jsonify=None):
         "symbol": ticker_string,
         "projection": projection
     }
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -155,8 +155,8 @@ def get_instrument(cusip, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.instrument(cusip)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.instrument(cusip=cusip)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -248,5 +248,5 @@ def get_option_chains(ticker, contract_type="ALL", strike_count="10", include_qu
         payload["interestRate"] = interest_rate
     if days_to_expiration:
         payload["daysToExpiration"] = days_to_expiration
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error

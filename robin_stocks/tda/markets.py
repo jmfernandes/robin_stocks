@@ -26,7 +26,7 @@ def get_hours_for_markets(markets, date, jsonify=None):
         "markets": markets,
         "date": date
     }
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -49,11 +49,11 @@ def get_hours_for_market(market, date, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.market(market)
+    url = URLS.market(market=market)
     payload = {
         "date": date
     }
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -77,10 +77,10 @@ def get_movers(market, direction, change, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.movers(market)
+    url = URLS.movers(index=market)
     payload = {
         "direction": direction,
         "change": change
     }
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error

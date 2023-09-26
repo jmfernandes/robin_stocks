@@ -42,68 +42,68 @@ class URLS:
     # accounts.py
     @classmethod
     def account(cls, id):
-        return cls.get_base_url(Version.v1) + "accounts/{0}".format(id)
+        return cls.get_base_url(version=Version.v1) + "accounts/{0}".format(id)
 
     @classmethod
     def accounts(cls):
-        return cls.get_base_url(Version.v1) + "accounts"
+        return cls.get_base_url(version=Version.v1) + "accounts"
 
     @classmethod
     def transaction(cls, id, transaction):
-        return cls.get_base_url(Version.v1) + "accounts/{0}/transactions/{1}".format(id, transaction)
+        return cls.get_base_url(version=Version.v1) + "accounts/{0}/transactions/{1}".format(id, transaction)
 
     @classmethod
     def transactions(cls, id):
-        return cls.get_base_url(Version.v1) + "accounts/{0}/transactions".format(id)
+        return cls.get_base_url(version=Version.v1) + "accounts/{0}/transactions".format(id)
 
     # authentication.py
     @classmethod
     def oauth(cls):
-        return cls.get_base_url(Version.v1) + "oauth2/token"
+        return cls.get_base_url(version=Version.v1) + "oauth2/token"
 
     # markets.py
     @classmethod
     def markets(cls):
-        return cls.get_base_url(Version.v1) + "marketdata/hours"
+        return cls.get_base_url(version=Version.v1) + "marketdata/hours"
 
     @classmethod
     def market(cls, market):
-        return cls.get_base_url(Version.v1) + "marketdata/{0}/hours".format(market)
+        return cls.get_base_url(version=Version.v1) + "marketdata/{0}/hours".format(market)
 
     @classmethod
     def movers(cls, index):
-        return cls.get_base_url(Version.v1) + "marketdata/{0}/movers".format(index)
+        return cls.get_base_url(version=Version.v1) + "marketdata/{0}/movers".format(index)
 
     # orders.py
     @classmethod
     def orders(cls, account_id):
-        return cls.get_base_url(Version.v1) + "accounts/{0}/orders".format(account_id)
+        return cls.get_base_url(version=Version.v1) + "accounts/{0}/orders".format(account_id)
 
     @classmethod
     def order(cls, account_id, order_id):
-        return cls.get_base_url(Version.v1) + "accounts/{0}/orders/{1}".format(account_id, order_id)
+        return cls.get_base_url(version=Version.v1) + "accounts/{0}/orders/{1}".format(account_id, order_id)
 
     # stocks.py
     @classmethod
     def instruments(cls):
-        return cls.get_base_url(Version.v1) + "instruments"
+        return cls.get_base_url(version=Version.v1) + "instruments"
 
     @classmethod
     def instrument(cls, cusip):
-        return cls.get_base_url(Version.v1) + "instruments/{0}".format(cusip)
+        return cls.get_base_url(version=Version.v1) + "instruments/{0}".format(cusip)
 
     @classmethod
     def quote(cls, ticker):
-        return cls.get_base_url(Version.v1) + "marketdata/{0}/quotes".format(ticker)
+        return cls.get_base_url(version=Version.v1) + "marketdata/{0}/quotes".format(ticker)
 
     @classmethod
     def quotes(cls):
-        return cls.get_base_url(Version.v1) + "marketdata/quotes"
+        return cls.get_base_url(version=Version.v1) + "marketdata/quotes"
 
     @classmethod
     def price_history(cls, ticker):
-        return cls.get_base_url(Version.v1) + "marketdata/{0}/pricehistory".format(ticker)
+        return cls.get_base_url(version=Version.v1) + "marketdata/{0}/pricehistory".format(ticker)
 
     @classmethod
     def option_chains(cls):
-        return cls.get_base_url(Version.v1) + "marketdata/chains"
+        return cls.get_base_url(version=Version.v1) + "marketdata/chains"

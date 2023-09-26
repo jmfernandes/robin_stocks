@@ -22,7 +22,7 @@ Below are examples on how to call each of those modules.
 >>> # Here are some example calls
 >>> gem.get_pubticker(ticker="btcusd") # gets ticker information for Bitcoin from Gemini
 >>> rh.get_all_open_crypto_orders() # gets all cypto orders from Robinhood
->>> tda.get_price_history("tsla") # get price history from TD Ameritrade 
+>>> tda.get_price_history(ticker="tsla") # get price history from TD Ameritrade
 
 Contributing
 ============

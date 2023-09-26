@@ -24,7 +24,7 @@ def get_accounts(options=None, jsonify=None):
         }
     else:
         payload = None
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -45,14 +45,14 @@ def get_account(id, options=None, jsonify=None):
         or a dictionary parsed using the JSON format and the second entry is an error string or \
         None if there was not an error.
     """
-    url = URLS.account(id)
+    url = URLS.account(id=id)
     if options:
         payload = {
             "fields": options
         }
     else:
         payload = None
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -81,7 +81,7 @@ def get_transactions(id, type_value=None, symbol=None, start_date=None, end_date
         or a dictionary parsed using the JSON format and the second entry is an error string or \
         None if there was not an error.
     """
-    url = URLS.transactions(id)
+    url = URLS.transactions(id=id)
     payload = {}
     if type_value:
         payload["type"] = type_value
@@ -91,7 +91,7 @@ def get_transactions(id, type_value=None, symbol=None, start_date=None, end_date
         payload["startDate"] = start_date
     if end_date:
         payload["endDate"] = end_date
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
 
 
@@ -111,6 +111,6 @@ def get_transaction(account_id, transaction_id, jsonify=None):
         or a dictionary parsed using the JSON format and the second entry is an error string or \
         None if there was not an error.
     """
-    url = URLS.transaction(account_id, transaction_id)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.transaction(id=account_id, transaction=transaction_id)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
