@@ -18,8 +18,8 @@ def get_all_stock_orders(info=None):
 
     """
     url = orders_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -33,8 +33,8 @@ def get_all_option_orders(info=None):
 
     """
     url = option_orders_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -48,8 +48,8 @@ def get_all_crypto_orders(info=None):
 
     """
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -63,11 +63,11 @@ def get_all_open_stock_orders(info=None, account_number=None):
 
     """
     url = orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel'] is not None]
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -81,11 +81,11 @@ def get_all_open_option_orders(info=None, account_number=None):
 
     """
     url = option_orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -99,11 +99,11 @@ def get_all_open_crypto_orders(info=None):
 
     """
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -115,8 +115,8 @@ def get_stock_order_info(orderID):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = orders_url(orderID)
-    data = request_get(url)
+    url = orders_url(orderID=orderID)
+    data = request_get(url=url)
     return(data)
 
 
@@ -129,8 +129,8 @@ def get_option_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = option_orders_url(order_id)
-    data = request_get(url)
+    url = option_orders_url(orderID=order_id)
+    data = request_get(url=url)
     return data
 
 
@@ -143,8 +143,8 @@ def get_crypto_order_info(order_id):
     :returns: Returns a list of dictionaries of key/value pairs for the order.
 
     """
-    url = crypto_orders_url(order_id)
-    data = request_get(url)
+    url = crypto_orders_url(orderID=order_id)
+    data = request_get(url=url)
     return data
 
 
@@ -158,7 +158,7 @@ def find_stock_orders(**arguments):
 
     """ 
     url = orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     if (len(arguments) == 0):
         return(data)
@@ -169,7 +169,7 @@ def find_stock_orders(**arguments):
 
     if 'symbol' in arguments.keys():
         arguments['instrument'] = get_instruments_by_symbols(
-            arguments['symbol'], info='url')[0]
+            inputSymbols=arguments['symbol'], info='url')[0]
         del arguments['symbol']
 
     if 'quantity' in arguments.keys():
@@ -180,7 +180,7 @@ def find_stock_orders(**arguments):
     for item in data:
         for i, (key, value) in enumerate(arguments.items()):
             if key not in item:
-                print(error_argument_not_key_in_dictionary(key), file=get_output())
+                print(error_argument_not_key_in_dictionary(keyword=key), file=get_output())
                 return([None])
             if value != item[key]:
                 break
@@ -199,8 +199,8 @@ def cancel_stock_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = cancel_url(orderID)
-    data = request_post(url)
+    url = cancel_url(url=orderID)
+    data = request_post(url=url)
 
     if data:
         print('Order '+str(orderID)+' cancelled', file=get_output())
@@ -216,8 +216,8 @@ def cancel_option_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = option_cancel_url(orderID)
-    data = request_post(url)
+    url = option_cancel_url(id=orderID)
+    data = request_post(url=url)
 
     if data:
         print('Order '+str(orderID)+' cancelled', file=get_output())
@@ -233,8 +233,8 @@ def cancel_crypto_order(orderID):
     :returns: Returns the order information for the order that was cancelled.
 
     """ 
-    url = crypto_cancel_url(orderID)
-    data = request_post(url)
+    url = crypto_cancel_url(id=orderID)
+    data = request_post(url=url)
 
     if data:
         print('Order '+str(orderID)+' cancelled', file=get_output())
@@ -249,12 +249,12 @@ def cancel_all_stock_orders():
 
     """ 
     url = orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel'] is not None]
 
     for item in data:
-        request_post(item['cancel'])
+        request_post(url=item['cancel'])
 
     print('All Stock Orders Cancelled', file=get_output())
     return(data)
@@ -268,12 +268,12 @@ def cancel_all_option_orders():
 
     """ 
     url = option_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
 
     for item in data:
-        request_post(item['cancel_url'])
+        request_post(url=item['cancel_url'])
 
     print('All Option Orders Cancelled', file=get_output())
     return(data)
@@ -287,12 +287,12 @@ def cancel_all_crypto_orders():
 
     """ 
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
 
     for item in data:
-        request_post(item['cancel_url'])
+        request_post(url=item['cancel_url'])
 
     print('All Crypto Orders Cancelled', file=get_output())
     return(data)
@@ -320,7 +320,7 @@ def order_buy_market(symbol, quantity, account_number=None, timeInForce='gtc', e
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(None, None, symbol=symbol, quantity=quantity, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -346,7 +346,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, time
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(None, None, symbol=symbol, quantity=quantity, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -377,10 +377,10 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
         return None
 
     # turn the money amount into decimal number of shares
-    price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
-    fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
-    
-    return order(symbol, fractional_shares, "buy", None, None, account_number,  timeInForce, extendedHours, jsonify, market_hours)
+    price = next(iter(get_latest_price(inputSymbols=symbol, priceType='ask_price', includeExtendedHours=extendedHours)), 0.00)
+    fractional_shares = 0 if (price == 0.00) else round_price(price=amountInDollars/float(price))
+
+    return order(None, None, symbol=symbol, quantity=fractional_shares, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
@@ -406,8 +406,8 @@ def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInFor
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "buy", account_number, limitPrice, None, timeInForce, extendedHours, jsonify)
+    """
+    return order(None, symbol=symbol, quantity=quantity, side="buy", account_number=account_number, limitPrice=limitPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -433,8 +433,8 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeIn
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "buy", account_number, None, stopPrice, timeInForce, extendedHours, jsonify)
+    """
+    return order(None, symbol=symbol, quantity=quantity, side="buy", account_number=account_number, stopPrice=stopPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -462,8 +462,8 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "buy", account_number, limitPrice, stopPrice, timeInForce, extendedHours, jsonify)
+    """
+    return order(symbol=symbol, quantity=quantity, side="buy", account_number=account_number, limitPrice=limitPrice, stopPrice=stopPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -493,7 +493,7 @@ def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(symbol=symbol, quantity=quantity, side="buy", trailAmount=trailAmount, trailType=trailType, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -517,8 +517,8 @@ def order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', 
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
+    """
+    return order(None, None, symbol=symbol, quantity=quantity, side="sell", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -543,8 +543,8 @@ def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, tim
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "sell", None, None, account_number,  timeInForce, extendedHours, jsonify, market_hours)
+    """
+    return order(None, None, symbol=symbol, quantity=quantity, side="sell", account_number=account_number,  timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
@@ -569,15 +569,15 @@ def order_sell_fractional_by_price(symbol, amountInDollars, account_number=None,
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
+    """
     if amountInDollars < 1:
         print("ERROR: Fractional share price should meet minimum 1.00.", file=get_output())
         return None
     # turn the money amount into decimal number of shares
-    price = next(iter(get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
-    fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
+    price = next(iter(get_latest_price(inputSymbols=symbol, priceType='bid_price', includeExtendedHours=extendedHours)), 0.00)
+    fractional_shares = 0 if (price == 0.00) else round_price(price=amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "sell", account_number, None, None, timeInForce, extendedHours, jsonify)
+    return order(None, None, symbol=symbol, quantity=fractional_shares, side="sell", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -603,8 +603,8 @@ def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInFo
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "sell", account_number, limitPrice, None, timeInForce, extendedHours, jsonify)
+    """
+    return order(None, symbol=symbol, quantity=quantity, side="sell", account_number=account_number, limitPrice=limitPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -630,8 +630,8 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeI
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "sell", account_number, None, stopPrice, timeInForce, extendedHours, jsonify)
+    """
+    return order(None, symbol=symbol, quantity=quantity, side="sell", account_number=account_number, stopPrice=stopPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -659,8 +659,8 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, account_numbe
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order(symbol, quantity, "sell", account_number, limitPrice, stopPrice, timeInForce, extendedHours, jsonify)
+    """
+    return order(symbol=symbol, quantity=quantity, side="sell", account_number=account_number, limitPrice=limitPrice, stopPrice=stopPrice, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -690,7 +690,7 @@ def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentag
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(symbol=symbol, quantity=quantity, side="sell", trailAmount=trailAmount, trailType=trailType, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -728,7 +728,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
         print(message)
         return None
 
-    stock_price = round_price(get_latest_price(symbol, extendedHours)[0])
+    stock_price = round_price(price=get_latest_price(inputSymbols=symbol, includeExtendedHours=extendedHours)[0])
 
     # find stop price based on whether trailType is "amount" or "percentage" and whether its buy or sell
     percentage = 0
@@ -743,11 +743,11 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
         return None
 
     stopPrice = stock_price + margin if side == "buy" else stock_price - margin
-    stopPrice = round_price(stopPrice)
+    stopPrice = round_price(price=stopPrice)
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
-        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
+        'instrument': get_instruments_by_symbols(inputSymbols=symbol, info='url')[0],
         'symbol': symbol,
         'quantity': quantity,
         'ref_id': str(uuid4()),
@@ -761,7 +761,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
 
     if side == "buy":
         # price should be greater than stopPrice, adding a 5% threshold
-        payload['price'] = round_price(stopPrice * 1.05)
+        payload['price'] = round_price(price=stopPrice * 1.05)
 
     if trailType == 'amount':
         payload['trailing_peg'] = {'type': 'price', 'price': {'amount': trailAmount, 'currency_code': 'USD'}}
@@ -769,7 +769,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
         payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage)}
 
     url = orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return (data)
 
@@ -801,7 +801,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -817,25 +817,25 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         priceType = "bid_price"
 
     if limitPrice and stopPrice:
-        price = round_price(limitPrice)
-        stopPrice = round_price(stopPrice)
+        price = round_price(price=limitPrice)
+        stopPrice = round_price(price=stopPrice)
         orderType = "limit"
         trigger = "stop"
     elif limitPrice:
-        price = round_price(limitPrice)
+        price = round_price(price=limitPrice)
         orderType = "limit"
     elif stopPrice:
-        stopPrice = round_price(stopPrice)
+        stopPrice = round_price(price=stopPrice)
         if side == "buy":
             price = stopPrice
         else:
             price = None
         trigger = "stop"
     else:
-        price = round_price(next(iter(get_latest_price(symbol, priceType, extendedHours)), 0.00))
+        price = round_price(price=next(iter(get_latest_price(inputSymbols=symbol, priceType=priceType, includeExtendedHours=extendedHours)), 0.00))
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
-        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
+        'instrument': get_instruments_by_symbols(inputSymbols=symbol, info='url')[0],
         'symbol': symbol,
         'price': price,
         'quantity': quantity,
@@ -852,22 +852,22 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     # adjust market orders
     if orderType == 'market':
         del payload['stop_price']
-        del payload['extended_hours'] 
-        
+        del payload['extended_hours']
+
     if market_hours == 'regular_hours':
         if side == "buy":
             payload['preset_percent_limit'] = "0.05"
-            payload['type'] = 'limit' 
+            payload['type'] = 'limit'
         # regular market sell
         elif orderType == 'market' and side == 'sell':
-            del payload['price']   
-    elif market_hours == 'all_day_hours': 
-        payload['type'] = 'limit' 
+            del payload['price']
+    elif market_hours == 'all_day_hours':
+        payload['type'] = 'limit'
         payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
-        
+
     url = orders_url()
 
-    data = request_post(url, payload, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, jsonify_data=jsonify)
 
     return(data)
 
@@ -901,7 +901,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("credit", price, symbol, quantity, spread, account_number, timeInForce, jsonify))
+    return(order_option_spread(direction="credit", price=price, symbol=symbol, quantity=quantity, spread=spread, account_number=account_number, timeInForce=timeInForce, jsonify=jsonify))
 
 
 @login_required
@@ -933,7 +933,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("debit", price, symbol, quantity, spread, account_number, timeInForce, jsonify))
+    return(order_option_spread(direction="debit", price=price, symbol=symbol, quantity=quantity, spread=spread, account_number=account_number, timeInForce=timeInForce, jsonify=jsonify))
 
 
 @login_required
@@ -966,7 +966,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
     :returns: Dictionary that contains information regarding the trading of options, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
@@ -974,14 +974,14 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
         return None
     legs = []
     for each in spread:
-        optionID = id_for_option(symbol,
-                                        each['expirationDate'],
-                                        each['strike'],
-                                        each['optionType'])
+        optionID = id_for_option(symbol=symbol,
+                                 expirationDate=each['expirationDate'],
+                                 strike=each['strike'],
+                                 optionType=each['optionType'])
         legs.append({'position_effect': each['effect'],
                      'side': each['action'],
                      'ratio_quantity': 1,
-                     'option': option_instruments_url(optionID)})
+                     'option': option_instruments_url(id=optionID)})
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
@@ -998,7 +998,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
     }
 
     url = option_orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
@@ -1034,14 +1034,14 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
         return None
 
-    optionID = id_for_option(symbol, expirationDate, strike, optionType)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strike, optionType=optionType)
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
@@ -1049,7 +1049,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(id=optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1061,7 +1061,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     }
 
     url = option_orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
@@ -1099,14 +1099,14 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
         return None
 
-    optionID = id_for_option(symbol, expirationDate, strike, optionType)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strike, optionType=optionType)
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
@@ -1114,7 +1114,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(id=optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1127,7 +1127,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     }
 
     url = option_orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
@@ -1164,14 +1164,14 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
+    """
     try:
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
         return None
 
-    optionID = id_for_option(symbol, expirationDate, strike, optionType)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strike, optionType=optionType)
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
@@ -1179,7 +1179,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(id=optionID)},
         ],
         'type': 'limit',
         'trigger': 'stop',
@@ -1192,7 +1192,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     }
 
     url = option_orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
@@ -1235,7 +1235,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         print(message, file=get_output())
         return None
 
-    optionID = id_for_option(symbol, expirationDate, strike, optionType)
+    optionID = id_for_option(symbol=symbol, expirationDate=expirationDate, strike=strike, optionType=optionType)
 
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
@@ -1243,7 +1243,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         'time_in_force': timeInForce,
         'legs': [
             {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+                'ratio_quantity': 1, 'option': option_instruments_url(id=optionID)},
         ],
         'type': 'limit',
         'trigger': 'immediate',
@@ -1255,7 +1255,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     }
 
     url = option_orders_url()
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
+    data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
 
     return(data)
 
@@ -1277,8 +1277,8 @@ def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonif
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order_crypto(symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify)
+    """
+    return order_crypto(None, symbol=symbol, side="buy", quantityOrPrice=amountInDollars, amountIn="price", timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1298,8 +1298,8 @@ def order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=Tr
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order_crypto(symbol, "buy", quantity, "quantity", None, timeInForce, jsonify)
+    """
+    return order_crypto(None, symbol=symbol, side="buy", quantityOrPrice=quantity, amountIn="quantity", timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1321,8 +1321,8 @@ def order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', json
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order_crypto(symbol, "buy", quantity, "quantity", limitPrice, timeInForce, jsonify)
+    """
+    return order_crypto(symbol=symbol, side="buy", quantityOrPrice=quantity, amountIn="quantity", limitPrice=limitPrice, timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1345,7 +1345,7 @@ def order_buy_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInF
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "buy", amountInDollars, "price", limitPrice, timeInForce, jsonify)
+    return order_crypto(symbol=symbol, side="buy", quantityOrPrice=amountInDollars, amountIn="price", limitPrice=limitPrice, timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1365,8 +1365,8 @@ def order_sell_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsoni
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order_crypto(symbol, "sell", amountInDollars, "price", None, timeInForce, jsonify)
+    """
+    return order_crypto(None, symbol=symbol, side="sell", quantityOrPrice=amountInDollars, amountIn="price", timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1386,8 +1386,8 @@ def order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=T
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
-    """ 
-    return order_crypto(symbol, "sell", quantity, "quantity", None, timeInForce, jsonify)
+    """
+    return order_crypto(None, symbol=symbol, side="sell", quantityOrPrice=quantity, amountIn="quantity", timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1410,7 +1410,7 @@ def order_sell_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jso
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", quantity, "quantity", limitPrice, timeInForce, jsonify)
+    return order_crypto(symbol=symbol, side="sell", quantityOrPrice=quantity, amountIn="quantity", limitPrice=limitPrice, timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1433,7 +1433,7 @@ def order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeIn
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", amountInDollars, "price", limitPrice, timeInForce, jsonify)
+    return order_crypto(symbol=symbol, side="sell", quantityOrPrice=amountInDollars, amountIn="price", limitPrice=limitPrice, timeInForce=timeInForce, jsonify=jsonify)
 
 
 @login_required
@@ -1466,7 +1466,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         print(message, file=get_output())
         return None
 
-    crypto_id = get_crypto_id(symbol)
+    crypto_id = get_crypto_id(symbol=symbol)
     orderType = "market"
 
     if side == "buy":
@@ -1478,12 +1478,12 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         price = limitPrice
         orderType = "limit"
     else:
-        price = round_price(get_crypto_quote_from_id(crypto_id, info=priceType))
+        price = round_price(price=get_crypto_quote_from_id(id=crypto_id, info=priceType))
 
     if amountIn == "quantity":
         quantity = quantityOrPrice
     else:
-        quantity = round_price(quantityOrPrice/price)
+        quantity = round_price(price=quantityOrPrice/price)
 
     payload = {
         'account_id': load_crypto_profile(info="id"),
@@ -1501,7 +1501,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
     # This is safe because 'ref_id' guards us from duplicate orders
     attempts = 3
     while attempts > 0:
-        data = request_post(url, payload, json=True, jsonify_data=jsonify)
+        data = request_post(url=url, payload=payload, json=True, jsonify_data=jsonify)
         if data is not None:
             break
 

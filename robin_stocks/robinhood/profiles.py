@@ -63,10 +63,10 @@ def load_account_profile(account_number=None, info=None):
     """
     url = account_profile_url(account_number)
     if account_number is not None:
-         data = request_get(url)
+         data = request_get(url=url)
     else:
-        data = request_get(url, 'indexzero')
-    return(filter_data(data, info))
+        data = request_get(url=url, dataType='indexzero')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -96,8 +96,8 @@ def load_basic_profile(info=None):
 
     """
     url = basic_profile_url()
-    data = request_get(url)
-    return(filter_data(data, info))
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -131,8 +131,8 @@ def load_investment_profile(info=None):
 
     """
     url = investment_profile_url()
-    data = request_get(url)
-    return(filter_data(data, info))
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -170,8 +170,8 @@ def load_portfolio_profile(info=None):
 
     """
     url = portfolio_profile_url()
-    data = request_get(url, 'indexzero')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='indexzero')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -203,8 +203,8 @@ def load_security_profile(info=None):
 
     """
     url = security_profile_url()
-    data = request_get(url)
-    return(filter_data(data, info))
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -231,5 +231,5 @@ def load_user_profile(info=None):
 
     """
     url = user_profile_url()
-    data = request_get(url)
-    return(filter_data(data, info))
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))

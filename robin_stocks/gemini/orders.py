@@ -41,15 +41,15 @@ def get_trades_for_crypto(ticker, limit_trades=50, timestamp=None, jsonify=None)
     """
     url = URLS.mytrades()
     payload = {
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "symbol": ticker,
         "limit_trades": limit_trades
     }
     if timestamp:
         payload["timestamp"] = timestamp
 
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -71,10 +71,10 @@ def cancel_all_session_orders(jsonify=None):
     """
     url = URLS.cancel_session_orders()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -96,10 +96,10 @@ def cancel_all_active_orders(jsonify=None):
     """
     url = URLS.cancel_active_orders()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -140,11 +140,11 @@ def cancel_order(order_id, jsonify=None):
     """
     url = URLS.cancel_order()
     payload = {
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "order_id": order_id
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -185,11 +185,11 @@ def order_status(order_id, jsonify=None):
     """
     url = URLS.order_status()
     payload = {
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "order_id": order_id
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -227,10 +227,10 @@ def active_orders(jsonify=None):
     """
     url = URLS.active_orders()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err
 
 
@@ -274,11 +274,11 @@ def order_market(ticker, quantity, side, jsonify=None):
                       * is_hidden - Will always return false unless the order was placed with the indication-of-interest execution option.
     """
     if side == "buy":
-        far_limit_price = float(get_price(ticker, side)) * 10
+        far_limit_price = float(get_price(ticker=ticker, side=side)) * 10
     else:
-        far_limit_price = float(get_price(ticker, side)) / 10
+        far_limit_price = float(get_price(ticker=ticker, side=side)) / 10
     price = str(round(far_limit_price, 2))
-    return order(ticker, quantity, side, price, None, None, ["immediate-or-cancel"], jsonify=jsonify)
+    return order(None, None, ["immediate-or-cancel"], ticker=ticker, quantity=quantity, side=side, price=price, jsonify=jsonify)
 
 
 @login_required
@@ -330,7 +330,7 @@ def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=
     url = URLS.order_new()
     payload = {
         "client_order_id": generate_order_id(),
-        "request": URLS.get_endpoint(url),
+        "request": URLS.get_endpoint(url=url),
         "symbol": ticker,
         "amount": str(quantity),
         "side": side
@@ -339,7 +339,7 @@ def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=
     if price:
         payload["price"] = price
     else:
-        payload["price"] = get_price(ticker, side)
+        payload["price"] = get_price(ticker=ticker, side=side)
     #
     if stop_limit_price:
         payload["type"] = "exchange stop limit"
@@ -353,6 +353,6 @@ def order(ticker, quantity, side, price=None, stop_limit_price=None, min_amount=
     if options:
         payload["options"] = options
 
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err

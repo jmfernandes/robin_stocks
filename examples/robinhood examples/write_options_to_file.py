@@ -13,7 +13,7 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = r.login(username=username, password=password)
 
 #!!! fill out the specific option information
 strike = 300
@@ -42,8 +42,8 @@ while t.time() < endTime:
     fileStream.write(time)
     print(time)
     #Get the data
-    instrument_data = r.get_option_instrument_data(stock,date,strike,optionType)
-    market_data = r.get_option_market_data(stock,date,strike,optionType)
+    instrument_data = r.get_option_instrument_data(symbol=stock,expirationDate=date,strikePrice=strike,optionType=optionType)
+    market_data = r.get_option_market_data(inputSymbols=stock, expirationDate=date,strikePrice=strike,optionType=optionType)
 
     fileStream.write("\n")
     fileStream.write("{} Instrument Data {}".format("="*30,"="*30))

@@ -85,7 +85,7 @@ def login(encryption_passcode):
             "refresh_token": refresh_token,
             "client_id": client_id
         }
-        data, _ = request_data(url, payload, True)
+        data, _ = request_data(url=url, payload=payload, parse_json=True)
         if "access_token" not in data and "refresh_token" not in data:
             raise ValueError(
                 "Refresh token is no longer valid. Call login_first_time() to get a new refresh token.")
@@ -106,7 +106,7 @@ def login(encryption_passcode):
             "refresh_token": refresh_token,
             "client_id": client_id
         }
-        data, _ = request_data(url, payload, True)
+        data, _ = request_data(url=url, payload=payload, parse_json=True)
         if "access_token" not in data:
             raise ValueError(
                 "Refresh token is no longer valid. Call login_first_time() to get a new refresh token.")
@@ -123,9 +123,9 @@ def login(encryption_passcode):
                 }, pickle_file)
     # Store authorization token in session information to be used with API calls.
     auth_token = "Bearer {0}".format(access_token)
-    update_session("Authorization", auth_token)
-    update_session("apikey", client_id)
-    set_login_state(True)
+    update_session(key="Authorization", value=auth_token)
+    update_session(key="apikey", value=client_id)
+    set_login_state(logged_in=True)
     return auth_token
 
 

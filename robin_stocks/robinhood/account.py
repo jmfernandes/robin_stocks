@@ -46,8 +46,8 @@ def load_phoenix_account(info=None):
 
     """
     url = phoenix_url()
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
@@ -73,15 +73,15 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
         return([None])
 
     account = load_account_profile(info='account_number')
-    url = portfolis_historicals_url(account)
+    url = portfolis_historicals_url(account_number=account)
     payload = {
         'interval': interval,
         'span': span,
         'bounds': bounds
     }
-    data = request_get(url, 'regular', payload)
+    data = request_get(url=url, dataType='regular', payload=payload)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_all_positions(info=None):
@@ -111,9 +111,9 @@ def get_all_positions(info=None):
 
     """
     url = positions_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -147,9 +147,9 @@ def get_open_stock_positions(account_number=None, info=None):
     """
     url = positions_url(account_number=account_number)
     payload = {'nonzero': 'true'}
-    data = request_get(url, 'pagination', payload)
+    data = request_get(url=url, dataType='pagination', payload=payload)
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -178,9 +178,9 @@ def get_dividends(info=None):
 
     """
     url = dividends_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -191,7 +191,7 @@ def get_total_dividends():
 
     """
     url = dividends_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
     dividend_total = 0
     for item in data:
@@ -240,9 +240,9 @@ def get_notifications(info=None):
 
     """
     url = notifications_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -252,8 +252,8 @@ def get_latest_notification():
     :returns: Returns a dictionary of key/value pairs. But there is only one key, 'last_viewed_at'
 
     """
-    url = notifications_url(True)
-    data = request_get(url)
+    url = notifications_url(tracker=True)
+    data = request_get(url=url)
     return(data)
 
 
@@ -268,8 +268,8 @@ def get_wire_transfers(info=None):
 
     """
     url = wiretransfers_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -288,10 +288,10 @@ def get_margin_calls(symbol=None):
         except AttributeError as message:
             print(message, file=get_output())
             return None
-        payload = {'equity_instrument_id', id_for_stock(symbol)}
-        data = request_get(url, 'results', payload)
+        payload = {'equity_instrument_id', id_for_stock(symbol=symbol)}
+        data = request_get(url=url, dataType='results', payload=payload)
     else:
-        data = request_get(url, 'results')
+        data = request_get(url=url, dataType='results')
 
     return(data)
 
@@ -316,8 +316,8 @@ def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
         "ach_relationship": ach_relationship,
         "ref_id": str(uuid4())
     }
-    data = request_post(url, payload)
-    return(filter_data(data, info))
+    data = request_post(url=url, payload=payload)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -340,8 +340,8 @@ def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
         "ach_relationship": ach_relationship,
         "ref_id": str(uuid4())
     }
-    data = request_post(url, payload)
-    return(filter_data(data, info))
+    data = request_post(url=url, payload=payload)
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_linked_bank_accounts(info=None):
@@ -353,8 +353,8 @@ def get_linked_bank_accounts(info=None):
 
     """
     url = linked_url()
-    data = request_get(url, 'results')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='results')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -369,9 +369,9 @@ def get_bank_account_info(id, info=None):
     the value of the key that matches info is extracted.
 
     """
-    url = linked_url(id)
-    data = request_get(url)
-    return(filter_data(data, info))
+    url = linked_url(id=id)
+    data = request_get(url=url)
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -383,8 +383,8 @@ def unlink_bank_account(id):
     :returns: Information returned from post request.
 
     """
-    url = linked_url(id, True)
-    data = request_post(url)
+    url = linked_url(id=id, unlink=True)
+    data = request_post(url=url)
     return(data)
 
 
@@ -402,9 +402,9 @@ def get_bank_transfers(direction=None, info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = banktransfers_url(direction)
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    url = banktransfers_url(direction=direction)
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_card_transactions(cardType=None, info=None):
@@ -423,8 +423,8 @@ def get_card_transactions(cardType=None, info=None):
         payload = { 'type': type }
 
     url = cardtransactions_url()
-    data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination', payload=payload)
+    return(filter_data(data=data, info=info))
 
 @login_required
 def get_stock_loan_payments(info=None):
@@ -437,8 +437,8 @@ def get_stock_loan_payments(info=None):
 
     """
     url = stockloan_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -452,8 +452,8 @@ def get_margin_interest(info=None):
 
     """
     url = margininterest_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -467,8 +467,8 @@ def get_subscription_fees(info=None):
 
     """
     url = subscription_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -482,8 +482,8 @@ def get_referrals(info=None):
 
     """
     url = referral_url()
-    data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='pagination')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -497,9 +497,9 @@ def get_day_trades(info=None):
 
     """
     account = load_account_profile(info='account_number')
-    url = daytrades_url(account)
-    data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    url = daytrades_url(account=account)
+    data = request_get(url=url, dataType='regular')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -513,9 +513,9 @@ def get_documents(info=None):
 
     """
     url = documents_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url=url, dataType='pagination')
 
-    return(filter_data(data, info))
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -532,7 +532,7 @@ def download_document(url, name=None, dirpath=None):
     :returns: Returns the data from the get request.
 
     """
-    data = request_document(url)
+    data = request_document(url=url)
 
     print('Writing PDF...', file=get_output())
     if not name:
@@ -576,7 +576,7 @@ def download_all_documents(doctype=None, dirpath=None):
     counter = 0
     for item in documents:
         if doctype == None:
-            data = request_document(item['download_url'])
+            data = request_document(url=item['download_url'])
             if data:
                 name = item['created_at'][0:10] + '-' + \
                     item['type'] + '-' + item['id']
@@ -588,7 +588,7 @@ def download_all_documents(doctype=None, dirpath=None):
                 print('Writing PDF {}...'.format(counter), file=get_output())
         else:
             if item['type'] == doctype:
-                data = request_document(item['download_url'])
+                data = request_document(url=item['download_url'])
                 if data:
                     name = item['created_at'][0:10] + '-' + \
                         item['type'] + '-' + item['id']
@@ -622,8 +622,8 @@ def get_all_watchlists(info=None):
 
     """
     url = watchlists_url()
-    data = request_get(url, 'result')
-    return(filter_data(data, info))
+    data = request_get(url=url, dataType='result')
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -645,9 +645,9 @@ def get_watchlist_by_name(name="My First List", info=None):
         if wl['display_name'] == name:
             watchlist_id = wl['id']
 
-    url = watchlists_url(name)
-    data = request_get(url,'list_id',{'list_id':watchlist_id})
-    return(filter_data(data, info))
+    url = watchlists_url(name=name)
+    data = request_get(url=url,dataType='list_id',payload={'list_id':watchlist_id})
+    return(filter_data(data=data, info=info))
 
 
 @login_required
@@ -661,8 +661,8 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     :returns: Returns result of the post request.
 
     """
-    symbols = inputs_to_set(inputSymbols)
-    ids = get_instruments_by_symbols(symbols, info='id')
+    symbols = inputs_to_set(inputSymbols=inputSymbols)
+    ids = get_instruments_by_symbols(inputSymbols=symbols, info='id')
     data = []
     #Get id of requested watchlist
     all_watchlists = get_all_watchlists()
@@ -679,8 +679,8 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
                 "operation" : "create"
             }]
         }
-        url = watchlists_url(name, True)
-        data.append(request_post(url, payload, json=True))
+        url = watchlists_url(name=name, add=True)
+        data.append(request_post(url=url, payload=payload, json=True))
 
     return(data)
 
@@ -696,8 +696,8 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     :returns: Returns result of the delete request.
 
     """
-    symbols = inputs_to_set(inputSymbols)
-    ids = get_instruments_by_symbols(symbols, info='id')
+    symbols = inputs_to_set(inputSymbols=inputSymbols)
+    ids = get_instruments_by_symbols(inputSymbols=symbols, info='id')
     data = []
 
     #Get id of requested watchlist
@@ -715,8 +715,8 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
                 "operation" : "delete"
             }]
         }
-        url = watchlists_url(name, True)
-        data.append(request_post(url, payload, json=True))
+        url = watchlists_url(name=name, add=True)
+        data.append(request_post(url=url, payload=payload, json=True))
 
     return(data)
 
@@ -759,11 +759,11 @@ def build_holdings(with_dividends=False):
             continue
 
         try:
-            instrument_data = get_instrument_by_url(item['instrument'])
+            instrument_data = get_instrument_by_url(url=item['instrument'])
             symbol = instrument_data['symbol']
-            fundamental_data = get_fundamentals(symbol)[0]
+            fundamental_data = get_fundamentals(inputSymbols=symbol)[0]
 
-            price = get_latest_price(instrument_data['symbol'])[0]
+            price = get_latest_price(inputSymbols=instrument_data['symbol'])[0]
             quantity = item['quantity']
             equity = float(item['quantity']) * float(price)
             equity_change = (float(quantity) * float(price)) - \
@@ -793,7 +793,7 @@ def build_holdings(with_dividends=False):
                 {'equity_change': "{0:2f}".format(equity_change)})
             holdings[symbol].update({'type': instrument_data['type']})
             holdings[symbol].update(
-                {'name': get_name_by_symbol(symbol)})
+                {'name': get_name_by_symbol(symbol=symbol)})
             holdings[symbol].update({'id': instrument_data['id']})
             holdings[symbol].update({'pe_ratio': fundamental_data['pe_ratio']})
             holdings[symbol].update(
@@ -802,7 +802,7 @@ def build_holdings(with_dividends=False):
             if with_dividends is True:
                 # dividend_data was retrieved earlier
                 holdings[symbol].update(get_dividends_by_instrument(
-                    item['instrument'], dividend_data))
+                    instrument=item['instrument'], dividend_data=dividend_data))
 
         except:
             pass

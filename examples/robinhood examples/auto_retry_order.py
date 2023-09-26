@@ -22,15 +22,15 @@ sleep_time = 1 # in seconds
 load_dotenv()
 # Login using two-factor code
 totp = pyotp.TOTP(os.environ['robin_mfa']).now()
-login = r.login(os.environ['robin_username'], os.environ['robin_password'], store_session=True, mfa_code=totp)
+login = r.login(username=os.environ['robin_username'], password=os.environ['robin_password'], store_session=True, mfa_code=totp)
 # Here it is important to set jsonify=False so that you can check
 # status code of your order request. 200 is ok, 400 is bad request,
 # and 404 is unknown url.
-order = r.order_buy_market(stock, quantity, jsonify=False)
+order = r.order_buy_market(symbol=stock, quantity=quantity, jsonify=False)
 # Feel free to use more advanced orders
 attempts = 0
 while order.status_code != 200 and attempts < max_attempts:
-    order = r.order_buy_market(stock, quantity, jsonify=False)
+    order = r.order_buy_market(symbol=stock, quantity=quantity, jsonify=False)
     attempts += 1
     sleep(sleep_time)
 

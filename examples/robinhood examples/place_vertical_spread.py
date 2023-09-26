@@ -8,7 +8,7 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = r.login(username=username, password=password)
 
 #!!! WARNING - Some option spreads have UNLIMITED risk.
 #!!! Note - Make sure to check the prices of option legs before placing a spread order. Some vertical spreads carry more risk.
@@ -31,5 +31,5 @@ leg2 = {"expirationDate":"2019-12-20",
 spread = [leg1,leg2]
 #!!!
 
-order = r.order_option_spread("debit", 3.10, "PLUG", 1, spread)
+order = r.order_option_spread(direction="debit", price=3.10, symbol="PLUG", quantity=1, spread=spread)
 print(order)

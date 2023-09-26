@@ -18,11 +18,11 @@ print("here is a key you can use for encryption: ", keep_this_key_somewhere_safe
 
 #!!! Only call login_first_time once! Delete this code after running the first time!
 t.login_first_time(
-    keep_this_key_somewhere_safe,
-    "client_id_goes_here",
-    "authorization_token_goes_here",
-    "refresh_token_goes_here")
+    encryption_passcode=keep_this_key_somewhere_safe,
+    client_id="client_id_goes_here",
+    authorization_token="authorization_token_goes_here",
+    refresh_token="refresh_token_goes_here")
 #!!!
 
 # Call login as much as you want.
-t.login(os.environ["tda_encryption_passcode"])
+t.login(encryption_passcode=os.environ["tda_encryption_passcode"])

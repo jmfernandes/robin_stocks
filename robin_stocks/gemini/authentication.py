@@ -17,17 +17,17 @@ from robin_stocks.gemini.urls import URLS
 def login(api_key, secret_key):
     """ Set the authorization token so the API can be used.
     """
-    update_session("X-GEMINI-APIKEY", api_key)
-    set_secret_key(secret_key.encode())
-    set_login_state(True)
+    update_session(key="X-GEMINI-APIKEY", value=api_key)
+    set_secret_key(data=secret_key.encode())
+    set_login_state(logged_in=True)
 
 
 def logout():
     """ Removes the API and Secret key from session and global variables.
     """
-    update_session("X-GEMINI-APIKEY", "")
-    set_secret_key("".encode())
-    set_login_state(False)
+    update_session(key="X-GEMINI-APIKEY", value="")
+    set_secret_key(data="".encode())
+    set_login_state(logged_in=False)
 
 
 def generate_signature(payload):
@@ -43,8 +43,8 @@ def generate_signature(payload):
     encoded_payload = dumps(payload).encode()
     b64 = b64encode(encoded_payload)
     signature = new(gemini_api_secret, b64, sha384).hexdigest()
-    update_session("X-GEMINI-PAYLOAD", b64)
-    update_session("X-GEMINI-SIGNATURE", signature)
+    update_session(key="X-GEMINI-PAYLOAD", value=b64)
+    update_session(key="X-GEMINI-SIGNATURE", value=signature)
     increment_nonce()
 
 
@@ -84,8 +84,8 @@ def heartbeat(jsonify=None):
     """
     url = URLS.heartbeat()
     payload = {
-        "request": URLS.get_endpoint(url)
+        "request": URLS.get_endpoint(url=url)
     }
-    generate_signature(payload)
-    data, err = request_post(url, payload, jsonify)
+    generate_signature(payload=payload)
+    data, err = request_post(url=url, payload=payload, parse_json=jsonify)
     return data, err

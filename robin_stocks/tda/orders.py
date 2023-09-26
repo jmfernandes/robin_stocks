@@ -21,8 +21,8 @@ def place_order(account_id, order_payload, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.orders(account_id)
-    data, error = request_headers(url, order_payload, jsonify)
+    url = URLS.orders(account_id=account_id)
+    data, error = request_headers(url=url, payload=order_payload, parse_json=jsonify)
     return data, error
 
 
@@ -43,8 +43,8 @@ def cancel_order(account_id, order_id, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.order(account_id, order_id)
-    data, error = request_delete(url, jsonify)
+    url = URLS.order(account_id=account_id, order_id=order_id)
+    data, error = request_delete(url=url, parse_json=jsonify)
     return data, error
 
 
@@ -65,8 +65,8 @@ def get_order(account_id, order_id, jsonify=None):
         None if there was not an error.
 
     """
-    url = URLS.order(account_id, order_id)
-    data, error = request_get(url, None, jsonify)
+    url = URLS.order(account_id=account_id, order_id=order_id)
+    data, error = request_get(url=url, payload=None, parse_json=jsonify)
     return data, error
 
 
@@ -97,7 +97,7 @@ yyyy-MM-dd. 'fromEnteredTime' must also be set.
         None if there was not an error.
 
     """
-    url = URLS.orders(account_id)
+    url = URLS.orders(account_id=account_id)
     payload = {}
     if max_results:
         payload["maxResults"] = max_results
@@ -107,5 +107,5 @@ yyyy-MM-dd. 'fromEnteredTime' must also be set.
         payload["toEnteredTime"] = to_time
     if status:
         payload["status"] = status
-    data, error = request_get(url, payload, jsonify)
+    data, error = request_get(url=url, payload=payload, parse_json=jsonify)
     return data, error
