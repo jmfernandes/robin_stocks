@@ -852,7 +852,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     # adjust market orders
     if orderType == 'market':
         del payload['stop_price']
-        del payload['extended_hours'] 
+        if market_hours == 'regular_hours': 
+            del payload['extended_hours'] 
         
     if market_hours == 'regular_hours':
         if side == "buy":
