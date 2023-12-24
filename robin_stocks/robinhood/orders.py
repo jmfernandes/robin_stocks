@@ -434,7 +434,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeIn
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", account_number, None, stopPrice, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="buy", limitPrice=None, stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify= jsonify)
 
 
 @login_required
@@ -631,7 +631,7 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeI
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", account_number, None, stopPrice, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="sell", limitPrice=None, stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify= jsonify)
 
 
 @login_required
