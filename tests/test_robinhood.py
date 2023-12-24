@@ -836,3 +836,7 @@ class TestOrders:
             assert isFloat(order['cumulative_quantity'])
             if(order['state'] == 'filled'):
                 assert (order['quantity'] == order['cumulative_quantity'])
+
+    def test_stop_loss_order(cls):
+        order_details = r.order_sell_stop_loss()
+        assert ('account_number' in order_details)
