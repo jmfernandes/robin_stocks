@@ -104,9 +104,6 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         'device_token': device_token
     }
 
-    if mfa_code:
-        payload['mfa_code'] = mfa_code
-
     # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
     if os.path.isfile(pickle_path):
         # If store_session has been set to false then delete the pickle file, otherwise try to load it.
@@ -154,8 +151,10 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     # Handle case where mfa or challenge is required.
     if data:
         if 'mfa_required' in data:
-            mfa_token = input("Please type in the MFA code: ")
-            payload['mfa_code'] = mfa_token
+            if mfa_code:
+                payload['mfa_code'] = mfa_code
+            else:
+                payload["mfa_code"] = input("Please type in the MFA code: ")
             res = request_post(url, payload, jsonify_data=False)
             while (res.status_code != 200):
                 mfa_token = input(
