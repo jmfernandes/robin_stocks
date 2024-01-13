@@ -4,7 +4,7 @@ from robin_stocks.robinhood.urls import *
 
 
 @login_required
-def load_account_profile(account_number=None, info=None):
+def load_account_profile(account_number=None, info=None, dataType="indexzero"):
     """Gets the information associated with the accounts profile,including day
     trading information and cash being held by Robinhood.
 
@@ -12,6 +12,10 @@ def load_account_profile(account_number=None, info=None):
     :type acccount_number: Optional[str]
     :param info: The name of the key whose value is to be returned from the function.
     :type info: Optional[str]
+    :param dataType: Determines how to filter the data. 'regular' returns the unfiltered data. \
+    'results' will return data['results']. 'pagination' will return data['results'] and append it with any \
+    data that is in data['next']. 'indexzero' will return data['results'][0].
+    :type dataType: Optional[str]
     :returns: The function returns a dictionary of key/value pairs. \
     If a string is passed in to the info parameter, then the function will return \
     a string corresponding to the value of the key whose name matches the info parameter.
@@ -65,7 +69,7 @@ def load_account_profile(account_number=None, info=None):
     if account_number is not None:
          data = request_get(url)
     else:
-        data = request_get(url, 'indexzero')
+        data = request_get(url, dataType)
     return(filter_data(data, info))
 
 
