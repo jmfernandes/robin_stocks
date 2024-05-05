@@ -136,7 +136,7 @@ def load_investment_profile(info=None):
 
 
 @login_required
-def load_portfolio_profile(info=None):
+def load_portfolio_profile(account_number=None, info=None):
     """Gets the information associated with the portfolios profile,
     such as withdrawable amount, market value of account, and excess margin.
 
@@ -169,8 +169,11 @@ def load_portfolio_profile(info=None):
                       * unwithdrawable_grants
 
     """
-    url = portfolio_profile_url()
-    data = request_get(url, 'indexzero')
+    url = portfolio_profile_url(account_number)
+    if account_number is not None:
+        data = request_get(url)
+    else:
+        data = request_get(url, 'indexzero')
     return(filter_data(data, info))
 
 

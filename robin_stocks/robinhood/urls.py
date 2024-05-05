@@ -29,8 +29,11 @@ def investment_profile_url():
     return('https://api.robinhood.com/user/investment_profile/')
 
 
-def portfolio_profile_url():
-    return('https://api.robinhood.com/portfolios/')
+def portfolio_profile_url(account_number=None):
+    if account_number:
+        return('https://api.robinhood.com/portfolios/'+account_number)
+    else:
+        return('https://api.robinhood.com/portfolios/')
 
 
 def security_profile_url():
@@ -192,8 +195,11 @@ def market_category_url(category):
 # options
 
 
-def aggregate_url():
-    return('https://api.robinhood.com/options/aggregate_positions/')
+def aggregate_url(account_number):
+    if account_number:
+        return('https://api.robinhood.com/options/aggregate_positions/?account_numbers='+account_number)
+    else:
+        return('https://api.robinhood.com/options/aggregate_positions/')
 
 
 def chains_url(symbol):

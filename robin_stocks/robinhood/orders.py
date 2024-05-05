@@ -833,11 +833,16 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         trigger = "stop"
     else:
         price = round_price(next(iter(get_latest_price(symbol, priceType, extendedHours)), 0.00))
+        
+    from datetime import datetime
     payload = {
         'account': load_account_profile(account_number=account_number, info='url'),
         'instrument': get_instruments_by_symbols(symbol, info='url')[0],
         'symbol': symbol,
         'price': price,
+        'ask_price': round_price(next(iter(get_latest_price(symbol, "ask_price", extendedHours)), 0.00)),
+        'bid_ask_timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
+        'bid_price': round_price(next(iter(get_latest_price(symbol, "bid_price", extendedHours)), 0.00)),
         'quantity': quantity,
         'ref_id': str(uuid4()),
         'type': orderType,
@@ -863,11 +868,12 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         elif orderType == 'market' and side == 'sell':
             del payload['price']   
     elif market_hours == 'all_day_hours': 
+       
         payload['type'] = 'limit' 
         payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
         
     url = orders_url()
-
+    # print(payload)
     data = request_post(url, payload, jsonify_data=jsonify)
 
     return(data)
@@ -902,7 +908,7 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("credit", price, symbol, quantity, spread, account_number, timeInForce, jsonify))
+    return(order_option_spread("credit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
 
 
 @login_required
@@ -934,7 +940,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return(order_option_spread("debit", price, symbol, quantity, spread, account_number, timeInForce, jsonify))
+    return(order_option_spread("debit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
 
 
 @login_required
@@ -981,7 +987,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
                                         each['optionType'])
         legs.append({'position_effect': each['effect'],
                      'side': each['action'],
-                     'ratio_quantity': 1,
+                     'ratio_quantity': each['ratio_quantity'],
                      'option': option_instruments_url(optionID)})
 
     payload = {
@@ -1062,6 +1068,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     }
 
     url = option_orders_url()
+    # print(payload)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
