@@ -18,7 +18,7 @@ def account_profile_url(account_number=None):
     if account_number:
         return('https://api.robinhood.com/accounts/'+account_number)
     else:
-        return('https://api.robinhood.com/accounts/')
+        return('https://api.robinhood.com/accounts/?default_to_all_accounts=true')
 
 
 def basic_profile_url():
