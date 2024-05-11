@@ -811,7 +811,7 @@ def build_holdings(with_dividends=False):
 
 
 @login_required
-def build_user_profile():
+def build_user_profile(account_number=None):
     """Builds a dictionary of important information regarding the user account.
 
     :returns: Returns a dictionary that has total equity, extended hours equity, cash, and divendend total.
@@ -819,16 +819,15 @@ def build_user_profile():
     """
     user = {}
 
-    portfolios_data = load_portfolio_profile()
-    accounts_data = load_account_profile()
+    portfolios_data = load_portfolio_profile(account_number=account_number)
+    accounts_data = load_account_profile(account_number=account_number)
 
     if portfolios_data:
         user['equity'] = portfolios_data['equity']
         user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
 
     if accounts_data:
-        cash = "{0:.2f}".format(
-            float(accounts_data['cash']) + float(accounts_data['uncleared_deposits']))
+        cash = "{0:.2f}".format(float(accounts_data['portfolio_cash'])) # float(accounts_data['cash']) + uncleared_deposits 
         user['cash'] = cash
 
     user['dividend_total'] = get_total_dividends()
