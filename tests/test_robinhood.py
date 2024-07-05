@@ -854,6 +854,7 @@ class TestAccountInformation:
         loanPayments = r.get_stock_loan_payments()
         assert loanPayments
         for payment in loanPayments:
+            assert ('amount' in payment)
             assert isFloat(payment['amount']['amount'])
             assert ('symbol' in payment)
             assert ('description' in payment)
