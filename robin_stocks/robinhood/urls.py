@@ -150,7 +150,7 @@ def referral_url():
 
 
 def stockloan_url():
-    return('https://api.robinhood.com/stock_loan/payments/')
+    return('https://api.robinhood.com/accounts/stock_loan_payments/')
 
 
 def subscription_url():
