@@ -858,3 +858,20 @@ class TestAccountInformation:
             assert isFloat(payment['amount']['amount'])
             assert ('symbol' in payment)
             assert ('description' in payment)
+        
+    def test_get_interest_payments(cls):
+        def isFloat(f):
+            try:
+                float(f)
+                return True
+            except ValueError:
+                return False
+            
+        interests = r.get_interest_payments()
+        assert (interests)
+        for interest in interests:
+            assert ('amount' in interest)
+            assert isFloat(interest['amount']['amount'])
+            assert ('direction' in interest)
+            assert ('payout_type' in interest)
+            assert ('reason' in interest)
