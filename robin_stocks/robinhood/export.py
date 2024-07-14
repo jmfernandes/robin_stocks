@@ -41,7 +41,7 @@ def create_absolute_csv(dir_path, file_name, order_type):
 
 
 @login_required
-def export_completed_stock_orders(dir_path, file_name=None):
+def export_completed_stock_orders(dir_path, file_name=None, account_number=None):
     """Write all completed orders to a csv file
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
@@ -51,7 +51,7 @@ def export_completed_stock_orders(dir_path, file_name=None):
 
     """
     file_path = create_absolute_csv(dir_path, file_name, 'stock')
-    all_orders = get_all_stock_orders()
+    all_orders = get_all_stock_orders(account_number=account_number)
     with open(file_path, 'w', newline='') as f:
         csv_writer = writer(f)
         csv_writer.writerow([

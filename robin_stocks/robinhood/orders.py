@@ -8,7 +8,7 @@ from robin_stocks.robinhood.stocks import *
 from robin_stocks.robinhood.urls import *
 
 @login_required
-def get_all_stock_orders(info=None):
+def get_all_stock_orders(info=None, account_number=None):
     """Returns a list of all the orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -17,7 +17,7 @@ def get_all_stock_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
