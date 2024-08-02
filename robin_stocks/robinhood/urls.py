@@ -104,6 +104,9 @@ def banktransfers_url(direction=None):
     else:
         return('https://api.robinhood.com/ach/transfers/')
 
+def cardtransactions_url():
+   return('https://minerva.robinhood.com/history/transactions/')
+
 def unifiedtransfers_url():
    return('https://bonfire.robinhood.com/paymenthub/unified_transfers/')
 
