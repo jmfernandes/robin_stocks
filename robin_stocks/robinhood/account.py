@@ -407,23 +407,17 @@ def get_bank_transfers(direction=None, info=None):
     return(filter_data(data, info))
 
 @login_required
-def get_card_transactions(cardType=None, info=None):
-    """Returns all debit card transactions made on the account
+def get_unified_transfers(info=None):
+    """Returns all transfers made for the account.
 
-    :param cardType: Will filter the card transaction types. Can be 'pending' or 'settled'.
-    :type cardType: Optional[str]
-    :param info: Will filter the results to get a specific value. 'direction' gives if it was debit or credit.
+    :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    payload = None
-    if type:
-        payload = { 'type': type }
-
-    url = cardtransactions_url()
-    data = request_get(url, 'pagination', payload)
+    url = unifiedtransfers_url()
+    data = request_get(url, 'results')
     return(filter_data(data, info))
 
 @login_required
