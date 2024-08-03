@@ -1269,7 +1269,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
 
 
 @login_required
-def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True, forceWholeShares=False):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1281,12 +1281,14 @@ def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonif
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
+    :param forceWholeNumber: Force rounding to the nearest whole number of shares
+    :type forceWholeNumber: Optional[bool]
     :returns: Dictionary that contains information regarding the buying of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order_crypto(symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify)
+    return order_crypto(symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify, forceWholeShares)
 
 
 @login_required
@@ -1445,7 +1447,7 @@ def order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeIn
 
 
 @login_required
-def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=None, timeInForce="gtc", jsonify=True):
+def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=None, timeInForce="gtc", jsonify=True, forceWholeShares=False):
     """Submits an order for a crypto.
 
     :param symbol: The crypto ticker of the crypto to trade.
@@ -1463,6 +1465,8 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
     :type timeInForce: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
+    :param forceWholeNumber: Force rounding to the nearest whole number of shares (if market order by price only)
+    :type forceWholeNumber: Optional[bool]
     :returns: Dictionary that contains information regarding the selling of crypto, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
@@ -1491,7 +1495,7 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
     if amountIn == "quantity":
         quantity = quantityOrPrice
     else:
-        quantity = round_price(quantityOrPrice/price)
+        quantity = round_price(quantityOrPrice/price, forceWholeShares)
 
     payload = {
         'account_id': load_crypto_profile(info="id"),
