@@ -8,7 +8,7 @@ from robin_stocks.robinhood.stocks import *
 from robin_stocks.robinhood.urls import *
 
 @login_required
-def get_all_stock_orders(info=None):
+def get_all_stock_orders(info=None, account_number=None):
     """Returns a list of all the orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -17,13 +17,13 @@ def get_all_stock_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
 
 @login_required
-def get_all_option_orders(info=None):
+def get_all_option_orders(info=None, account_number=None):
     """Returns a list of all the option orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -32,7 +32,7 @@ def get_all_option_orders(info=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
@@ -242,13 +242,13 @@ def cancel_crypto_order(orderID):
 
 
 @login_required
-def cancel_all_stock_orders():
+def cancel_all_stock_orders(account_number=None):
     """Cancels all stock orders.
 
     :returns: The list of orders that were cancelled.
 
     """ 
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel'] is not None]
@@ -261,13 +261,13 @@ def cancel_all_stock_orders():
 
 
 @login_required
-def cancel_all_option_orders():
+def cancel_all_option_orders(account_number=None):
     """Cancels all option orders.
 
     :returns: Returns the order information for the orders that were cancelled.
 
     """ 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_get(url, 'pagination')
 
     data = [item for item in data if item['cancel_url'] is not None]
@@ -768,7 +768,7 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
     else:
         payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage)}
 
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return (data)
@@ -856,7 +856,8 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
     }
     # adjust market orders
     if orderType == 'market':
-        del payload['stop_price']
+        if trigger != "stop":
+            del payload['stop_price']
         # if market_hours == 'regular_hours': 
         #     del payload['extended_hours'] 
         
@@ -872,7 +873,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         payload['type'] = 'limit' 
         payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
         
-    url = orders_url()
+    url = orders_url(account_number=account_number)
     # print(payload)
     data = request_post(url, payload, jsonify_data=jsonify)
 
@@ -1004,7 +1005,7 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1067,7 +1068,7 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     # print(payload)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
@@ -1134,7 +1135,7 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1199,7 +1200,7 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
@@ -1262,7 +1263,7 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
         'ref_id': str(uuid4()),
     }
 
-    url = option_orders_url()
+    url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
     return(data)
