@@ -850,7 +850,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         'time_in_force': timeInForce,
         'trigger': trigger,
         'side': side,
-        'market_hours': market_hours, # choices are ['regular_hours', 'all_day_hours']
+        'market_hours': market_hours, # choices are ['regular_hours', 'all_day_hours', 'extended_hours']
         'extended_hours': extendedHours,
         'order_form_version': 4
     }
@@ -868,8 +868,7 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
         # regular market sell
         elif orderType == 'market' and side == 'sell':
             del payload['price']   
-    elif market_hours == 'all_day_hours': 
-       
+    elif market_hours in ('extended_hours', 'all_day_hours'):
         payload['type'] = 'limit' 
         payload['quantity']=int(payload['quantity']) # round to integer instead of fractional
         
