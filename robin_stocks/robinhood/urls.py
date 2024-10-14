@@ -232,7 +232,7 @@ def option_orders_url(orderID=None, account_number=None):
     return url
 
 
-def option_positions_url(account_number):
+def option_positions_url(account_number=None):
     if account_number:
         return('https://api.robinhood.com/options/positions/?account_numbers='+account_number)
     else:
