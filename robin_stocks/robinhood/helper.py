@@ -231,7 +231,7 @@ def inputs_to_set(inputSymbols):
 
 
 def request_document(url, payload=None):
-    """Using a document url, makes a get request and returnes the session data.
+    """Using a document url, makes a get request and returns the session data.
 
     :param url: The url to send a get request to.
     :type url: str
