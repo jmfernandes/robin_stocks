@@ -944,7 +944,7 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
 
 
 @login_required
-def order_option_spread(direction, price, symbol, quantity, spread, account_number=None, timeInForce='gtc', jsonify=True):
+def order_option_spread(direction, price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True)
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
     :param direction: Can be "credit" or "debit".
