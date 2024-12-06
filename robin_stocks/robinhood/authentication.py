@@ -217,7 +217,7 @@ def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
         'flow': 'suv',
         'input':{'workflow_id': workflow_id}
     }
-    data = request_post(url=url, payload=payload,json=True )
+    data = request_post(url=url, payload=payload,json=True)
     if "id" in data:
         inquiries_url = f"https://api.robinhood.com/pathfinder/inquiries/{data['id']}/user_view/"
         res = request_get(inquiries_url)
