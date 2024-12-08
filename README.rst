@@ -2,9 +2,9 @@
 
 Robin-Stocks API Library
 ========================
-This library provides a pure python interface to interact with the Robinhood API, Gemini API,
+This library provides a pure Python interface that interacts with the Robinhood API, Gemini API,
 and TD Ameritrade API. The code is simple to use, easy to understand, and easy to modify.
-With this library you can view information on stocks, options, and crypto-currencies in real time, 
+With this library, you can view information on stocks, options, and crypto-currencies in real-time, 
 create your own robo-investor or trading algorithm, and improve your programming skills.
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
@@ -14,7 +14,7 @@ Supported APIs
 The supported APIs are Robinhood, Gemini, and TD Ameritrade. For more information about how to use the different APIs, visit the README
 documents for `Robinhood Documentation`_, `Gemini Documentation`_, and `TDA Documentation`_.
 
-Below are examples on how to call each of those modules.
+Below are examples of how to call each of those modules.
 
 >>> import robin_stocks.robinhood as rh
 >>> import robin_stocks.gemini as gem
@@ -58,7 +58,7 @@ so it can be installed by typing into terminal (on Mac) or into command prompt (
 Also be sure that Python 3 is installed. If you need to install python you can download it from `Python.org <https://www.python.org/downloads/>`_.
 Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go to `PyPi.org <https://pypi.org/project/pip/>`_.
 
-If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into terminal or command prompt:
+If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into the terminal or command prompt:
 
 >>> git clone https://github.com/jmfernandes/robin_stocks.git
 >>> cd robin_stocks
@@ -82,7 +82,7 @@ go to `robin-stocks.com TDA Page <http://www.robin-stocks.com/en/latest/tda.html
 how to generate API keys for TD Ameritrade and how to use the API, go to the `TDA Documentation`_.
 
 For a complete list of all Gemini API functions and what the different parameters mean, 
-go to `robin-stocks.com Gemeni Page <http://www.robin-stocks.com/en/latest/gemini.html>`_. For detailed instructions on 
+go to `robin-stocks.com Gemini Page <http://www.robin-stocks.com/en/latest/gemini.html>`_. For detailed instructions on 
 how to generate API keys for Gemini and how to use both the private and public API, go to the `Gemini Documentation`_.
 
 .. _Robinhood Documentation: Robinhood.rst
