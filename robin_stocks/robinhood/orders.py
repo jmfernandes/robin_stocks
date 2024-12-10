@@ -13,6 +13,8 @@ def get_all_stock_orders(info=None, account_number=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
+    :param start_date: Sets the date of when to start returning orders, returns all orders up to current date and time.
+    :type date: Optional[str] format, should this be sent as a DT object? I believe it's safer to require it to be handed to the function as a string.
     :returns: Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
@@ -28,6 +30,8 @@ def get_all_option_orders(info=None, account_number=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
+    :param start_date: Sets the date of when to start returning orders, returns all orders up to current date and time.
+    :type date: Optional[str] format, should this be sent as a DT object? I believe it's safer to require it to be handed to the function as a string.
     :returns: Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, \
     a list of strings is returned where the strings are the value of the key that matches info.
 
