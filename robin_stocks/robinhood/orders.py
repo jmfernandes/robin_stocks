@@ -8,7 +8,7 @@ from robin_stocks.robinhood.stocks import *
 from robin_stocks.robinhood.urls import *
 
 @login_required
-def get_all_stock_orders(info=None, account_number=None):
+def get_all_stock_orders(info=None, account_number=None, start_date=None):
     """Returns a list of all the orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -19,13 +19,13 @@ def get_all_stock_orders(info=None, account_number=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = orders_url(account_number=account_number)
+    url = orders_url(account_number=account_number, start_date=start_date)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
 
 @login_required
-def get_all_option_orders(info=None, account_number=None):
+def get_all_option_orders(info=None, account_number=None, start_date=None):
     """Returns a list of all the option orders that have been processed for the account.
 
     :param info: Will filter the results to get a specific value.
@@ -36,7 +36,7 @@ def get_all_option_orders(info=None, account_number=None):
     a list of strings is returned where the strings are the value of the key that matches info.
 
     """
-    url = option_orders_url(account_number=account_number)
+    url = option_orders_url(account_number=account_number, start_date=start_date)
     data = request_get(url, 'pagination')
     return(filter_data(data, info))
 
