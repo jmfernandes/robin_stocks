@@ -222,14 +222,17 @@ def option_instruments_url(id=None):
         return('https://api.robinhood.com/options/instruments/')
 
 
-def option_orders_url(orderID=None, account_number=None):
+def option_orders_url(orderID=None, account_number=None, start_date=None):
     url = 'https://api.robinhood.com/options/orders/'
     if orderID:
         url += '{0}/'.format(orderID)
     if account_number:
-        url += ('?account_numbers='+account_number)
+        url += ('?account_numbers=' + account_number)
+    if start_date:
+        url += ('?updated_at[gte]=' + start_date)
 
     return url
+
 
 
 def option_positions_url(account_number):
@@ -300,11 +303,13 @@ def option_cancel_url(id):
     return('https://api.robinhood.com/options/orders/{0}/cancel/'.format(id))
 
 
-def orders_url(orderID=None, account_number=None):
+def orders_url(orderID=None, account_number=None, start_date=None):
     url = 'https://api.robinhood.com/orders/'
     if orderID:
         url += '{0}/'.format(orderID)
     if account_number:
-        url += ('?account_numbers='+account_number)
+        url += ('?account_numbers=' + account_number)    
+    if start_date:
+        url += ('?updated_at[gte]=' + start_date)
 
     return url
