@@ -836,3 +836,42 @@ class TestOrders:
             assert isFloat(order['cumulative_quantity'])
             if(order['state'] == 'filled'):
                 assert (order['quantity'] == order['cumulative_quantity'])
+                
+class TestAccountInformation:
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+    
+    def test_get_stock_loan_payments(cls):
+        def isFloat(f):
+            try:
+                float(f)
+                return True
+            except ValueError:
+                return False
+
+        loanPayments = r.get_stock_loan_payments()
+        assert loanPayments
+        for payment in loanPayments:
+            assert ('amount' in payment)
+            assert isFloat(payment['amount']['amount'])
+            assert ('symbol' in payment)
+            assert ('description' in payment)
+        
+    def test_get_interest_payments(cls):
+        def isFloat(f):
+            try:
+                float(f)
+                return True
+            except ValueError:
+                return False
+            
+        interests = r.get_interest_payments()
+        assert (interests)
+        for interest in interests:
+            assert ('amount' in interest)
+            assert isFloat(interest['amount']['amount'])
+            assert ('direction' in interest)
+            assert ('payout_type' in interest)
+            assert ('reason' in interest)

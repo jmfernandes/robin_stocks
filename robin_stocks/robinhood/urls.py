@@ -107,6 +107,9 @@ def banktransfers_url(direction=None):
 def cardtransactions_url():
    return('https://minerva.robinhood.com/history/transactions/')
 
+def unifiedtransfers_url():
+   return('https://bonfire.robinhood.com/paymenthub/unified_transfers/')
+
 def daytrades_url(account):
     return('https://api.robinhood.com/accounts/{0}/recent_day_trades/'.format(account))
 
@@ -150,8 +153,10 @@ def referral_url():
 
 
 def stockloan_url():
-    return('https://api.robinhood.com/stock_loan/payments/')
+    return('https://api.robinhood.com/accounts/stock_loan_payments/')
 
+def interest_url():
+    return('https://api.robinhood.com/accounts/sweeps/')
 
 def subscription_url():
     return('https://api.robinhood.com/subscription/subscription_fees/')

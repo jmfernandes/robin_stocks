@@ -50,7 +50,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=""):
+def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_path="", pickle_name=""):
     """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -73,6 +73,8 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     :type store_session: Optional[boolean]
     :param mfa_code: MFA token if enabled.
     :type mfa_code: Optional[str]
+    :param pickle_path: Allows users to specify the path of the pickle file.
+        Accepts both relative and absolute paths.
     :param pickle_name: Allows users to name Pickle token file in order to switch
         between different accounts without having to re-login every time.
     :returns:  A dictionary with log in information. The 'access_token' keyword contains the access token, and the 'detail' keyword \
@@ -82,6 +84,11 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     device_token = generate_device_token()
     home_dir = os.path.expanduser("~")
     data_dir = os.path.join(home_dir, ".tokens")
+    if pickle_path:
+        if not os.path.isabs(pickle_path):
+            # normalize relative paths
+            pickle_path = os.path.normpath(os.path.join(os.getcwd(), pickle_path))
+        data_dir = pickle_path
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
     creds_file = "robinhood" + pickle_name + ".pickle"
@@ -101,7 +108,11 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         'scope': scope,
         'username': username,
         'challenge_type': challenge_type,
-        'device_token': device_token
+        'device_token': device_token,
+        'try_passkeys': False,
+        'token_request_path':'/login',
+        'create_read_only_secondary_token':True,
+        'request_id': '848bd19e-02bc-45d9-99b5-01bce5a79ea7'
     }
 
     if mfa_code:
@@ -174,6 +185,10 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
             update_session(
                 'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
             data = request_post(url, payload)
+        elif 'verification_workflow' in data:
+            workflow_id = data['verification_workflow']['id']
+            _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id, mfa_code=mfa_code)
+            data = request_post(url, payload)
         # Update Session data with authorization or raise exception with the information present in data.
         if 'access_token' in data:
             token = '{0} {1}'.format(data['token_type'], data['access_token'])
@@ -186,11 +201,48 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                                  'access_token': data['access_token'],
                                  'refresh_token': data['refresh_token'],
                                  'device_token': payload['device_token']}, f)
+        
         else:
-            raise Exception(data['detail'])
+            if 'detail' in data:
+                raise Exception(data['detail'])
+            raise Exception(f"Received an error response {data}")
     else:
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
+
+def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
+    url = "https://api.robinhood.com/pathfinder/user_machine/"
+    payload = {
+        'device_id': device_token,
+        'flow': 'suv',
+        'input':{'workflow_id': workflow_id}
+    }
+    data = request_post(url=url, payload=payload,json=True)
+    if "id" in data:
+        inquiries_url = f"https://api.robinhood.com/pathfinder/inquiries/{data['id']}/user_view/"
+        res = request_get(inquiries_url)
+        challenge_id=res['type_context']["context"]["sheriff_challenge"]["id"]
+        challenge_url = f"https://api.robinhood.com/challenge/{challenge_id}/respond/"
+        challenge_payload = {
+            'response': mfa_code
+        }
+        challenge_response = request_post(url=challenge_url, payload=challenge_payload,json=True )
+        if challenge_response["status"] == "validated":
+            inquiries_payload = {"sequence":0,"user_input":{"status":"continue"}}
+            inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload,json=True )
+            if inquiries_response["type_context"]["result"] == "workflow_status_approved":
+                return
+            else:
+                raise Exception("workflow status  not approved")    
+        else:
+            raise Exception("Challenge not validated")
+    raise Exception("Id not returned in user-machine call")
+
+def _get_sherrif_challenge(token_id:str):
+    
+    if "id" in data:
+        return data["id"]
+    raise Exception("Id not returned in user-machine call")
 
 
 @login_required
