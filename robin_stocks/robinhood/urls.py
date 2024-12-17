@@ -238,7 +238,6 @@ def option_orders_url(orderID=None, account_number=None, start_date=None):
                 url += "?" + value
             else:
                 url += "&" + value
-    print(url)
 
     return url
 
@@ -329,6 +328,5 @@ def orders_url(orderID=None, account_number=None, start_date=None):
                 url += "?" + value
             else:
                 url += "&" + value
-    print(url)
 
     return url
