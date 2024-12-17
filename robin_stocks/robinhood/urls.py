@@ -226,10 +226,19 @@ def option_orders_url(orderID=None, account_number=None, start_date=None):
     url = 'https://api.robinhood.com/options/orders/'
     if orderID:
         url += '{0}/'.format(orderID)
+    query_build = []
     if account_number:
-        url += ('?account_numbers=' + account_number)
+        query_build.append(f"account_numbers={account_number}")
     if start_date:
-        url += ('?updated_at[gte]=' + start_date)
+        query_build.append(f"updated_at[gte]={start_date}")
+
+    if query_build:
+        for index, value in enumerate(query_build):
+            if index == 0:
+                url += "?" + value
+            else:
+                url += "&" + value
+    print(url)
 
     return url
 
@@ -307,9 +316,19 @@ def orders_url(orderID=None, account_number=None, start_date=None):
     url = 'https://api.robinhood.com/orders/'
     if orderID:
         url += '{0}/'.format(orderID)
+
+    query_build = []
     if account_number:
-        url += ('?account_numbers=' + account_number)    
+        query_build.append(f"account_numbers={account_number}")
     if start_date:
-        url += ('?updated_at[gte]=' + start_date)
+        query_build.append(f"updated_at[gte]={start_date}")
+
+    if query_build:
+        for index, value in enumerate(query_build):
+            if index == 0:
+                url += "?" + value
+            else:
+                url += "&" + value
+    print(url)
 
     return url
