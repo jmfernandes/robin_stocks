@@ -186,6 +186,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                 'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
             data = request_post(url, payload)
         elif 'verification_workflow' in data:
+            mfa_code = input("Please type in the MFA code: ")
             workflow_id = data['verification_workflow']['id']
             _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id, mfa_code=mfa_code)
             data = request_post(url, payload)
@@ -210,6 +211,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
+
 def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
     url = "https://api.robinhood.com/pathfinder/user_machine/"
     payload = {
@@ -217,7 +219,11 @@ def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
         'flow': 'suv',
         'input':{'workflow_id': workflow_id}
     }
-    data = request_post(url=url, payload=payload,json=True)
+    data = request_post(url=url, payload=payload, json=True)
+    while (data.status_code != 200):
+        mfa_code = input(
+            "That MFA code was not correct. Please type in another MFA code: ")
+        data = request_post(url, payload, jsonify_data=False)
     if "id" in data:
         inquiries_url = f"https://api.robinhood.com/pathfinder/inquiries/{data['id']}/user_view/"
         res = request_get(inquiries_url)
