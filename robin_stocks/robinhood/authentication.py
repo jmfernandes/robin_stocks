@@ -211,6 +211,9 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     return(data)
 
 def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
+    if mfa_code == None:
+        mfa_code = input("Please type in the MFA code: ")
+
     url = "https://api.robinhood.com/pathfinder/user_machine/"
     payload = {
         'device_id': device_token,
