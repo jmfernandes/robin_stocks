@@ -146,15 +146,21 @@ def id_for_option(symbol, expirationDate, strike, optionType):
     return(listOfOptions[0]['id'])
 
 
-def round_price(price):
+def round_price(price, forceWholeNumber=False):
     """Takes a price and rounds it to an appropriate decimal place that Robinhood will accept.
 
     :param price: The input price to round.
     :type price: float or int
+    :param forceWholeNumber: Force rounding to the nearest whole number
+    :type forceWholeNumber: bool
     :returns: The rounded price as a float.
 
     """
     price = float(price)
+
+    if(forceWholeNumber):
+        return round(price)
+        
     if price <= 1e-2:
         returnPrice = round(price, 6)
     elif price < 1e0:
