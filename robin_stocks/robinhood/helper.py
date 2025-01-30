@@ -93,7 +93,7 @@ def id_for_chain(symbol):
 
     if data:
         if symbol in index_opt_list:
-            return(data['tradable_chain_ids'][0]) # multi-chain_ids, select 0 for now 
+            return(data['tradable_chain_ids'][0 if symbol in ['RUT', 'NDX'] else -1])  # multi-chain_ids
         return(data['tradable_chain_id'])
     else:
         return(data)

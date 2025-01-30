@@ -152,7 +152,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         return [None]
 
     payload = {'chain_id': id_for_chain(symbol),
-               'chain_symbol': symbol,
+               'chain_symbol': (symbol+"P") if symbol == 'NDX' else ((symbol+'W') if symbol in ['SPX', 'RUT', 'VIX'] else symbol),
                'state': 'active'}
 
     if expirationDate:
