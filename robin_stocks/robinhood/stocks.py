@@ -585,6 +585,39 @@ def get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='re
     return(filter_data(histData, info))
 
 
+def get_index_quote_by_id(stock_id, info=None):
+    """
+    Represents basic stock quote information
+
+    :param stock_id: robinhood stock id
+    :type stock_id: str
+    :param info: Will filter the results to get a specific value. Possible options are url, instrument, execution_date, \
+    divsor, and multiplier.
+    :type info: Optional[str]
+    :return: [dict] If the info parameter is provided, then the function will extract the value of the key \
+    that matches the info parameter. Otherwise, the whole dictionary is returned.
+    :Dictionary Keys: * ask_price
+                      * ask_size
+                      * bid_price
+                      * bid_size
+                      * last_trade_price
+                      * last_extended_hours_trade_price
+                      * previous_close
+                      * adjusted_previous_close
+                      * previous_close_date
+                      * symbol
+                      * trading_halted
+                      * has_traded
+                      * last_trade_price_source
+                      * updated_at
+                      * instrument
+    """
+    url = marketdata_index_quotes_url(stock_id)
+    data = request_get(url)
+
+    return (filter_data(data, info))
+
+
 def get_stock_quote_by_id(stock_id, info=None):
     """
     Represents basic stock quote information
@@ -645,7 +678,9 @@ def get_stock_quote_by_symbol(symbol, info=None):
                       * updated_at
                       * instrument
     """
-
+    if symbol in index_opt_list:
+        return get_index_quote_by_id(id_for_stock(symbol))
+    
     return get_stock_quote_by_id(id_for_stock(symbol))
 
 
