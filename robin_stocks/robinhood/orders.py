@@ -324,8 +324,7 @@ def order_buy_market(symbol, quantity, account_number=None, timeInForce='gtc', e
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, account_number, timeInForce, extendedHours, jsonify)
-
+    return order(symbol=symbol, quantity=quantity, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)    
 
 @login_required
 def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True):
@@ -350,7 +349,7 @@ def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, time
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -384,11 +383,11 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
     price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
     
-    return order(symbol, fractional_shares, "buy", None, None, account_number, timeInForce, extendedHours, jsonify, market_hours)
+    return order(symbol=symbol, quantity=fractional_shares, side="buy", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
-def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True, market_hours='regular_hours'):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -406,12 +405,14 @@ def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInFor
     :type extendedHours: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
+    :param market_hours: The market hours to use for the order (regular_hours, extended_hours, all_day_hours).
+    :type market_hours: Optional[str]
     :returns: Dictionary that contains information regarding the purchase of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", limitPrice, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="buy", limitPrice=limitPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
@@ -438,7 +439,7 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeIn
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", None, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="buy", stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -467,7 +468,7 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "buy", limitPrice, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="buy", limitPrice=limitPrice, stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -497,7 +498,7 @@ def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, None, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(symbol=symbol, quantity=quantity, side="buy", trailAmount=trailAmount, trailType=trailType, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -522,7 +523,7 @@ def order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', 
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="sell", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -548,7 +549,7 @@ def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, tim
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, None, account_number, timeInForce, extendedHours, jsonify, market_hours)
+    return order(symbol=symbol, quantity=quantity, side="sell", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
@@ -581,11 +582,11 @@ def order_sell_fractional_by_price(symbol, amountInDollars, account_number=None,
     price = next(iter(get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
     fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars/float(price))
 
-    return order(symbol, fractional_shares, "sell", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=fractional_shares, side="sell", account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
-def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True, market_hours='regular_hours'):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -603,12 +604,14 @@ def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInFo
     :type extendedHours: Optional[str]
     :param jsonify: If set to False, function will return the request object which contains status code and headers.
     :type jsonify: Optional[str]
+    :param market_hours: The market hours to use for the order (regular_hours, extended_hours, all_day_hours).
+    :type market_hours: Optional[str]
     :returns: Dictionary that contains information regarding the selling of stocks, \
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", limitPrice, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="sell", limitPrice=limitPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify, market_hours=market_hours)
 
 
 @login_required
@@ -635,7 +638,7 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeI
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", None, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="sell", stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -664,7 +667,7 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, account_numbe
     the price, and the quantity.
 
     """ 
-    return order(symbol, quantity, "sell", limitPrice, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(symbol=symbol, quantity=quantity, side="sell", limitPrice=limitPrice, stopPrice=stopPrice, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
@@ -694,7 +697,7 @@ def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentag
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, None, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(symbol=symbol, quantity=quantity, side="sell", trailAmount=trailAmount, trailType=trailType, account_number=account_number, timeInForce=timeInForce, extendedHours=extendedHours, jsonify=jsonify)
 
 
 @login_required
