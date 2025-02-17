@@ -45,6 +45,19 @@ def convert_none_to_string(func):
             return("")
     return(string_wrapper)
 
+def stock_for_id(instrument_id):
+    """
+    Takes an instrument id and returns a stock ticker
+
+    :param instrument_id: The instrument id
+    :type instrument_id: str
+    :returns: A string that represents the ticker symbol
+    """
+    url = f"https://api.robinhood.com/instruments/{instrument_id}"
+    payload = None
+    data = request_get(url, 'regular', payload)
+
+    return (filter_data(data, 'symbol'))
 
 def id_for_stock(symbol):
     """Takes a stock ticker and returns the instrument id associated with the stock.
