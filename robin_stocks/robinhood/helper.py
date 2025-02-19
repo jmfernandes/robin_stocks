@@ -93,7 +93,9 @@ def id_for_chain(symbol):
 
     if data:
         if symbol in index_opt_list:
-            return(data['tradable_chain_ids'][0 if symbol in ['RUT', 'NDX'] else -1])  # multi-chain_ids
+            sorted_chain_ids = sorted(data['tradable_chain_ids'])
+            idx = 0 if symbol in ['RUT', 'NDX', 'SPX', 'VIX'] else -1 # , 'SPX'  'SPX', 
+            return(sorted_chain_ids[idx])  # pick first from multi-chain_ids
         return(data['tradable_chain_id'])
     else:
         return(data)
