@@ -23,7 +23,7 @@ from .export import (export_completed_crypto_orders,
                      export_completed_option_orders,
                      export_completed_stock_orders)
 from .helper import (filter_data, get_output, request_delete, request_document,
-                     request_get, request_post, set_output, update_session)
+                     request_get, request_post, set_output, update_session, LoginRequiredError)
 from .markets import (get_all_stocks_from_market_tag, get_currency_pairs,
                       get_market_hours, get_market_next_open_hours,
                       get_market_next_open_hours_after_date,
