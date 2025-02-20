@@ -4,13 +4,15 @@ from functools import lru_cache as cache
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
 
-def get_quotes(inputSymbols, info=None):
+def get_quotes(inputSymbols, info=None, bounds=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
     :type inputSymbols: str or list
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
+    :param bounds: The bounds to use for the quotes ('24_5' for 24 hour market).
+    :type bounds: Optional[str]
     :returns: [list] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. \
     Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
     :Dictionary Keys: * ask_price
@@ -33,6 +35,8 @@ def get_quotes(inputSymbols, info=None):
     symbols = inputs_to_set(inputSymbols)
     url = quotes_url()
     payload = {'symbols': ','.join(symbols)}
+    if bounds:
+        payload['bounds'] = bounds
     data = request_get(url, 'results', payload)
 
     if (data == None or data == [None]):

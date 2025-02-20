@@ -3,6 +3,7 @@ import getpass
 import os
 import pickle
 import random
+import time
 
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
@@ -186,8 +187,9 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                 'X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
             data = request_post(url, payload)
         elif 'verification_workflow' in data:
+            print("Verification workflow required. Please check your Robinhood app for instructions.")
             workflow_id = data['verification_workflow']['id']
-            _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id, mfa_code=mfa_code)
+            _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id, mfa_code=mfa_code) 
             data = request_post(url, payload)
         # Update Session data with authorization or raise exception with the information present in data.
         if 'access_token' in data:
@@ -211,9 +213,6 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
     return(data)
 
 def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
-    if mfa_code == None:
-        mfa_code = input("Please type in the MFA code: ")
-
     url = "https://api.robinhood.com/pathfinder/user_machine/"
     payload = {
         'device_id': device_token,
@@ -224,21 +223,35 @@ def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
     if "id" in data:
         inquiries_url = f"https://api.robinhood.com/pathfinder/inquiries/{data['id']}/user_view/"
         res = request_get(inquiries_url)
-        challenge_id=res['type_context']["context"]["sheriff_challenge"]["id"]
-        challenge_url = f"https://api.robinhood.com/challenge/{challenge_id}/respond/"
+        challenge_id=res["context"]["sheriff_challenge"]["id"] # used to be type_context
+        challenge_url = f"https://api.robinhood.com/push/{challenge_id}/get_prompts_status/" # changed this endpoint
         challenge_payload = {
             'response': mfa_code
         }
-        challenge_response = request_post(url=challenge_url, payload=challenge_payload,json=True )
-        if challenge_response["status"] == "validated":
-            inquiries_payload = {"sequence":0,"user_input":{"status":"continue"}}
-            inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload,json=True )
-            if inquiries_response["type_context"]["result"] == "workflow_status_approved":
-                return
+        challenge_response = request_get(url=challenge_url)
+        # put the while loop here
+        # ***************************   NEW   ************************************
+        start_time = time.time()
+        while time.time() - start_time < 120: # 2 minutes
+
+            time.sleep(5)
+            if challenge_response["challenge_status"] == "validated":
+                inquiries_payload = {"sequence":0,"user_input":{"status":"continue"}}
+                inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload,json=True )
+                if inquiries_response["type_context"]["result"] == "workflow_status_approved":
+                    return
+                else:
+                    raise Exception("workflow status not approved")    
+            #else:
+                #raise Exception("Challenge not validated")
             else:
-                raise Exception("workflow status  not approved")    
-        else:
-            raise Exception("Challenge not validated")
+                challenge_response = request_get(url=challenge_url) 
+                print("Waiting for challenge to be validated")
+                print(time.time() - start_time)
+
+        raise Exception("Login confirmation timed out. Please try again.")
+        # *************************************************************************
+
     raise Exception("Id not returned in user-machine call")
 
 def _get_sherrif_challenge(token_id:str):

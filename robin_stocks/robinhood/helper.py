@@ -5,6 +5,9 @@ from functools import wraps
 import requests
 from robin_stocks.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
 
+class LoginRequiredError(Exception):
+    """Exception raised when a method requires authentication but user is not logged in"""
+    pass
 
 def set_login_state(logged_in):
     """Sets the login state"""
@@ -28,8 +31,7 @@ def login_required(func):
     def login_wrapper(*args, **kwargs):
         global LOGGED_IN
         if not LOGGED_IN:
-            raise Exception('{} can only be called when logged in'.format(
-                func.__name__))
+            raise LoginRequiredError(f'{func.__name__} can only be called when logged in')
         return(func(*args, **kwargs))
     return(login_wrapper)
 
@@ -45,6 +47,19 @@ def convert_none_to_string(func):
             return("")
     return(string_wrapper)
 
+def stock_for_id(instrument_id):
+    """
+    Takes an instrument id and returns a stock ticker
+
+    :param instrument_id: The instrument id
+    :type instrument_id: str
+    :returns: A string that represents the ticker symbol
+    """
+    url = f"https://api.robinhood.com/instruments/{instrument_id}"
+    payload = None
+    data = request_get(url, 'regular', payload)
+
+    return (filter_data(data, 'symbol'))
 
 def id_for_stock(symbol):
     """Takes a stock ticker and returns the instrument id associated with the stock.
