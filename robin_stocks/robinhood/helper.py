@@ -5,6 +5,9 @@ from functools import wraps
 import requests
 from robin_stocks.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
 
+class LoginRequiredError(Exception):
+    """Exception raised when a method requires authentication but user is not logged in"""
+    pass
 
 def set_login_state(logged_in):
     """Sets the login state"""
@@ -28,8 +31,7 @@ def login_required(func):
     def login_wrapper(*args, **kwargs):
         global LOGGED_IN
         if not LOGGED_IN:
-            raise Exception('{} can only be called when logged in'.format(
-                func.__name__))
+            raise LoginRequiredError(f'{func.__name__} can only be called when logged in')
         return(func(*args, **kwargs))
     return(login_wrapper)
 
