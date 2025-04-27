@@ -1,9 +1,11 @@
 """Contains all functions for the purpose of logging in and out to Robinhood."""
 import getpass
 import os
+import sys
 import pickle
 import random
 import time
+import threading
 
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
@@ -212,40 +214,63 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
-def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
+# Timer display function
+def display_timer(stop_timer):
+    total_time = 120  # Total time in seconds
+    start_time = time.time()
+    while not stop_timer.is_set():
+        elapsed = time.time() - start_time
+        remaining = total_time - elapsed
+        if remaining <= 0:
+            break
+        sys.stdout.write(f"\rWaiting for app approval. Time remaining: {remaining:.2f} seconds")
+        sys.stdout.flush()
+        time.sleep(1)
+    # Clear the line after stopping the timer
+    sys.stdout.write("\r" + " " * 100 + "\r")
+    sys.stdout.flush()
+
+def _validate_sherrif_id(device_token: str, workflow_id: str, mfa_code: str):
     url = "https://api.robinhood.com/pathfinder/user_machine/"
     payload = {
         'device_id': device_token,
         'flow': 'suv',
-        'input':{'workflow_id': workflow_id}
+        'input': {'workflow_id': workflow_id}
     }
-    data = request_post(url=url, payload=payload,json=True)
+    data = request_post(url=url, payload=payload, json=True)
     if "id" in data:
         inquiries_url = f"https://api.robinhood.com/pathfinder/inquiries/{data['id']}/user_view/"
         res = request_get(inquiries_url)
-        challenge_id=res["context"]["sheriff_challenge"]["id"] # used to be type_context
-        challenge_url = f"https://api.robinhood.com/push/{challenge_id}/get_prompts_status/" 
-        challenge_payload = {
-            'response': mfa_code
-        }
+        challenge_id = res["context"]["sheriff_challenge"]["id"]
+        challenge_url = f"https://api.robinhood.com/push/{challenge_id}/get_prompts_status/"
+        challenge_payload = {'response': mfa_code}
         challenge_response = request_get(url=challenge_url)
-        start_time = time.time()
-        while time.time() - start_time < 120: # 2 minutes
 
-            time.sleep(5)
-            if challenge_response["challenge_status"] == "validated":
-                inquiries_payload = {"sequence":0,"user_input":{"status":"continue"}}
-                inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload,json=True )
-                if inquiries_response["type_context"]["result"] == "workflow_status_approved":
-                    return
+        # Start the timer in a separate thread
+        stop_timer = threading.Event()
+        timer_thread = threading.Thread(target=display_timer, args=(stop_timer,))
+        timer_thread.start()
+
+        try:
+            start_time = time.time()
+            while time.time() - start_time < 120:  # 2 minutes
+                time.sleep(5)
+                if challenge_response["challenge_status"] == "validated":
+                    inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
+                    inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload, json=True)
+                    if inquiries_response["type_context"]["result"] == "workflow_status_approved":
+                        stop_timer.set()  # Stop the timer
+                        timer_thread.join()
+                        return
+                    else:
+                        raise Exception("Workflow status not approved")
                 else:
-                    raise Exception("workflow status not approved")
-            else:
-                challenge_response = request_get(url=challenge_url) 
-                print("Waiting for challenge to be validated")
-                print(time.time() - start_time)
+                    challenge_response = request_get(url=challenge_url)
 
-        raise Exception("Login confirmation timed out. Please try again.")
+            raise Exception("Login confirmation timed out. Please try again.")
+        finally:
+            stop_timer.set()  # Ensure the timer stops
+            timer_thread.join()
 
     raise Exception("Id not returned in user-machine call")
 
