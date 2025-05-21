@@ -5,6 +5,7 @@ from functools import wraps
 import requests
 from robin_stocks.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
 
+index_opt_list = ['SPX', 'NDX', 'VIX', 'RUT', 'XSP']
 
 def set_login_state(logged_in):
     """Sets the login state"""
@@ -61,6 +62,8 @@ def id_for_stock(symbol):
         return(None)
 
     url = 'https://api.robinhood.com/instruments/'
+    if symbol in index_opt_list:
+        url = 'https://api.robinhood.com/indexes/'
     payload = {'symbol': symbol}
     data = request_get(url, 'indexzero', payload)
 
@@ -82,11 +85,17 @@ def id_for_chain(symbol):
         return(None)
 
     url = 'https://api.robinhood.com/instruments/'
-
+    if symbol in index_opt_list:
+        url = 'https://api.robinhood.com/indexes/'
     payload = {'symbol': symbol}
+
     data = request_get(url, 'indexzero', payload)
 
     if data:
+        if symbol in index_opt_list:
+            sorted_chain_ids = sorted(data['tradable_chain_ids'])
+            idx = 0 if symbol in ['RUT', 'NDX', 'SPX', 'VIX'] else -1 # , 'SPX'  'SPX', 
+            return(sorted_chain_ids[idx])  # pick first from multi-chain_ids
         return(data['tradable_chain_id'])
     else:
         return(data)
