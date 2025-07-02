@@ -213,7 +213,7 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
 
     if interval not in interval_check:
         print(
-            'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"', file=get_output())
+            'ERROR: Interval must be "15second","5minute","10minute","minute","hour","day",or "week"', file=get_output())
         return([None])
     if span not in span_check:
         print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"', file=get_output())
