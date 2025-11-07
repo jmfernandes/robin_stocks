@@ -67,6 +67,11 @@ from .orders import (cancel_all_crypto_orders, cancel_all_option_orders,
 from .profiles import (load_account_profile, load_basic_profile,
                        load_investment_profile, load_portfolio_profile,
                        load_security_profile, load_user_profile)
+from .recurring_investments import (cancel_recurring_investment,
+                                    create_recurring_investment,
+                                    get_next_investment_date,
+                                    get_recurring_investments,
+                                    update_recurring_investment)
 from .stocks import (find_instrument_data, get_earnings, get_events,
                      get_fundamentals, get_instrument_by_url,
                      get_instruments_by_symbols, get_latest_price,
