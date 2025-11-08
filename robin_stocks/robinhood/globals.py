@@ -1,6 +1,8 @@
 """Holds the session header and other global variables."""
 import sys
 import os
+import time
+import threading
 
 from requests import Session
 
@@ -26,3 +28,9 @@ SESSION.headers = {
 #open(os.devnull,"w") for dev null
 #io.StringIO() to go to a string for the client to inspect
 OUTPUT=sys.stdout
+
+# Rate limiting configuration
+RATE_LIMIT_ENABLED = False  # Disabled by default to maintain backward compatibility
+RATE_LIMIT_DELAY = 1.0  # Seconds between requests (when enabled)
+LAST_REQUEST_TIME = 0  # Timestamp of last request
+_RATE_LIMIT_LOCK = threading.Lock()  # Thread-safe lock for rate limiting

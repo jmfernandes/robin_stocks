@@ -33,10 +33,37 @@ from rich.logging import RichHandler
 # CONFIGURATION
 # ============================================================================
 
-# Rate limiting settings - conservative to avoid account bans
-DELAY_BETWEEN_REQUESTS = 5.0  # Seconds between API calls (increased for safety)
-MAX_RETRIES = 3  # Maximum retry attempts for rate-limited requests
-INITIAL_RETRY_DELAY = 10  # Initial retry delay (seconds)
+# Import rate limiting settings from config (in same directory)
+_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.py')
+if os.path.exists(_config_path):
+    # Add parent directory to path for import
+    _config_dir = os.path.dirname(_config_path)
+    if _config_dir not in sys.path:
+        sys.path.insert(0, _config_dir)
+    try:
+        import config as _config_module
+        ENABLE_CORE_RATE_LIMITING = _config_module.ENABLE_CORE_RATE_LIMITING
+        CORE_RATE_LIMIT_DELAY = _config_module.CORE_RATE_LIMIT_DELAY
+        MAX_RETRIES = _config_module.MAX_RETRIES
+        INITIAL_RETRY_DELAY = _config_module.INITIAL_RETRY_DELAY
+        RETRYABLE_ERROR_CODES = _config_module.RETRYABLE_ERROR_CODES
+        DELAY_BETWEEN_REQUESTS = getattr(_config_module, 'DELAY_BETWEEN_REQUESTS', _config_module.CORE_RATE_LIMIT_DELAY)
+    except (ImportError, AttributeError):
+        # Fallback if config not found or missing attributes (backward compatibility)
+        ENABLE_CORE_RATE_LIMITING = True
+        CORE_RATE_LIMIT_DELAY = 5.0
+        DELAY_BETWEEN_REQUESTS = 5.0
+        MAX_RETRIES = 3
+        INITIAL_RETRY_DELAY = 10
+        RETRYABLE_ERROR_CODES = ['429', '502', '503', '504']
+else:
+    # Fallback if config file doesn't exist (backward compatibility)
+    ENABLE_CORE_RATE_LIMITING = True
+    CORE_RATE_LIMIT_DELAY = 5.0
+    DELAY_BETWEEN_REQUESTS = 5.0
+    MAX_RETRIES = 3
+    INITIAL_RETRY_DELAY = 10
+    RETRYABLE_ERROR_CODES = ['429', '502', '503', '504']
 
 # CSV file path (can be overridden with INVESTMENTS_CSV env var)
 # Defaults to 'recurring.csv' in the same directory as this script
@@ -219,33 +246,32 @@ def create_with_retry(symbol, amount, frequency, retry_count=0):
         error_str = str(e).lower()
         error_msg = str(e)
         
-        # Check for specific error types
-        if '502' in error_str or '503' in error_str or '504' in error_str:
-            # Server errors - might be temporary, but could also mean not eligible
-            if retry_count < MAX_RETRIES:
-                delay = INITIAL_RETRY_DELAY * (2 ** retry_count)
-                logger.warning(f"Server error ({error_msg}). Waiting {delay}s before retry {retry_count + 1}/{MAX_RETRIES}...")
-                time.sleep(delay)
-                return create_with_retry(symbol, amount, frequency, retry_count + 1)
-            else:
-                # After retries, check if it's a fractional tradability issue
-                is_tradable, tradability_msg = check_fractional_tradability(symbol)
-                if is_tradable is False:
-                    return None, f"Not eligible for recurring investments: {tradability_msg}"
-                return None, f"Server error after {MAX_RETRIES} retries: {error_msg}"
-        elif '429' in error_str or 'rate limit' in error_str or 'throttle' in error_str:
-            if retry_count < MAX_RETRIES:
-                delay = INITIAL_RETRY_DELAY * (2 ** retry_count)
+        # Check if error is retryable using config
+        is_retryable = any(code in error_msg for code in RETRYABLE_ERROR_CODES)
+        is_rate_limit = '429' in error_msg or 'rate limit' in error_str or 'throttle' in error_str
+        is_server_error = any(code in error_msg for code in ['502', '503', '504'])
+        
+        if is_retryable and retry_count < MAX_RETRIES:
+            delay = INITIAL_RETRY_DELAY * (2 ** retry_count)
+            if is_rate_limit:
                 logger.warning(f"Rate limited. Waiting {delay}s before retry {retry_count + 1}/{MAX_RETRIES}...")
-                time.sleep(delay)
-                return create_with_retry(symbol, amount, frequency, retry_count + 1)
+            elif is_server_error:
+                logger.warning(f"Server error ({error_msg}). Waiting {delay}s before retry {retry_count + 1}/{MAX_RETRIES}...")
             else:
-                return None, f"Rate limit exceeded after {MAX_RETRIES} retries"
+                logger.warning(f"Retryable error ({error_msg}). Waiting {delay}s before retry {retry_count + 1}/{MAX_RETRIES}...")
+            time.sleep(delay)
+            return create_with_retry(symbol, amount, frequency, retry_count + 1)
+        
+        # After retries exhausted or non-retryable error, check fractional tradability
+        is_tradable, tradability_msg = check_fractional_tradability(symbol)
+        if is_tradable is False:
+            return None, f"Not eligible for recurring investments: {tradability_msg}"
+        
+        if is_rate_limit:
+            return None, f"Rate limit exceeded after {MAX_RETRIES} retries"
+        elif is_server_error:
+            return None, f"Server error after {MAX_RETRIES} retries: {error_msg}"
         else:
-            # For other errors, check fractional tradability to provide better error message
-            is_tradable, tradability_msg = check_fractional_tradability(symbol)
-            if is_tradable is False:
-                return None, f"Not eligible for recurring investments: {tradability_msg}"
             return None, error_msg
 
 def get_existing_investments():
@@ -350,6 +376,12 @@ def main():
     # Step 1: Login
     if not login_to_robinhood():
         return
+    
+    # Step 1.5: Enable core rate limiting if configured
+    if ENABLE_CORE_RATE_LIMITING:
+        rh.enable_rate_limiting(CORE_RATE_LIMIT_DELAY)
+        console.print(f"[dim]Core rate limiting enabled: {CORE_RATE_LIMIT_DELAY}s delay[/dim]\n")
+        logger.info(f"Core rate limiting enabled with {CORE_RATE_LIMIT_DELAY}s delay")
     
     # Step 2: Load investments from CSV
     csv_file = os.getenv('INVESTMENTS_CSV', DEFAULT_CSV_FILE)

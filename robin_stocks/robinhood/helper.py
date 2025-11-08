@@ -1,9 +1,13 @@
 """Contains decorator functions and functions for interacting with global data.
 """
 from functools import wraps
+import time
 
 import requests
-from robin_stocks.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
+from robin_stocks.robinhood.globals import (
+    LOGGED_IN, OUTPUT, SESSION, RATE_LIMIT_ENABLED, 
+    RATE_LIMIT_DELAY, LAST_REQUEST_TIME, _RATE_LIMIT_LOCK
+)
 
 
 def set_login_state(logged_in):
@@ -230,6 +234,23 @@ def inputs_to_set(inputSymbols):
     return(symbols_list)
 
 
+def _apply_rate_limit():
+    """Apply rate limiting if enabled. Thread-safe."""
+    if not RATE_LIMIT_ENABLED:
+        return
+    
+    global LAST_REQUEST_TIME
+    with _RATE_LIMIT_LOCK:
+        current_time = time.time()
+        time_since_last_request = current_time - LAST_REQUEST_TIME
+        
+        if time_since_last_request < RATE_LIMIT_DELAY:
+            sleep_time = RATE_LIMIT_DELAY - time_since_last_request
+            time.sleep(sleep_time)
+        
+        LAST_REQUEST_TIME = time.time()
+
+
 def request_document(url, payload=None):
     """Using a document url, makes a get request and returnes the session data.
 
@@ -238,6 +259,7 @@ def request_document(url, payload=None):
     :returns: Returns the session.get() data as opppose to session.get().json() data.
 
     """ 
+    _apply_rate_limit()
     try:
         res = SESSION.get(url, params=payload)
         res.raise_for_status()
@@ -265,6 +287,7 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
     then either '[None]' or 'None' will be returned based on what the dataType parameter was set as.
 
     """
+    _apply_rate_limit()
     if (dataType == 'results' or dataType == 'pagination'):
         data = [None]
     else:
@@ -300,6 +323,7 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
         if nextData['next']:
             print('Found Additional pages.', file=get_output())
         while nextData['next']:
+            _apply_rate_limit()  # Rate limit between pagination requests
             try:
                 res = SESSION.get(nextData['next'])
                 res.raise_for_status()
@@ -339,6 +363,7 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     :returns: Returns the data from the post request.
 
     """
+    _apply_rate_limit()
     data = None
     res = None
     try:
@@ -368,6 +393,7 @@ def request_delete(url):
     :returns: Returns the data from the delete request.
 
     """
+    _apply_rate_limit()
     try:
         res = SESSION.delete(url)
         res.raise_for_status()
@@ -402,3 +428,26 @@ def error_ticker_does_not_exist(ticker):
 
 def error_must_be_nonzero(keyword):
     return('Error: The input parameter "{0}" must be an integer larger than zero and non-negative'.format(keyword))
+
+
+def enable_rate_limiting(delay=1.0):
+    """Enable automatic rate limiting for all API requests.
+    
+    :param delay: Seconds to wait between requests (default: 1.0).
+    :type delay: float
+    :returns: None
+    
+    """
+    global RATE_LIMIT_ENABLED, RATE_LIMIT_DELAY
+    RATE_LIMIT_ENABLED = True
+    RATE_LIMIT_DELAY = delay
+
+
+def disable_rate_limiting():
+    """Disable automatic rate limiting for all API requests.
+    
+    :returns: None
+    
+    """
+    global RATE_LIMIT_ENABLED
+    RATE_LIMIT_ENABLED = False
