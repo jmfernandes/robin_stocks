@@ -22,7 +22,8 @@ from .crypto import (get_crypto_currency_pairs, get_crypto_historicals,
 from .export import (export_completed_crypto_orders,
                      export_completed_option_orders,
                      export_completed_stock_orders)
-from .helper import (filter_data, get_output, request_delete, request_document,
+from .helper import (disable_rate_limiting, enable_rate_limiting, filter_data,
+                     get_output, request_delete, request_document,
                      request_get, request_post, set_output, update_session)
 from .markets import (get_all_stocks_from_market_tag, get_currency_pairs,
                       get_market_hours, get_market_next_open_hours,

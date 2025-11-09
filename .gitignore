@@ -25,3 +25,8 @@ __pycache__/
 *.so
 *~
 [.]venv
+recurring.csv
+examples/**/recurring.csv
+examples/**/recurring_orders.csv
+logs/
+examples/trapezoid/

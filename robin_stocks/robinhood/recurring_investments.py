@@ -74,25 +74,57 @@ def create_recurring_investment(symbol, amount, frequency='weekly', start_date=N
     if not start_date:
         start_date = datetime.now().strftime('%Y-%m-%d')
     
-    # Build payload
+    # Build payload - matching Robinhood's actual format from network capture
+    import uuid
     payload = {
+        "account_number": account_number,
+        "ach_relationship_id": None,
         "amount": {
             "amount": str(amount),
             "currency_code": "USD"
         },
+        "direct_deposit_relationship_id": None,
         "frequency": frequency,
-        "start_date": start_date,
-        "investment_target": {
-            "instrument_id": instrument_id,
-            "instrument_symbol": symbol.upper(),
-            "target_type": "instrument"
+        "investment_asset": {
+            "asset_id": instrument_id,
+            "asset_symbol": symbol.upper(),
+            "asset_type": "equity"
         },
-        "source_of_funds": source_of_funds
+        "is_backup_ach_enabled": False,
+        "percentage_of_direct_deposit": None,
+        "ref_id": str(uuid.uuid4()),
+        "source_of_funds": source_of_funds,
+        "start_date": start_date
     }
     
     url = recurring_schedules_url(account_number=account_number)
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
-    return data
+    
+    # Use request_post with jsonify=False to get the response object for better error handling
+    response = request_post(url, payload, json=True, jsonify_data=False)
+    
+    if response is None:
+        print(f"ERROR: request_post returned None for {symbol}", file=get_output())
+        return None
+    
+    # Check status code
+    if response.status_code not in [200, 201]:
+        try:
+            error_data = response.json()
+            error_msg = error_data.get('detail', error_data.get('error', error_data.get('message', f"HTTP {response.status_code}")))
+            if isinstance(error_msg, dict):
+                error_msg = str(error_msg)
+            print(f"ERROR: Failed to create recurring investment for {symbol}: {error_msg}", file=get_output())
+        except Exception as e:
+            print(f"ERROR: Failed to create recurring investment for {symbol}: HTTP {response.status_code}", file=get_output())
+        return None
+    
+    # Parse successful response
+    try:
+        data = response.json()
+        return data
+    except:
+        print(f"ERROR: Could not parse response for {symbol}", file=get_output())
+        return None
 
 
 @login_required
