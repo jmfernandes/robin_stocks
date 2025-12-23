@@ -14,10 +14,15 @@ tests/app_tests.py
 
 # generated app info
 .vscode/
+.cursor/
 .DS_Store
 .pypirc
 .idea/*
 .cache/v/cache/
+
+# generated portfolio summaries
+portfolio_summary*.md
+portfolio_summary*.txt
 *.egg-info/
 *.egg
 *.py[cod]

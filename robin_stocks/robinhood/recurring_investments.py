@@ -174,9 +174,37 @@ def update_recurring_investment(schedule_id, account_number=None, amount=None,
         print("ERROR: No fields to update", file=get_output())
         return None
     
+    # Robinhood uses PATCH for updates, not POST
     url = recurring_schedules_url(schedule_id=schedule_id)
-    data = request_post(url, payload, json=True, jsonify_data=jsonify)
-    return data
+    
+    # Use SESSION.patch() directly since request_post doesn't support PATCH
+    # SESSION is already imported from globals at the top
+    try:
+        # Save original Content-Type
+        original_content_type = SESSION.headers.get('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+        # Set Content-Type to JSON for PATCH request
+        SESSION.headers['Content-Type'] = 'application/json'
+        res = SESSION.patch(url, json=payload, timeout=16)
+        # Restore original Content-Type
+        SESSION.headers['Content-Type'] = original_content_type
+        
+        if res.status_code not in [200, 201, 202, 204]:
+            error_msg = f"HTTP {res.status_code}"
+            try:
+                error_data = res.json()
+                error_msg = error_data.get('detail', error_data.get('error', error_data.get('message', error_msg)))
+            except:
+                pass
+            print(f"Error updating recurring investment: {error_msg}", file=get_output())
+            return None
+        
+        if jsonify:
+            return res.json()
+        else:
+            return res
+    except Exception as message:
+        print(f"Error updating recurring investment: {message}", file=get_output())
+        return None
 
 
 @login_required
@@ -199,9 +227,13 @@ def cancel_recurring_investment(schedule_id, jsonify=True):
     
     # Use SESSION.patch() directly since request_post doesn't support PATCH
     try:
-        update_session('Content-Type', 'application/json')
+        # Save original Content-Type
+        original_content_type = SESSION.headers.get('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+        # Set Content-Type to JSON for PATCH request
+        SESSION.headers['Content-Type'] = 'application/json'
         res = SESSION.patch(url, json=payload, timeout=16)
-        update_session('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+        # Restore original Content-Type
+        SESSION.headers['Content-Type'] = original_content_type
         
         if res.status_code not in [200, 201, 202, 204]:
             print(f"Error canceling recurring investment: HTTP {res.status_code}", file=get_output())

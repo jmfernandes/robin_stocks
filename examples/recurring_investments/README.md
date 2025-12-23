@@ -60,6 +60,15 @@ Then run:
 python examples/recurring_investments/create_from_csv.py
 ```
 
+### 5. `generate_final_portfolio_summary.py`
+Generate a comprehensive portfolio summary grouped by investment themes.
+
+```bash
+python examples/recurring_investments/generate_final_portfolio_summary.py
+```
+
+This creates `portfolio_summary_final.md` in the repository root with theme-based categorization of all active recurring investments.
+
 ## Using the Library Directly
 
 You can also use the functions directly in your own scripts:
