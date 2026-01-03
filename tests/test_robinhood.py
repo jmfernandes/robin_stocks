@@ -866,7 +866,7 @@ class TestAccountInformation:
                 return True
             except ValueError:
                 return False
-            
+
         interests = r.get_interest_payments()
         assert (interests)
         for interest in interests:
@@ -875,3 +875,198 @@ class TestAccountInformation:
             assert ('direction' in interest)
             assert ('payout_type' in interest)
             assert ('reason' in interest)
+
+class TestFutures:
+    """Test futures trading functionality.
+
+    Note: Order placement tests are excluded as there is no way to submit fake orders.
+    """
+
+    # Test symbols - using common E-mini futures contracts
+    # These should be updated to use current/future expiration dates
+    es_symbol = 'ESH26'  # E-mini S&P 500 March 2026
+    nq_symbol = 'NQH26'  # E-mini Nasdaq-100 March 2026
+    fake_symbol = 'FAKEFUTURE'
+
+    @classmethod
+    def setup_class(cls):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        login = r.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+
+    @classmethod
+    def teardown_class(cls):
+        r.logout()
+
+    def test_get_futures_contract(self):
+        """Test getting a single futures contract by symbol."""
+        contract = r.get_futures_contract(self.es_symbol, info=None)
+        assert contract
+        assert ('id' in contract)
+        assert ('symbol' in contract)
+        assert ('displaySymbol' in contract)
+        assert ('description' in contract)
+        assert ('multiplier' in contract)
+        assert ('expiration' in contract)
+        assert ('tradability' in contract)
+        assert ('state' in contract)
+        # Check that displaySymbol matches what we requested
+        assert self.es_symbol in contract['displaySymbol']
+
+    def test_get_futures_contract_with_info(self):
+        """Test filtering contract data with info parameter."""
+        contract_id = r.get_futures_contract(self.es_symbol, info='id')
+        assert contract_id
+        assert isinstance(contract_id, str)
+
+        description = r.get_futures_contract(self.es_symbol, info='description')
+        assert description
+        assert isinstance(description, str)
+
+    def test_get_futures_contracts_by_symbols(self):
+        """Test getting multiple futures contracts."""
+        contracts = r.get_futures_contracts_by_symbols([self.es_symbol, self.nq_symbol], info=None)
+        assert contracts
+        assert len(contracts) == 2
+
+        # Check both contracts have required fields
+        for contract in contracts:
+            assert ('id' in contract)
+            assert ('symbol' in contract)
+            assert ('displaySymbol' in contract)
+
+    def test_get_futures_contract_fake_symbol(self):
+        """Test that fake symbols return None."""
+        contract = r.get_futures_contract(self.fake_symbol, info=None)
+        assert contract is None
+
+    def test_get_futures_quote(self):
+        """Test getting a real-time futures quote."""
+        quote = r.get_futures_quote(self.es_symbol, info=None)
+        assert quote
+        assert ('bid_price' in quote)
+        assert ('bid_size' in quote)
+        assert ('ask_price' in quote)
+        assert ('ask_size' in quote)
+        assert ('last_trade_price' in quote)
+        assert ('last_trade_size' in quote)
+        assert ('state' in quote)
+        assert ('updated_at' in quote)
+        assert ('instrument_id' in quote)
+
+    def test_get_futures_quote_with_info(self):
+        """Test filtering quote data with info parameter."""
+        last_price = r.get_futures_quote(self.es_symbol, info='last_trade_price')
+        assert last_price
+        # Should be a string that can be converted to float
+        try:
+            float(last_price)
+            assert True
+        except (ValueError, TypeError):
+            assert False, "last_trade_price should be numeric"
+
+    def test_get_futures_quotes(self):
+        """Test getting quotes for multiple futures."""
+        quotes = r.get_futures_quotes([self.es_symbol, self.nq_symbol], info=None)
+        assert quotes
+        assert len(quotes) == 2
+
+        for quote in quotes:
+            assert ('bid_price' in quote)
+            assert ('ask_price' in quote)
+            assert ('last_trade_price' in quote)
+
+    def test_extract_futures_pnl(self):
+        """Test P&L extraction helper with sample data."""
+        # Sample order structure matching Robinhood's nested format
+        sample_order = {
+            'realizedPnl': {
+                'realizedPnl': {'amount': '-50.00', 'currency': 'USD'},
+                'realizedPnlWithoutFees': {'amount': '-46.90', 'currency': 'USD'}
+            },
+            'totalFee': {'amount': '3.10', 'currency': 'USD'},
+            'totalCommission': {'amount': '2.48', 'currency': 'USD'},
+            'totalGoldSavings': {'amount': '0.62', 'currency': 'USD'}
+        }
+
+        pnl = r.extract_futures_pnl(sample_order)
+        assert pnl
+        assert 'realized_pnl' in pnl
+        assert 'realized_pnl_without_fees' in pnl
+        assert 'total_fee' in pnl
+        assert 'total_commission' in pnl
+        assert 'total_gold_savings' in pnl
+
+        # Check extracted values
+        assert abs(pnl['realized_pnl'] - (-50.00)) < 0.01
+        assert abs(pnl['realized_pnl_without_fees'] - (-46.90)) < 0.01
+        assert abs(pnl['total_fee'] - 3.10) < 0.01
+        assert abs(pnl['total_commission'] - 2.48) < 0.01
+        assert abs(pnl['total_gold_savings'] - 0.62) < 0.01
+
+    def test_extract_futures_pnl_empty(self):
+        """Test P&L extraction with empty/None order."""
+        pnl = r.extract_futures_pnl(None)
+        assert pnl
+        assert pnl['realized_pnl'] == 0.0
+        assert pnl['total_fee'] == 0.0
+
+    def test_calculate_total_futures_pnl(self):
+        """Test aggregate P&L calculation."""
+        sample_orders = [
+            {
+                'realizedPnl': {
+                    'realizedPnl': {'amount': '100.00', 'currency': 'USD'},
+                    'realizedPnlWithoutFees': {'amount': '103.10', 'currency': 'USD'}
+                },
+                'totalFee': {'amount': '3.10', 'currency': 'USD'},
+                'totalCommission': {'amount': '2.48', 'currency': 'USD'},
+                'totalGoldSavings': {'amount': '0.62', 'currency': 'USD'}
+            },
+            {
+                'realizedPnl': {
+                    'realizedPnl': {'amount': '-50.00', 'currency': 'USD'},
+                    'realizedPnlWithoutFees': {'amount': '-46.90', 'currency': 'USD'}
+                },
+                'totalFee': {'amount': '3.10', 'currency': 'USD'},
+                'totalCommission': {'amount': '2.48', 'currency': 'USD'},
+                'totalGoldSavings': {'amount': '0.62', 'currency': 'USD'}
+            }
+        ]
+
+        totals = r.calculate_total_futures_pnl(sample_orders)
+        assert totals
+        assert 'total_pnl' in totals
+        assert 'total_pnl_without_fees' in totals
+        assert 'total_fees' in totals
+        assert 'num_orders' in totals
+
+        # Check calculated totals
+        assert totals['num_orders'] == 2
+        assert abs(totals['total_pnl'] - 50.00) < 0.01  # 100 - 50
+        assert abs(totals['total_pnl_without_fees'] - 56.20) < 0.01  # 103.10 - 46.90
+        assert abs(totals['total_fees'] - 6.20) < 0.01  # 3.10 * 2
+
+    def test_calculate_total_futures_pnl_empty(self):
+        """Test aggregate P&L with empty list."""
+        totals = r.calculate_total_futures_pnl([])
+        assert totals
+        assert totals['num_orders'] == 0
+        assert totals['total_pnl'] == 0.0
+
+    def test_get_futures_account_id(self):
+        """Test futures account ID retrieval."""
+        account_id = r.get_futures_account_id()
+        # Should return a valid account ID string
+        assert account_id is not None
+        assert isinstance(account_id, str)
+        assert len(account_id) > 0
+        # UUIDs are 36 characters with dashes
+        assert len(account_id) == 36 or len(account_id) > 20
+
+    def test_get_futures_positions(self):
+        """Test futures positions retrieval (currently a placeholder)."""
+        # This endpoint is not yet discovered, so should return None
+        positions = r.get_futures_positions()
+        # Expected to be None until endpoint is discovered
+        # Just verify it doesn't crash
+        assert positions is None or isinstance(positions, list)

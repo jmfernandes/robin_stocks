@@ -22,6 +22,12 @@ from .crypto import (get_crypto_currency_pairs, get_crypto_historicals,
 from .export import (export_completed_crypto_orders,
                      export_completed_option_orders,
                      export_completed_stock_orders)
+from .futures import (calculate_total_futures_pnl, extract_futures_pnl,
+                      get_all_futures_orders, get_filled_futures_orders,
+                      get_futures_account_id, get_futures_contract,
+                      get_futures_contracts_by_symbols, get_futures_order_info,
+                      get_futures_positions, get_futures_quote,
+                      get_futures_quote_by_id, get_futures_quotes)
 from .helper import (filter_data, get_output, request_delete, request_document,
                      request_get, request_post, set_output, update_session)
 from .markets import (get_all_stocks_from_market_tag, get_currency_pairs,
