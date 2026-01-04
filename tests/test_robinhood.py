@@ -1063,6 +1063,30 @@ class TestFutures:
         # UUIDs are 36 characters with dashes
         assert len(account_id) == 36 or len(account_id) > 20
 
+    def test_get_all_futures_orders(self):
+        """Test getting all futures orders with automatic pagination."""
+        # Get account ID automatically
+        orders = r.get_all_futures_orders()
+        assert orders is not None
+        assert isinstance(orders, list)
+        # Should have at least some orders if account has traded futures
+        # If no orders, that's also valid (empty list)
+        if len(orders) > 0:
+            first_order = orders[0]
+            assert 'orderId' in first_order
+            assert 'orderState' in first_order
+            assert 'createdAt' in first_order
+
+    def test_get_filled_futures_orders(self):
+        """Test getting only filled futures orders."""
+        # Get account ID automatically
+        orders = r.get_filled_futures_orders()
+        assert orders is not None
+        assert isinstance(orders, list)
+        # All returned orders should be filled
+        for order in orders:
+            assert order.get('orderState') == 'FILLED'
+
     def test_get_futures_positions(self):
         """Test futures positions retrieval (currently a placeholder)."""
         # This endpoint is not yet discovered, so should return None

@@ -197,13 +197,36 @@ def get_all_futures_orders(account_id=None, info=None):
             print("6. The account ID will be in the URL path", file=get_output())
             return None
 
-    url = futures_orders_url(account_id)
-    payload = {'contractType': 'OUTRIGHT'}
+    # Futures API uses cursor-based pagination (not URL-based like stocks/options)
+    all_orders = []
+    cursor = None
+    page = 1
 
     update_session_for_futures()
-    data = request_get(url, dataType='pagination', payload=payload)
 
-    return filter_data(data, info)
+    while True:
+        payload = {'contractType': 'OUTRIGHT'}
+        if cursor:
+            payload['cursor'] = cursor
+
+        url = futures_orders_url(account_id)
+        data = request_get(url, payload=payload)
+
+        if not data or 'results' not in data:
+            break
+
+        results = data['results']
+        all_orders.extend(results)
+
+        # Check for next page
+        cursor = data.get('next')
+        if not cursor:
+            break
+
+        print(f'Loading page {page + 1} ...', file=get_output())
+        page += 1
+
+    return filter_data(all_orders, info)
 
 
 @login_required
@@ -247,13 +270,36 @@ def get_filled_futures_orders(account_id=None, info=None):
             print("Error: Futures account ID is required.", file=get_output())
             return None
 
-    url = futures_orders_url(account_id)
-    payload = {'contractType': 'OUTRIGHT', 'orderState': 'FILLED'}
+    # Futures API uses cursor-based pagination
+    all_orders = []
+    cursor = None
+    page = 1
 
     update_session_for_futures()
-    data = request_get(url, dataType='pagination', payload=payload)
 
-    return filter_data(data, info)
+    while True:
+        payload = {'contractType': 'OUTRIGHT', 'orderState': 'FILLED'}
+        if cursor:
+            payload['cursor'] = cursor
+
+        url = futures_orders_url(account_id)
+        data = request_get(url, payload=payload)
+
+        if not data or 'results' not in data:
+            break
+
+        results = data['results']
+        all_orders.extend(results)
+
+        # Check for next page
+        cursor = data.get('next')
+        if not cursor:
+            break
+
+        print(f'Loading page {page + 1} ...', file=get_output())
+        page += 1
+
+    return filter_data(all_orders, info)
 
 
 # P&L Helper Functions
@@ -370,7 +416,7 @@ def calculate_total_futures_pnl(orders):
 
 @login_required
 def get_futures_account_id():
-    """Get the futures account ID.
+    """Get the futures account ID by filtering for accountType='FUTURES'.
 
     :returns: Futures account ID string or None
 
@@ -379,13 +425,11 @@ def get_futures_account_id():
     update_session_for_futures()
     data = request_get(url, dataType='results')
 
-    # Try to extract account ID from results
+    # Filter for the account with accountType='FUTURES'
     if data and len(data) > 0:
-        first_account = data[0]
-        if isinstance(first_account, dict) and 'id' in first_account:
-            return first_account['id']
-        elif isinstance(first_account, dict) and 'accountId' in first_account:
-            return first_account['accountId']
+        for account in data:
+            if isinstance(account, dict) and account.get('accountType') == 'FUTURES':
+                return account.get('id')
 
     return None
 
