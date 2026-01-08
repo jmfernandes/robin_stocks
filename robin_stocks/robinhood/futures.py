@@ -401,6 +401,13 @@ def calculate_total_futures_pnl(orders):
         return totals
 
     for order in orders:
+        # Only count P&L from CLOSING orders to avoid double-counting
+        # OPENING orders have realizedPnl = -fees (just the cost to open)
+        # CLOSING orders have realizedPnl = actual position P&L
+        position_effect = order.get('positionEffectAtPlacementTime', '')
+        if position_effect != 'CLOSING':
+            continue
+
         pnl = extract_futures_pnl(order)
         totals['total_pnl'] += pnl['realized_pnl']
         totals['total_pnl_without_fees'] += pnl['realized_pnl_without_fees']
