@@ -2,3 +2,5 @@ requests==2.31.0
 pyotp==2.3.0
 python-dotenv==0.15.0
 cryptography==41.0.3
+requests-cache>=1.0.0
+tqdm>=4.60.0

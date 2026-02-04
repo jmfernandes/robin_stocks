@@ -9,6 +9,29 @@ create your own robo-investor or trading algorithm, and improve your programming
 
 To join our Slack channel where you can discuss trading and coding, click the link https://join.slack.com/t/robin-stocks/shared_invite/zt-7up2htza-wNSil5YDa3zrAglFFSxRIA
 
+Enhancements and Additions
+==========================
+This fork includes several enhancements to improve performance, reliability, and user experience:
+
+* **Enhanced Portfolio Performance Checker** (`examples/robinhood examples/check_performance.py`):
+  - HTTP response caching with configurable expiration times (fundamentals: 24h, prices: 5min)
+  - Progress bars using tqdm for better visibility during long-running operations
+  - Automatic retry logic with exponential backoff for API failures
+  - Intelligent batch fetching with automatic chunk size reduction on errors
+  - Rate limiting support to prevent API throttling
+  - Comprehensive error handling and logging
+
+* **Portfolio Comparison Tool** (`compare_portfolio_changes.py`):
+  - Compare original portfolio vs current portfolio
+  - Identify removed positions, added positions, and amount changes
+  - Generate detailed JSON reports for analysis
+
+* **New Dependencies**:
+  - `requests-cache>=1.0.0` - HTTP response caching for faster repeated API calls
+  - `tqdm>=4.60.0` - Progress bars for better user experience
+
+These enhancements significantly improve the reliability and performance of portfolio analysis scripts, especially when working with large portfolios (200+ positions).
+
 Supported APIs
 ==============
 The supported APIs are Robinhood, Gemini, and TD Ameritrade. For more information about how to use the different APIs, visit the README

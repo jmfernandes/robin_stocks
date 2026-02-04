@@ -23,6 +23,8 @@ tests/app_tests.py
 # generated portfolio summaries
 portfolio_summary*.md
 portfolio_summary*.txt
+portfolio_comparison_table.md
+portfolio_comparison_report.json
 *.egg-info/
 *.egg
 *.py[cod]
