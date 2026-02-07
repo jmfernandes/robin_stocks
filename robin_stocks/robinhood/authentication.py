@@ -216,7 +216,9 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', store
                                  'access_token': data['access_token'],
                                  'refresh_token': data['refresh_token'],
                                  'device_token': login_payload['device_token']}, f)
-                return data
+
+            return data
+
         except Exception as e:
             print(f"Error during login verification: {e}")
 
