@@ -73,16 +73,16 @@ List of Functions and Example Usage
 ===================================
 
 For a complete list of all Robinhood API functions and what the different parameters mean, 
-go to `robin-stocks.com Robinhood Page <http://www.robin-stocks.com/en/latest/robinhood.html>`_. If you would like to
+go to `readthedocs.io Robinhood Page <https://robin-stocks.readthedocs.io/en/latest/robinhood.html>`_. If you would like to
 see some example code and instructions on how to set up two-factor authorization for Robinhood,
 go to the `Robinhood Documentation`_.
 
 For a complete list of all TD Ameritrade API functions and what the different parameters mean, 
-go to `robin-stocks.com TDA Page <http://www.robin-stocks.com/en/latest/tda.html>`_. For detailed instructions on 
+go to `readthedocs.io TDA Page <https://robin-stocks.readthedocs.io/en/latest/tda.html>`_. For detailed instructions on 
 how to generate API keys for TD Ameritrade and how to use the API, go to the `TDA Documentation`_.
 
 For a complete list of all Gemini API functions and what the different parameters mean, 
-go to `robin-stocks.com Gemini Page <http://www.robin-stocks.com/en/latest/gemini.html>`_. For detailed instructions on 
+go to `readthedocs.io Gemini Page <https://robin-stocks.readthedocs.io/en/latest/gemini.html>`_. For detailed instructions on 
 how to generate API keys for Gemini and how to use both the private and public API, go to the `Gemini Documentation`_.
 
 .. _Robinhood Documentation: Robinhood.rst
