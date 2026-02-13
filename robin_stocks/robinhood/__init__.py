@@ -22,7 +22,8 @@ from .crypto import (get_crypto_currency_pairs, get_crypto_historicals,
 from .export import (export_completed_crypto_orders,
                      export_completed_option_orders,
                      export_completed_stock_orders)
-from .helper import (filter_data, get_output, request_delete, request_document,
+from .helper import (disable_rate_limiting, enable_rate_limiting, filter_data,
+                     get_output, request_delete, request_document,
                      request_get, request_post, set_output, update_session)
 from .markets import (get_all_stocks_from_market_tag, get_currency_pairs,
                       get_market_hours, get_market_next_open_hours,
@@ -67,6 +68,11 @@ from .orders import (cancel_all_crypto_orders, cancel_all_option_orders,
 from .profiles import (load_account_profile, load_basic_profile,
                        load_investment_profile, load_portfolio_profile,
                        load_security_profile, load_user_profile)
+from .recurring_investments import (cancel_recurring_investment,
+                                    create_recurring_investment,
+                                    get_next_investment_date,
+                                    get_recurring_investments,
+                                    update_recurring_investment)
 from .stocks import (find_instrument_data, get_earnings, get_events,
                      get_fundamentals, get_instrument_by_url,
                      get_instruments_by_symbols, get_latest_price,

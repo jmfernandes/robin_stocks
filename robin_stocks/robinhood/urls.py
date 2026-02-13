@@ -330,3 +330,29 @@ def orders_url(orderID=None, account_number=None, start_date=None):
                 url += "&" + value
 
     return url
+
+# recurring investments
+
+def recurring_schedules_url(account_number=None, schedule_id=None, asset_types=None):
+    """URL for recurring investment schedules.
+    
+    Endpoint discovered through reverse engineering: bonfire.robinhood.com/recurring_schedules/
+    """
+    base_url = 'https://bonfire.robinhood.com/recurring_schedules/'
+    
+    if schedule_id:
+        return f'{base_url}{schedule_id}/'
+    elif asset_types:
+        if isinstance(asset_types, str):
+            asset_types = [asset_types]
+        params = '&'.join([f'asset_types={at}' for at in asset_types])
+        return f'{base_url}?{params}'
+    elif account_number:
+        return f'{base_url}?account_number={account_number}'
+    else:
+        return base_url
+
+
+def next_investment_date_url(frequency, start_date):
+    """URL for getting next investment date."""
+    return f'https://bonfire.robinhood.com/recurring_schedules/equity/next_investment_date/?frequency={frequency}&start_date={start_date}'

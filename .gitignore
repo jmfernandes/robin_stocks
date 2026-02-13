@@ -14,10 +14,17 @@ tests/app_tests.py
 
 # generated app info
 .vscode/
+.cursor/
 .DS_Store
 .pypirc
 .idea/*
 .cache/v/cache/
+
+# generated portfolio summaries
+portfolio_summary*.md
+portfolio_summary*.txt
+portfolio_comparison_table.md
+portfolio_comparison_report.json
 *.egg-info/
 *.egg
 *.py[cod]
@@ -25,3 +32,8 @@ __pycache__/
 *.so
 *~
 [.]venv
+recurring.csv
+examples/**/recurring.csv
+examples/**/recurring_orders.csv
+logs/
+examples/trapezoid/
