@@ -146,6 +146,43 @@ def id_for_option(symbol, expirationDate, strike, optionType):
     return(listOfOptions[0]['id'])
 
 
+def update_session_for_futures():
+    """Updates session headers for futures API calls.
+
+    Futures endpoints require the 'Rh-Contract-Protected' header.
+    Call this before making futures API requests.
+
+    :returns: None. Updates the session header.
+
+    """
+    update_session('Rh-Contract-Protected', 'true')
+
+
+def id_for_futures_contract(symbol):
+    """Takes a futures symbol and returns the contract ID.
+
+    :param symbol: The futures symbol (e.g., 'ESH26', 'NQM26')
+    :type symbol: str
+    :returns: A string representing the contract ID or None if not found
+
+    """
+    from robin_stocks.robinhood.urls import futures_contract_url
+
+    try:
+        symbol = symbol.upper().strip()
+    except AttributeError as message:
+        print(message, file=get_output())
+        return(None)
+
+    url = futures_contract_url(symbol)
+    update_session_for_futures()
+    data = request_get(url)
+
+    if data and 'result' in data:
+        return data['result']['id']
+    return None
+
+
 def round_price(price):
     """Takes a price and rounds it to an appropriate decimal place that Robinhood will accept.
 

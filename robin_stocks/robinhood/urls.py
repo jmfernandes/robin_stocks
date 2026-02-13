@@ -330,3 +330,43 @@ def orders_url(orderID=None, account_number=None, start_date=None):
                 url += "&" + value
 
     return url
+
+# futures
+
+
+def futures_contract_url(symbol):
+    """Get futures contract details by symbol.
+
+    :param symbol: Futures symbol (e.g., 'ESH26', 'NQM26')
+    :type symbol: str
+    :returns: URL string
+    """
+    return('https://api.robinhood.com/arsenal/v1/futures/contracts/symbol/{0}'.format(symbol))
+
+
+def futures_quotes_url():
+    """Get futures quotes endpoint.
+
+    :returns: URL string
+    """
+    return('https://api.robinhood.com/marketdata/futures/quotes/v1/')
+
+
+def futures_orders_url(account_id):
+    """Get futures orders endpoint.
+
+    :param account_id: Futures account ID
+    :type account_id: str
+    :returns: URL string
+    """
+    return('https://api.robinhood.com/ceres/v1/accounts/{0}/orders'.format(account_id))
+
+
+def futures_account_url():
+    """Get futures account endpoint.
+
+    NOTE: Specific endpoint for account discovery not yet found.
+
+    :returns: URL string
+    """
+    return('https://api.robinhood.com/ceres/v1/accounts/')
